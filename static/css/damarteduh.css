@@ -1,0 +1,119 @@
+/* 
+# Prject: BWG Project 1.0
+# Auth  : DamarTeduh©2019
+# Create: Hotel Taman Dayu | 2019-07-22 19:41
+# Ket   : Custome Style
+*/
+
+/* ------------------- Custome Footer --------------------- */
+.dt-footer {
+	font-size:10px;
+	color:gray;
+	position:fixed;
+	right:0;
+	bottom:0;
+	left:0;
+	padding:0.5rem;
+	background-color: #efefef;
+	text-align:right;
+}
+
+/* ------------------- Custome Nav Top --------------------- */
+#custom-bootstrap-menu.navbar-default .navbar-brand {
+    color: white;
+}
+#custom-bootstrap-menu.navbar-default {
+    color: white;
+    font-size: 14px;
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#1e5799+0,2989d8+36,2989d8+75,2989d8+75,207cca+100,7db9e8+100 */
+    background: #1e5799; /* Old browsers */
+    background: -moz-linear-gradient(left,  #1e5799 0%, #2989d8 36%, #2989d8 75%, #2989d8 75%, #207cca 100%, #7db9e8 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(left,  #1e5799 0%,#2989d8 36%,#2989d8 75%,#2989d8 75%,#207cca 100%,#7db9e8 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right,  #1e5799 0%,#2989d8 36%,#2989d8 75%,#2989d8 75%,#207cca 100%,#7db9e8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#7db9e8',GradientType=1 ); /* IE6-9 */
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+    color: white;
+    background-color: rgba(248, 248, 248, 0);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: white;
+    background-color: rgba(248, 248, 248, 0);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: white;
+    background-color: #292a2b;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle {
+    color: white;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus {
+    color: white;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
+    color: white;
+	background-color: white;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
+    color: white;
+    background-color: #040457;
+}
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:focus, 
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover {
+    color: white;
+}
+
+.dropdown-menu {
+    color: white;
+}
+.thumbnail:hover {
+    background-color: white;
+    opacity: .5;
+}
+div.thumbnail  a {
+    text-decoration: none;
+}
+div.body-wrap-with-navbar { padding-top: 70px; }
+div.body-wrap-without-navbar { padding-top: 20px; }
+
+
+/* ------------------- Custome Table#1 --------------------- */
+table.table-master {
+    font-size: 12px;
+    width: 100%;
+    font-family: "Segoe UI";
+}
+table.table-master tr td, tr th {
+    padding: 5px;
+    border-bottom: 1px solid #edeaea;
+}
+table.table-master tr th {
+    background-color: #656d7c;
+    color: white;
+}
+table.table-master tr:hover { background-color: #f7f8f9; }
+
+
+/* ------------------- General --------------------- */
+.edit::before {
+  font-family: FontAwesome;
+  content: "\f040";
+  color: #36A7FE;
+}
+.new::before {
+  font-family: FontAwesome;
+  content: "\f016";
+  padding-right: 5px;
+}
+button.edit {
+    background-color: transparent;
+    border: none;
+}
+.MERAH {background-color:#fe3025;}
+.HIJAU {background-color:#11dd00;}
+.KUNING {background-color:yellow;}

@@ -1,0 +1,41 @@
+<?php
+header("Content-Type:application/json");
+
+                for ($i=1; $i <= 20; $i++) { 
+                
+                $data_utama[$i]=(isset($_POST['utama'.$i.''])? $_POST['utama'.$i.''] : 0);
+                $dt_tamb[$i]=(isset($_POST['tamb'.$i.''])? $_POST['tamb'.$i.''] : 0);
+                if ($data_utama[$i]=="undefined"){$data_utama[$i]=0;}
+                if ($dt_tamb[$i]=="undefined"){$dt_tamb[$i]=0;}
+                }
+
+
+                $data_hasil_hitam=1;
+                $data_hasil_utama= ($data_utama[6]*$data_utama[7]*$data_utama[8]*$data_utama[9]*$data_utama[10]*$data_utama[11]*$data_utama[12]*$data_utama[13]*$data_utama[14]);
+
+                $data_hasil_tamb= ($dt_tamb[1]*$dt_tamb[2]*$dt_tamb[3]*$dt_tamb[4]*$dt_tamb[5]*$dt_tamb[6]*$dt_tamb[7]*$dt_tamb[8]*$dt_tamb[9]*$dt_tamb[10]);
+
+         
+        if ($data_hasil_hitam=='0'){
+                echo json_encode(array('status' => "Not ok" ,
+        'status_utama'=>"Di Tolak di Pos 1"));}
+        else {
+
+
+                
+        if ($data_hasil_utama=='1') {
+
+        if ($data_hasil_tamb=='1') {echo json_encode(array('status' => "ok" ,'status_utama'=>"Layak di Operasikan (Stiker Hijau)" ));}
+        if ($data_hasil_tamb=='0') {echo json_encode(array('status' => "ok" ,'status_utama'=>"Perlu Perbaikan (Stiker Kuning)" ));}
+        } 
+        if ($data_hasil_utama=='0') {
+        echo json_encode(array('status' => "Not ok" ,
+        'status_utama'=>"Tidak Layak di Operasikan (Stiker Merah)" ));
+        } 
+        }
+                
+
+
+
+
+?>              

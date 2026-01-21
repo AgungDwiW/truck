@@ -1,0 +1,58 @@
+/*----------------------------------------
+ * Auth 	: dyah pp wardhana, damarteduh(c)2019
+ * Project 	: SCDIGI 2.0
+ * Create 	: 2019-08-18 05:21 AM
+ *
+ */
+
+
+/* Form pop up & other form */
+ul#form-control { 
+	font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
+	list-style: none;
+	margin: 0;
+	text-align: left;
+}
+ul#form-control li { margin: 5px 0; }
+ul#form-control li span { 
+	display: inline-block;
+	width: 100px;
+}
+ul#form-control li input, ul#form-control li select {
+	border: 1px solid #dce3e8;
+	width: 15em;
+	padding: 3px;
+} 
+ul#form-control li input[readonly] { 
+	background-color: gray; 
+	color: white;
+}
+
+/* Table */
+table.table-control {
+	font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
+	font-size: 10pt;
+	width: 100%;
+	text-align: left;
+	margin: 20px 0;
+}
+table.table-control thead { background-color: #1BA1E2; color: #fff; }
+table.table-control tr th, table.table-control tr td {
+	padding: 6px;
+}
+table.table-control tbody tr:hover { background-color: #f7f7f9 }
+table.table-control tbody tr.odd td { background-color:#F0F0F6; }
+table.table-control tbody tr td button { 
+	border: none; 
+	background-color: transparent;
+}
+table.table-control tbody tr td button.edit::before {
+  font-family: FontAwesome;
+  content: "\f040";
+  color: #36A7FE;
+}
+table.table-control tbody tr td button.hapus::before {
+  font-family: FontAwesome;
+  content: "\f014";
+  color: red;
+}
