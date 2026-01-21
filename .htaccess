@@ -1,0 +1,13 @@
+ErrorDocument 404 '<body style="font-family: arial;"><div style="width: 100%;display: block;text-align: center;position: fixed;top: 25%;"><span style="color: red;font-size: 56px;display: block;-webkit-transform: rotate(-90deg);-moz-transform: rotate(-90deg);-ms-transform:rotate(-90deg);-o-transform: rotate(-90deg);filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);">404</span><h1>ERROR</h1><p>Looks like this page does not exist...</p></div></body>'
+
+AddType application/vnd.openxmlformats-officedocument.spreadsheetml.sheet .xlsx
+AddType application/vnd.openxmlformats-officedocument.spreadsheetml.sheet .xlsm
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d 
+#RewriteRule ^([^\.]+)$ $1.php [NC,L]
+RewriteRule . index.php [L]
+
+# Prevent file browsing
+Options -Indexes
