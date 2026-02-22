@@ -1,12 +1,5 @@
 <?php
-// Koneksi langsung ke database
-$host = "10.203.121.73";
-$user = "uapp_productcode";
-$pass = "ocr.productcode";
-$dbname = "db_product_release";
-
-$con73 = new mysqli($host, $user, $pass, $dbname);
-
+include_once "application/config/connection73.php";
 // Cek koneksi
 if ($con73->connect_error) {
     die("Koneksi gagal: " . $con73->connect_error);

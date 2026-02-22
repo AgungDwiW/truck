@@ -6,10 +6,6 @@ $base_path2 = dirname(__FILE__,3);
 include_once "{$base_path2}/application/config/connectionASN.php";
 include_once "{$base_path2}/application/config/connectionSL.php";
 
-
-include_once "{$base_path}/utility_function_withoutJS.php";
-include_once "{$base_path}/Cache.php";
-
 $table_by_supplier 	= [];
 $table_ho 			= [];
 $table_master 		= [];

@@ -1,6 +1,6 @@
 <?php
 $muat = @$_POST['muat'];
-$username = $_SESSION[APP_NAME]["username"];
+$username = User::$username;
 $sql_username = mysqli_query($con, "SELECT * FROM tbm_user WHERE nama='$username'");
 
 while($rowuser = mysqli_fetch_assoc($sql_username)){

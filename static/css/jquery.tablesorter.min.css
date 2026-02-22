@@ -24,7 +24,7 @@ table.tablesorter thead tr .damar-headerSortDown {
   background-image: url('data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7');
 }
 table.tablesorter tbody tr td {
-	padding: 0px 6px;
+	padding: 3px 6px;
   border: 1px solid #d2d5dd;
 }
 table.tablesorter tbody tr.odd td { background-color:#F0F0F6; }
@@ -38,46 +38,6 @@ table.tablesorter caption { font-size: 15px; }
   background-repeat: no-repeat;
   padding-left: 30px;
   box-sizing: border-box;
-}
-.new::before {
-  font-family: FontAwesome;
-  content: "\f016";
-  padding-right: 5px;
-}
-.find::before {
-  font-family: FontAwesome;
-  content: "\f002";
-}
-
-.edit::before {
-  font-family: FontAwesome;
-  content: "\f040";
-  color: #36A7FE;
-}
-.save::before {
-  font-family: FontAwesome;
-  content: "\f0c7";
-  color: #36A7FE;
-}
-.refresh::before {
-  font-family: FontAwesome;
-  content: "\f021";
-  color: #36A7FE;
-}
-.delete::before {
-  font-family: FontAwesome;
-  content: "\f00d";
-  color: #F60B0B;
-}
-.trash::before {
-  font-family: FontAwesome;
-  content: "\f014";
-  color: #F60B0B;
-}
-.archive::before {
-  font-family: FontAwesome;
-  content: "\f1c6";
-  color: #F60B0B;
 }
 
 td input.nrow, td button.nrow { padding-right: 5px; }

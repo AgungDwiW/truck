@@ -1,57 +1,7 @@
-#fg_formContainer
-{
-	height:350px;
-	width:450px;
-	background: #ffffff;
-	padding:0;
-	position:absolute;
-	z-index:999;
-	cursor:default;   
-	-moz-border-radius: 2px;
-	-webkit-border-radius: 2px;
-	-khtml-border-radius: 2px;
-	border-radius: 2px;   
-	display: none;
-}
-
-
-#fg_container_header
-{
-	background:#d8d9dc;
-	float: right;
-	display: inline-block;
-	width:450px;
-	height: 50px;
-	padding: 15px;
-	margin-bottom: 40px;
-}
-
-#fg_form_InnerContainer
-{
-	margin:25px;
-}
-
-#fg_backgroundpopup
-{
-	position: fixed; 
-	top:0; 
-	left:0; 
-	bottom:0; 
-	right:0;   
-	background:#121212;
-	opacity: .8;
-	-moz-opacity: .8;
-	filter: alpha(opacity=70);
-	z-index:1;
-	display:none;
-}
-
-
-/* Form untuk upload */
-
-#fgFrm01, #fgFrm02, #fgFrm03, #fgFrm04, #fgFrm05 {
+/* Style form pop up */
+#fgChgPass, #fgUpload, #fgFrm01, #fgFrm02, #fgFrm03, #fgFrm04, #fgFrm05 {
 	width: 450px;
-  	position: absolute;
+  	position: fixed;
 	top: 0;
 	padding:0;
   	z-index:2;
@@ -62,51 +12,77 @@
   	-moz-box-shadow: 1px 2px 4px rgba(0, 0, 0,0.5);
     -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
     box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+    font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
+	font-size: 10pt;
 }
-#fgHeader
-{
+#fgHeader {
 	display: inline-block;
 	width: 100%;
 	padding: 5px;
 	color: white;
-	/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#499bea+0,207ce5+100;Blue+3d+%237 */
-	background: rgb(181,189,200); /* Old browsers */
-	background: -moz-linear-gradient(-45deg,  rgba(181,189,200,1) 0%, rgba(130,140,149,1) 36%, rgba(40,52,59,1) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(-45deg,  rgba(181,189,200,1) 0%,rgba(130,140,149,1) 36%,rgba(40,52,59,1) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(135deg,  rgba(181,189,200,1) 0%,rgba(130,140,149,1) 36%,rgba(40,52,59,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b5bdc8', endColorstr='#28343b',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+	/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#28343b+0,828c95+64,b5bdc8+100 */
+	background: rgb(40,52,59); /* Old browsers */
+	background: -moz-linear-gradient(left,  rgba(40,52,59,1) 0%, rgba(130,140,149,1) 64%, rgba(181,189,200,1) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(left,  rgba(40,52,59,1) 0%,rgba(130,140,149,1) 64%,rgba(181,189,200,1) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to right,  rgba(40,52,59,1) 0%,rgba(130,140,149,1) 64%,rgba(181,189,200,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#28343b', endColorstr='#b5bdc8',GradientType=1 ); /* IE6-9 */
 }
-#frmInner {	margin: 40px 20px; }
-#bgFrm01, #bgFrm02, #bgFrm03, #bgFrm04, #bgFrm05 {
+#frmInner {	
+	margin: 20px 5px;
+	width: 390px;
+}
+#bgChgPass, #bgUpload, #bgFrm01, #bgFrm02, #bgFrm03, #bgFrm04, #bgFrm05 {
 	position: fixed;
-  	background: gray;
+  	background: white;
   	top:0;
   	left:0;
   	bottom:0;
   	right:0;
-  	opacity: .8;
-  	-moz-opacity: .8;
+  	opacity: .9;
+  	-moz-opacity: .6;
   	filter: alpha(opacity=70);
   	z-index:1;
   	display:none;
 }
+
+
+/* Style input, combo, button dalam form pop up */
 .dt-form-group {
-	display: inline-block;
-	width: 100%;
-	margin-bottom: 15px;
+	display: block;
+	margin-bottom: 10px;
 }
-.dt-form-group input[type="text"] {
+.dt-form-group input[type="password"], .dt-form-group input[type="text"], .dt-form-group input[type="float"], .dt-form-group input[type="number"], .dt-form-group textarea, .dt-form-group select, .dt-form-group input[type="email"], .dt-form-group input[type="phone"] {
 	border: 1px solid #D8D9DC;
 	padding: 3px;
+	width: 240px;
 }
-.dt-form-group textarea {
+.dt-form-group input.sm {
 	border: 1px solid #D8D9DC;
 	padding: 3px;
-	width: 200px;
+	width: 118px;
 }
+.dt-form-group input[readonly].tanggal { background: white; }
 .dt-form-group input[readonly] { 
 	cursor: default;
 	background-color: #D8D9DC; 
 }
-.dt-form-group label { width: 30%; vertical-align: top; }
+.dt-form-group span { 
+	display: inline-block; 
+	width: 120px; 
+	vertical-align: top; 
+}
 .dt-form-group [type="file"] { display: inline-block; }
+.dt-form-button {
+	margin-top: 20px;
+	margin-right: 15px;
+	padding-top: 20px;
+	border-top: 1px solid #d8d9dc;
+}
+.dt-form-button button {
+	border: none;
+	background-color: #1ba1e2;
+	width: 70px;
+	padding: 5px;
+	color: white;
+}
+.dt-form-button button:hover { opacity: 0.5; }

@@ -41,7 +41,7 @@ date_default_timezone_set("Asia/Jakarta");
   <body>
     <?php 
         if(isset($navtop)) require($navtop);
-        echo '<div class="container-fluid">';
+        echo '<div class="container-fluid" style="margin-top:100px">';
         include($content);
         echo '</div>';
         if(isset($footer)) require($footer); 

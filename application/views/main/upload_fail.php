@@ -1,5 +1,5 @@
 <?php
-$username=$_SESSION[APP_NAME]["username"];
+$username=User::$username;
 
 // $upload_dir = "application/views/main/capture/";
 // echo $img = $_POST['hidden_data'];                 

@@ -1,0 +1,28 @@
+.component { line-height: 2.2em; }
+
+/* For appearance */
+.sticky-wrap {
+	overflow-x: auto;
+	overflow-y: hidden;
+	position: relative;
+}
+.sticky-wrap .sticky-thead,
+.sticky-wrap .sticky-col,
+.sticky-wrap .sticky-intersect {
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	transition: all .125s ease-in-out;
+	z-index: 50;
+	font-size: 11px;
+}
+	.sticky-wrap .sticky-thead {
+		z-index: 100;		
+	}
+	.sticky-wrap .sticky-intersect {
+		opacity: 1;
+		z-index: 150;
+	}
+.sticky-wrap .sticky-thead thead { background-color: #1BA1E2; color: #fff; }
+.sticky-wrap .sticky-thead thead th { padding: 5px; }

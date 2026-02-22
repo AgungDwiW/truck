@@ -1,257 +1,129 @@
-
-<!-- <div class="body-wrap-with-navbar"> -->
-<!-- <link rel="stylesheet" href="static/css/kotak.css"> -->
-
-</br>
-</br>
-</br>
-
-
-<!-- <div class="kotak_sq">
-      <a class="btn btn-primary tombol_safety" href="main?action=pilih_gate">FG Truck</a>
-      </br>
-      </br>
-      <a class="btn btn-primary tombol_quality" href="main?action=pilih_gate">Material Truck</a>
-      </br>
-      <!-- <center>
-        <a class="link" href="index.php">BACK</a>
-      </center>
-</div> -->
-
 <?php
-$username=$_SESSION[APP_NAME]["username"];
-
-$sql_username = mysqli_query($con,"  SELECT * from tbm_user where nama='$username' ");
-
-
-          while($rowuser = mysqli_fetch_assoc($sql_username)){
-          $plant_name=$rowuser["plant_name"];
-          $plant_id=$rowuser["plant_id"];
-
-          }
-
-?>         
-
-
-  
-<h1><label style="font-size: 20px">Driver & Helper sudah Register..???</label></h1>
-
-<div class="kotak_sq" style="margin-top: 5px;">    
-
-
-<form method="post" action="main?action=start">
- 		<input type="text" name="muat" value="<?php echo $muat; ?>" hidden></input>
-		<button type="submit" class="tombol_hijau">Sudah</button>
-</form>	
-
-</br>
-</br>
-
-<form method="post" action="main?action=pilih_driver">
- 		<input type="text" name="muat" value="<?php echo $muat; ?>" hidden></input>
-    <input type="text" name="plant_name" value="<?php echo $plant_name; ?>" hidden></input>
-    <input type="text" name="plant_id" value="<?php echo $plant_id; ?>" hidden></input>
-		<button type="submit" class="tombol_merah">Belum</button>
-</form>	
-
-
-
-
-
-
-</div>
-
-
-</body>
-</html>
-
+// Retrieve User data
+$username   = User::$username;
+$plant_name = User::$plant_name;
+$plant_id   = User::$plantid;
+?>
 
 <style type="text/css">
+  body {
+    font-family: sans-serif;
+    background-color: black;
+  }
+  
+  h1 {
+    text-align: center;
+    font-weight: 300;
+    color: white;
+  }
 
-body{
-  font-family: sans-serif;
-  /*background: #ebf9fb;*/
-  background-color: black;
-}
+  h1 label {
+    font-size: 20px;
+    cursor: default;
+  }
 
-h1{
-  text-align: center;
-  /*ketebalan font*/
-  padding-top: 0px;
-  font-weight: 300;
-  color: white;
-}
+  .kotak_sq {
+    width: 250px;
+    background: blue;
+    margin: 50px auto; /* Adjusted margin to fit all steps smoothly */
+    padding: 50px 20px;
+    box-shadow: 0px 0px 100px 4px #d6d6d6;
+    border-radius: 5px;
+  }
 
-.tulisan_login{
-  text-align: center;
-  /*membuat semua huruf menjadi kapital*/
-  text-transform: uppercase;
-  color: white;
-  font-size: 15pt;
-}
+  .btn {
+    font-size: 20pt;
+    width: 100%;
+    border: none;
+    border-radius: 3px;
+    padding: 20px 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: block;
+    box-sizing: border-box;
+  }
 
-.kotak_login{
-  width: 250px;
-  background: red;
-  /*meletakkan form ke tengah*/
-  margin: 10px auto;
-  padding: 30px 20px;
-  box-shadow: 0px 0px 100px 4px #d6d6d6;
-}
+  /* Specific Button Colors */
+  .tombol_hijau   { background: green; color: white; }
+  .tombol_merah   { background: red; color: white; margin-bottom: 0; }
+  .tombol_safety  { background: red; color: white; } /* FG Truck */
+  .tombol_quality { background: orange; color: white; margin-bottom: 0; } /* Material Truck */
+  .tombol_gate1   { background: black; color: white; border: 1px solid #333; }
+  .tombol_gate2   { background: yellow; color: black; margin-bottom: 0; }
 
-.kotak_sq{
-  width: 250px;
-  background: blue;
-  /*meletakkan form ke tengah*/
-  margin: 100px auto;
-  padding: 50px 20px;
-  box-shadow: 0px 0px 100px 4px #d6d6d6;
-}
+  /* JavaScript Step Handling Classes */
+  .step-container { display: none; }
+  .active-step    { display: block; animation: fadeIn 0.3s; }
 
-
-
-
-
-label{
-  font-size: 11pt;
-  color: white;
-}
-
-.form_login{
-  /*membuat lebar form penuh*/
-  box-sizing : border-box;
-  width: 100%;
-  padding: 10px;
-  font-size: 11pt;
-  margin-bottom: 20px;
-}
-
-.tombol_safety{
-  background: red;
-  color: white;
-  font-size: 20pt;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 3px;
-  padding: 20px 20px;
-}
-
-.tombol_quality{
-  background: orange;
-  color: white;
-  font-size: 20pt;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 3px;
-  padding: 20px 20px;
-}
-
-.tombol_gate1{
-  background: black;
-  color: white;
-  font-size: 20pt;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 3px;
-  padding: 20px 20px;
-}
-
-.tombol_gate2{
-  background: yellow;
-  color: black;
-  font-size: 20pt;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 3px;
-  padding: 20px 20px;
-}
-
-
-
-
-.link{
-  color: white;
-  text-decoration: none;
-  font-size: 20pt;
-}
-
-.alert{
-  background: #e44e4e;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  border:1px solid #b32929;
-}  
-
-.tombol_hijau{
-  background: green;
-  color: white;
-  font-size: 20pt;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 3px;
-  padding: 20px 20px;
-}
-
-.tombol_yellow{
-  background: yellow;
-  color: black;
-  font-size: 20pt;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 3px;
-  padding: 20px 20px;
-}
-
-.tombol_merah{
-  background: red;
-  color: white;
-  font-size: 20pt;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 3px;
-  padding: 20px 20px;
-}
-
-.tombol_except{
-  background: purple;
-  color: white;
-  font-size: 20pt;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 3px;
-  padding: 20px 20px;
-}
-
-.tombol_no{
-  background: white;
-  color: black;
-  font-size: 20pt;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 3px;
-  padding: 20px 20px;
-}
-
-.tombol_submit{
-  background: black;
-  color: white;
-  font-size: 20pt;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 3px;
-  padding: 20px 20px;
-}
-
-
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 </style>
+
+<div id="step1" class="step-container active-step">
+  <h1><label>Driver & Helper sudah Register..???</label></h1>
+  <div class="kotak_sq">    
+    <button type="button" class="btn tombol_hijau" onclick="goToStep(2)">Sudah</button>
+
+    <form method="post" action="main?action=pilih_driver" style="margin: 0;">
+      <input type="hidden" name="muat" value="">
+      <input type="hidden" name="plant_name" value="<?php echo $plant_name; ?>">
+      <input type="hidden" name="plant_id" value="<?php echo $plant_id; ?>">
+      <button type="submit" class="btn tombol_merah">Belum</button>
+    </form>	
+  </div>
+</div>
+
+<div id="step2" class="step-container">
+  <h1><label>Pilih Jenis Muatan</label></h1>
+  <div class="kotak_sq">    
+    <button type="button" class="btn tombol_safety" onclick="selectTruck('FG')">FG Truck</button>
+    <button type="button" class="btn tombol_quality" onclick="selectTruck('Material')">Material Truck</button>
+  </div>
+</div>
+
+<div id="step3" class="step-container">
+  <h1><label>Pilih Gate</label></h1>
+  <div class="kotak_sq">
+    <form id="formGate1" method="post" action="" style="margin: 0;">
+      <input type="hidden" name="muat" id="muatGate1" value="">
+      <button type="submit" class="btn tombol_gate1">GATE 1</button>
+    </form>	
+    
+    <br>
+
+    <form method="post" action="main?action=db_waiting" style="margin: 0;">
+      <input type="hidden" name="muat" id="muatGate2" value="">
+      <button type="submit" class="btn tombol_gate2">GATE 2</button>
+    </form>	
+  </div>
+</div>
+
+<script>
+  // Function to switch between UI steps
+  function goToStep(stepNumber) {
+    document.querySelectorAll('.step-container').forEach(function(el) {
+      el.classList.remove('active-step');
+    });
+    document.getElementById('step' + stepNumber).classList.add('active-step');
+  }
+
+  // Function to capture truck type and prepare the Gate forms
+  function selectTruck(truckType) {
+    // Inject the selected truck type into the hidden inputs for the final submit
+    document.getElementById('muatGate1').value = truckType;
+    document.getElementById('muatGate2').value = truckType;
+
+    // Dynamically set the Gate 1 URL based on the PHP logic requirement
+    var formGate1 = document.getElementById('formGate1');
+    if (truckType === 'FG') {
+      formGate1.action = 'main?action=FG_cek_nopol';
+    } else {
+      formGate1.action = 'main?action=cek_nopol';
+    }
+
+    // Proceed to Step 3
+    goToStep(3);
+  }
+</script>

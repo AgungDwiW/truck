@@ -1,4 +1,4 @@
-<div class="body-wrap-with-navbar">
+
 <?php
 $utama=$_POST['utama'];
 $idref=$_POST['idref'];

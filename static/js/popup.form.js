@@ -1,26 +1,28 @@
 var _FG_tracker=null;
 
-function fg_popup_form(formdiv_id,container_id,bg_div_id)
+function fg_popup_form(formdiv_id,container_id,bg_div_id,val_top)
 {
     var bgdiv = document.getElementById(bg_div_id);
     bgdiv.style.display="block";
+    
 
     var formdiv = document.getElementById(formdiv_id);
     formdiv.style.display="block";
-
-    var pt = window.center({width:390,height:480});
+    width = $("#"+formdiv_id).width();
+    var pt = window.center({width:width,height:200});
 
     // formdiv.style.top = pt.y + "px";
-    formdiv.style.top = "200px";
-    formdiv.style.left = pt.x + "px";
-
-    /*formdiv.handlerobj = new FG_MoveablePopup(formdiv);
+    formdiv.style.top = val_top+"px";
+    formdiv.style.left= pt.x + "px";
+    console.log(pt.x);
+    console.log(width);
+    formdiv.handlerobj = new FG_MoveablePopup(formdiv);
     
     var containerdiv = document.getElementById(container_id);
     if(containerdiv && containerdiv.SavedInnerHTML)
     {
         containerdiv.innerHTML = containerdiv.SavedInnerHTML;
-    }*/
+    }
 }
 
 function fg_hideform(formdiv_id,bg_div_id)
@@ -36,7 +38,7 @@ function fg_hideform(formdiv_id,bg_div_id)
 function FG_MoveablePopup(div_obj)
 {
     var _div_obj = div_obj;
-    //div_obj.handlerobj = this;
+    // div_obj.handlerobj = this;
 
     var downposX = 0;
     var downposY = 0;

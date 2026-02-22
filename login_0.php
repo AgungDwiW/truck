@@ -20,7 +20,7 @@ if(isset($_POST["username"]) AND isset($_POST["password"])){
 	if($json) {
 		session_start();
 		$_SESSION[APP_NAME]["name"]	   =$row["name"];
-		$_SESSION[APP_NAME]["username"]=$row["username"];
+		User::$username=$row["username"];
 		$_SESSION[APP_NAME]["plant"]   =$row["plant"];
 		$_SESSION[APP_NAME]["region"]  =$row["region"];
 		$_SESSION[APP_NAME]["line"]    =$row["line"];

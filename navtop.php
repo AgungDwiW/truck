@@ -36,23 +36,10 @@
             </li>
 			<li class="nav-item">
                     <a class="nav-link" href="main?action=cek_kpi">Cek KPI<span class="sr-only">(current)</span></a>
-            </li>
-
-            <?php
-            $userin= $_SESSION[APP_NAME]["username"];
-            if ($userin=='Afandiac') {
-            ?>
-
-            <li class="nav-item">
-                    <a class="nav-link" href="main?action=reg_user">Register<span class="sr-only">(current)</span></a>
-            </li>
-
-            <?php } ?>
-
-                 
+            </li>     
 		</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user"></i> <?php echo $_SESSION[APP_NAME]["username"]; ?> <span class="caret"></span></a>
+				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user"></i> <?php echo User::$username; ?> <span class="caret"></span></a>
 				  	<ul class="dropdown-menu">
 						<li><a href="auth?action=signout">Sign out</a></li>
 					</ul>

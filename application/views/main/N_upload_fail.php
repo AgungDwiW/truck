@@ -1,6 +1,6 @@
 <?php
 
-$user 					=$_SESSION[APP_NAME]["username"];
+$user 					=User::$username;
 $sukses=0;
 $temuan          		= (isset($_POST['tem'])? $_POST['tem'] : '');
 

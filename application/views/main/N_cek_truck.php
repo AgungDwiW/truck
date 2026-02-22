@@ -1,4 +1,4 @@
-<div class="body-wrap-with-navbar">
+
 
 <?php
 $kode_kirim=$_POST['kode_kirim'];
@@ -25,7 +25,7 @@ function printpre($str, $fl = -1){
 // printpre($_SESSION,1);
 // exit();
 // include_once "/concloud.php";
-if ($_SESSION[APP_NAME]["username"] == 'Latihan Wonosobo 1'){
+if (User::$username == 'Latihan Wonosobo 1'){
     $debug = 1;
 }
 // ===============================================================================================================
@@ -112,7 +112,7 @@ foreach($item_cloud as $key => $row_cloud){
         
     }
 }
-if ($_SESSION[APP_NAME]["username"] == 'Latihan Wonosobo 1'){
+if (User::$username == 'Latihan Wonosobo 1'){
     exit();
 }
 // ===============================================================================================================
@@ -159,7 +159,7 @@ $jam=date("H:i:s");
 
 $idref=time();
 $seq=1;
-$username=$_SESSION[APP_NAME]["username"];
+$username=User::$username;
 
 
 if ($count_nopol<>0) {
@@ -230,7 +230,7 @@ mysqli_query($con, $query);
   </br>
   <div class="col">
       <label>Petugas Pemeriksa</label>
-      <input type="text" class="form-control" id="petugas" name="petugas" value="<?php echo $_SESSION[APP_NAME]["username"]; ?>" readonly>
+      <input type="text" class="form-control" id="petugas" name="petugas" value="<?php echo User::$username; ?>" readonly>
   </div>
   </br>
   <div class="col">

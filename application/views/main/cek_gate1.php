@@ -1,4 +1,25 @@
-<div class="body-wrap-with-navbar">
+<?php
+include_once "application/config/connection.php";
+function get_date(){
+                echo date("d-m-Y");
+            }
+
+function get_jam(){
+                echo date("H:i:s");
+            }
+
+
+$idref=mktime();
+$seq=1;
+$username=User::$username;
+$query="INSERT INTO tb_ceklist SET seq='$seq', idref='$idref', petugas_pemeriksa='$username'";
+
+mysqli_query($con, $query);
+
+//print_r($_SESSION);
+//exit;
+?>
+
 
 
 <style type="text/css">
@@ -23,27 +44,6 @@ body {
     filter: alpha(opacity=0);
 }
 </style>
-
-<?php
-function get_date(){
-                echo date("d-m-Y");
-            }
-
-function get_jam(){
-                echo date("H:i:s");
-            }
-
-
-$idref=mktime();
-$seq=1;
-$username=$_SESSION[APP_NAME]["username"];
-$query="INSERT INTO tb_ceklist SET seq='$seq', idref='$idref', petugas_pemeriksa='$username'";
-
-mysqli_query($con, $query);
-
-//print_r($_SESSION);
-//exit;
-?>
 
 <div class='container'>
 <form method="post" action="main?action=gate1">
@@ -102,7 +102,7 @@ mysqli_query($con, $query);
   </br>
   <div class="col">
       <label>Petugas Pemeriksa</label>
-      <input type="text" class="form-control" id="petugas" name="petugas" value="<?php echo $_SESSION[APP_NAME]["username"]; ?>" readonly>
+      <input type="text" class="form-control" id="petugas" name="petugas" value="<?php echo User::$username; ?>" readonly>
   </div>
   </br>
   <div class="col">

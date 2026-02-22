@@ -1,9 +1,9 @@
-<div class="body-wrap-with-navbar">
+
 <link rel="stylesheet" href="static/css/kotak.css">
 
 <?php
 
-$user=$_SESSION[APP_NAME]["username"];
+$user=User::$username;
 
 
 $sql_user=mysqli_query($con, "SELECT * from tbm_user where nama='$user' " );

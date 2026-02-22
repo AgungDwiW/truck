@@ -15,7 +15,7 @@ if ($con->connect_error) {
 }
 
 // Ambil username dari session
-$username = $_SESSION[APP_NAME]["username"] ?? '';
+$username = User::$username ?? '';
 
 // Ambil data user
 $plant_id = '';

@@ -1,0 +1,329 @@
+/*----------------------------------------
+ * Auth 	: dyah pp wardhana, damarteduh(c)2019
+ * Project 	: SCDIGI 2.0
+ * Create 	: 2019-08-18 05:21 AM
+ *     20200427 Home, Rework ke template BARU - DWR
+ */
+
+/* Custome Navigasi top */
+.navbar-header > .logo {
+   max-height: 100%;
+   margin: 0 auto;
+   -o-object-fit: contain;
+   object-fit: contain; 
+   display: inline-block;
+   padding: 12px 0px;
+}
+
+#custom-bootstrap-menu.navbar-default .navbar-brand { color: white; }
+#custom-bootstrap-menu.navbar-default {
+    color: white;
+    font-size: 14px;
+    /*background-color: #32464c;*/
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#1e5799+0,2989d8+36,2989d8+75,2989d8+75,207cca+100,7db9e8+100 */
+    background: #1e5799; /* Old browsers */
+    background: -moz-linear-gradient(left,  #1e5799 0%, #2989d8 36%, #2989d8 75%, #2989d8 75%, #207cca 100%, #7db9e8 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(left,  #1e5799 0%,#2989d8 36%,#2989d8 75%,#2989d8 75%,#207cca 100%,#7db9e8 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right,  #1e5799 0%,#2989d8 36%,#2989d8 75%,#2989d8 75%,#207cca 100%,#7db9e8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#7db9e8',GradientType=1 ); /* IE6-9 */
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+    color: white;
+    background-color: rgba(248, 248, 248, 0);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: white;
+    background-color: rgba(248, 248, 248, 0);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: white;
+    background-color: #292a2b;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle { color: white; }
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus { color: white; }
+#custom-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
+    color: white;
+	background-color: white;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
+    color: white;
+    background-color: #040457;
+}
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:focus, 
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover { color: white; }
+.dropdown-menu { color: white; }
+.thumbnail:hover {
+    background-color: white;
+    opacity: .5;
+}
+div.thumbnail  a { text-decoration: none; }
+
+/* Form pop up & other form */
+ul#form-control { 
+	font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
+	list-style: none;
+	margin: 0;
+	text-align: left;
+  font-size: 12px;
+}
+ul#form-control li { margin: 5px 0; }
+ul#form-control li span { 
+  vertical-align: top;
+	display: inline-block;
+	width: 120px;
+}
+ul#form-control li input, ul#form-control li select, ul#form-control li textarea {
+  border: 1px solid #dce3e8;
+  width: 220px;
+  padding: 3px;
+  vertical-align: top;
+}
+ul#form-control li input, ul#form-control li select { height: 25px; }
+ul#form-control li input.sm , ul#form-control li select.sm { width: 109px; }
+ul#form-control li input[readonly] { 
+	background-color: #EBEBE4; 
+	/*color: white;*/
+}
+
+/*input[readonly], select[readonly]{ pointer-events: none; }*/
+
+/* Table */
+table.table-control {
+	font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
+	font-size: 9pt;
+	width: 100%;
+	text-align: left;
+	margin: 20px 0;
+}
+table.table-control thead { background-color: #1BA1E2; color: #fff; }
+table.table-control caption { font-size: 16px; }
+table.table-control tr th, table.table-control tr td { padding: 5px; }
+table.table-control tbody tr:hover { background-color: #f7f7f9 }
+table.table-control tbody tr.odd td { background-color:#F0F0F6; }
+table.table-control tbody tr td button { 
+	border: none; 
+	background-color: transparent;
+}
+table.table-control tbody tr td button.edit::before {
+  font-family: FontAwesome;
+  content: "\f040";
+  color: #36A7FE;
+}
+table.table-control tbody tr td button.hapus::before {
+  font-family: FontAwesome;
+  content: "\f014";
+  color: red;
+}
+table.table-control tbody tr td button.print::before {
+  font-family: FontAwesome;
+  content: "\f02f";
+  color: #36A7FE;
+}
+table.table-control tbody tr td button.approve::before {
+  font-family: FontAwesome;
+  content: "\f00c";
+  color: #36A7FE;
+}
+table.table-control tbody tr td button.reset {
+  border: 1px solid red;
+  background: red;
+  color: white;
+  display: block;
+  text-decoration: none;
+  height: 20px;
+  text-align: center;
+  vertical-align: top;
+}
+table.table-control tbody tr td button.reset:hover { opacity: 0.5; }
+
+table.table-info {
+  font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
+  font-size: 10pt;
+  width: 100%;
+}
+table.table-info tr td {
+  padding: 3px;
+  border-bottom: 1px dotted gray;
+}
+table.table-info tr td.MERAH {
+  color: red;
+}
+table.table-info tr td input, table.table-info tr td select {
+  border: 1px solid #dce3e8;
+  width: 120px
+}
+/* Content Wrapper */
+div.body-wrap-with-navbar { padding-top: 65px; margin-bottom: 30px; }
+div.body-wrap-without-navbar { padding-top: 20px; }
+
+/* ------------------- Custome Footer --------------------- */
+.dt-footer {
+  font-size:10px;
+  color:gray;
+  position:fixed;
+  right:0;
+  bottom:0;
+  left:0;
+  padding:0.5rem;
+  background-color: #efefef;
+  text-align:right;
+}
+
+
+/* Icons */
+.cpanel::before {
+  font-family: ElegantIcons;
+  content: "\e037";
+}
+.sparepart::before {
+  font-family: FontAwesome;
+  content: "\f07a";
+}
+.request::before {
+  font-family: FontAwesome;
+  content: "\f02c";
+}
+.main::before {
+  font-family: FontAwesome;
+  content: "\f015";
+}
+.project::before {
+  font-family: FontAwesome;
+  content: "\f08d";
+}
+.workorder::before {
+  font-family: ElegantIcons;
+  content: "\69";
+}
+.asset::before {
+  font-family: FontAwesome;
+  content: "\f029";
+}
+.plan::before {
+  font-family: FontAwesome;
+  content: "\f073";
+}
+.policy::before {
+  font-family: FontAwesome;
+  content: "\f073";
+}
+.openmenu::before {
+  font-family: FontAwesome;
+  content: "\f054";
+  color: yellow;
+}
+.exit::before {
+  font-family: FontAwesome;
+  content: "\f00d";
+  color: red;
+}
+.report::before {
+  font-family: FontAwesome;
+  content: "\f080";
+}
+/* DWR Icons */
+.location::before {
+  font-family: ElegantIcons;
+  content: "\e081";
+}
+.capacity::before {
+  /*font-family: ElegantIcons;
+  content: "\e0e1";*/
+  font-family: FontAwesome;
+  content: "\f299";
+}
+.sipa::before {
+  font-family: ElegantIcons;
+  content: "\e063";
+}
+.input::before {
+  font-family: FontAwesome;
+  content: "\f11c";
+}
+.maintenance::before {
+  font-family: ElegantIcons;
+  content: "\e036";
+}
+.quality::before {
+  font-family: ElegantIcons;
+  content: "\e0f7";
+}
+.email::before {
+  font-family: FontAwesome;
+  content: "\f0e0";  
+}
+.new::before {
+  font-family: FontAwesome;
+  content: "\f016";
+}
+.find::before {
+  font-family: FontAwesome;
+  content: "\f002";
+}
+.edit::before {
+  font-family: FontAwesome;
+  content: "\f040";
+}
+.save::before {
+  font-family: FontAwesome;
+  content: "\f0c7";
+}
+.refresh::before {
+  font-family: FontAwesome;
+  content: "\f021";
+}
+.delete::before {
+  font-family: FontAwesome;
+  content: "\f014";
+}
+.archive::before {
+  font-family: FontAwesome;
+  content: "\f1c6";
+}
+.closed::before {
+  font-family: FontAwesome;
+  content: "\f00d";
+}
+.print::before {
+  font-family: FontAwesome;
+  content: "\f02f";
+}
+
+/* Red and Green */
+.MERAH { background: red; color: white; }
+.HIJAU { background: green; color: white; }
+.KUNING { background: yellow; color: black; }
+
+/* Tab Menu */
+ul.tab { 
+    margin: 0px; 
+    padding: 0px; 
+    border-bottom: 0.5px solid #D8DCFB;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+ul.tab > li { display: inline-block; }
+ul.tab > li.judul { display: inline-block; width: 350px; }
+ul.tab > li.tab-menu > button, ul.tab > li.tab-menu > a { 
+    font-size: 12px;
+    background: #111;
+    margin: 0px;
+    border: none;
+    padding: 3px 0px;
+    color: white;
+    width: 90px;
+}
+ul.tab > li.tab-menu > a { 
+    display: inline-block;
+    text-decoration: none; 
+    text-align: center;
+}
+ul.tab > li.tab-menu > button:hover, ul.tab > li.tab-menu > a:hover { opacity: 0.7 }
+ul.tab > li.tab-menu > button.active, ul.tab > li.tab-menu > a.active { background:red; color: white; }
+ul.tab > li.tab-menu > button:disabled, ul.tab > li.tab-menu > a:disabled { display: none; } 

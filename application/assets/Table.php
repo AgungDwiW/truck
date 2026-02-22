@@ -1,8 +1,6 @@
 <?php
 
-include_once "concloud.php";
-include_once "application/assets/utility_function_withoutJS.php";
-include_once "application/assets/Cache.php";
+include_once "application/config/connectioncloud.php";
 
 $debug 				= 0;
 $table_by_supplier 	= [];

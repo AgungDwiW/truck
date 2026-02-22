@@ -1,0 +1,1 @@
+{"typeList":{"names":["string","*"]},"children":[{"name":"main","fullname":"chart.parallelAxes.dateTimeLabelFormats.day.main","isLeaf":true,"default":"%e. %b","typeMap":{"string":1},"typeList":{"names":["string"]},"since":"6.0.0","filename":"js/parts/Axis.js","line":718,"lineEnd":718,"version":"389f42b22"}]}

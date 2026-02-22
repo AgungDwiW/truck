@@ -1,33 +1,22 @@
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<div class="body-wrap-with-navbar">
-<br>
-<br>
-<br>
 <?php
+include_once "application/config/connection.php";
+include_once "application/config/connection140.php";
 $muat = @$_POST['muat'];
+$username   = User::$username;
+$plant_name = User::$plant_name;
+$plant_id   = User::$plantid;
 
-$username=$_SESSION[APP_NAME]["username"];
-
-$sql_username = mysqli_query($con,"  SELECT * from tbm_user where nama='$username' ");
-
-
-          while($rowuser = mysqli_fetch_assoc($sql_username)){
-          $plant_name=$rowuser["plant_name"];
-          $plant_id=$rowuser["plant_id"];
-
-          }
-
-
-
- if ($plant_id=='90A8') {$link='FG_cek_truck';}
- if ($plant_id<>'90A8') {$link='FG_cek_truck_rev';}
+if ($plant_id=='90A8') {$link='FG_cek_truck';}
+if ($plant_id<>'90A8') {$link='FG_cek_truck_rev';}
 
 
 
 ?>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 
 

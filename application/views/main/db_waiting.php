@@ -1,7 +1,9 @@
-<div class="body-wrap-with-navbar">
+
 <?php
+  include_once "application/config/connectionSL.php";
+  include_once "application/config/connectionEvisitor.php";
     $muat = @$_POST['muat'];
-    $PLANT = $_SESSION[APP_NAME]['plant_id'];
+    $PLANT = User::$plantid;
     $MUATAN = $muat=='FG'?"FG":"Material";
     $TGLTRUCK = date('Y-m-d', strtotime(date('Y-m-d') .' -2 day'));
     $TGLEVISITOR = date('Y-m-d', strtotime(date('Y-m-d') .' -21 day'));
@@ -15,7 +17,10 @@
     overflow: auto;
     font-size: 13px;
   }
-  #demoA { width:100%; }
+  #demoA { 
+    width:100%; 
+    background-color: #566b91;
+  }
   #demoA th, #demoA td {
     width: 500px;
     font-size: 20px;
@@ -81,29 +86,24 @@
                     AND ck.plant_id = '{$PLANT}' 
                     AND muatan = '{$MUATAN}'
             ";
-    // echo "<pre>";
-    // print_r($str);
-    // echo "</pre>";
 
-    // echo $str;
-
-      $result = mysqli_query($conSL, $str);
+    $result = mysqli_query($conSL, $str);
     while ($data = mysqli_fetch_assoc($result)) {
       // echo "<pre>";
       // print_r($data);
       // echo "</pre>";
-      $str = "SELECT count(*) c FROM tbl_visit WHERE 
-            no_pol = '{$data['nopol']}' AND  
-            DATE(tanggal_datang) BETWEEN '{$TGLEVISITOR}' AND '{$now}'";
+      // $str = "SELECT count(*) c FROM tbl_visit WHERE 
+      //       no_pol = '{$data['nopol']}' AND  
+      //       DATE(tanggal_datang) BETWEEN '{$TGLEVISITOR}' AND '{$now}'";
       // echo "<pre>";
       // print_r($str);
       // echo "</pre>";
-      $result2 = mysqli_query($con_3, $str);
-      $count = mysqli_fetch_assoc($result2);
+      // $result2 = mysqli_query($con_3, $str);
+      // $count = mysqli_fetch_assoc($result2);
       // $count = 0;  
-      $BTN = "<a href='https://adop.danet/evisitor/tamu?ac=regtamu2'><span class='btn'>Input eVisitor</span></a>";
-      if(isset($count['c']) && $count['c'] >0) 
-        $BTN = "<button type='submit' class='btn btn-success' name='kode' value='".$data['no']."'>Lanjut Gate 2</button>";
+      // $BTN = "<a href='https://adop.danet/evisitor/tamu?ac=regtamu2'><span class='btn'>Input eVisitor</span></a>";
+      // if(isset($count['c']) && $count['c'] >0) 
+      $BTN = "<button type='submit' class='btn btn-success' name='kode' value='".$data['no']."'>Lanjut Gate 2</button>";
   ?>
       <tr>
         <td><?=$data['no']; ?></td>

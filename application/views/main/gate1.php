@@ -1,9 +1,9 @@
-<div class="body-wrap-with-navbar">
+
 
 <?php
 
 
-$username=$_SESSION[APP_NAME]["username"];
+$username=User::$username;
 $temp = mysqli_query($con,"SELECT idref, seq, nopol, petugas_pemeriksa, lokasi_pemeriksaan from tb_ceklist where petugas_pemeriksa='$username' order by tgbaca desc limit 1");
 while($rowtemp = mysqli_fetch_assoc($temp)){
 $idref=$rowtemp["idref"];

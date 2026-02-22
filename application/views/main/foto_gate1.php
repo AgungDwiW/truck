@@ -8,7 +8,7 @@ $lokasi=$_POST['lokasi'];
 
 
 
-$username=$_SESSION[APP_NAME]["username"];
+$username=User::$username;
 $data_utama = mysqli_query($con,"SELECT utama".$ccp.", seq_foto from tb_ceklist where idref='$idref'");
 while($row = mysqli_fetch_assoc($data_utama)){
 $utama=$row["utama".$ccp.""];

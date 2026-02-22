@@ -1,0 +1,55 @@
+/*
+Auth : DamarTeduh©2020, Hotel El Royal BWG 2020-03-03 23:23 PM
+Rev  : 
+*/
+
+#cmdSidenav { display: none; }
+.sidenav {
+    white-space: nowrap; 
+    height: 100%;
+    width: 35px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    margin-top: 50px;
+}
+.sidenav a {
+    text-decoration: none;
+    padding: 8px;
+    display: block;
+    transition: 0.3s;
+    border-bottom: solid 1px grey;
+}
+.sidenav a span { 
+  display: inline-block;
+  width: 30px;
+}
+.sidenav label.openmenu, .sidenav label.exit {
+  padding: 8px;
+  display: block;
+  border-bottom: solid 1px grey;
+  cursor: pointer;
+  margin:0;
+}
+.sidenav label.exit { text-align: right; }
+.sidenav a.disabled, .sidenav a:hover i {
+  color: grey;
+  cursor: default;
+  pointer-events: none;
+}
+.sidenav a.active { border-right: 4px solid red; }
+.sidenav a:hover, .offcanvas a:focus{ color: #f1f1f1; background: red;}
+
+#main {
+    transition: margin-left .5s;
+    margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) { 
+  .sidenav { display: none; }
+  #main { transition: margin-left .5s; margin-left: 10px; }
+}

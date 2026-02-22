@@ -1,419 +1,192 @@
 <div class="body-wrap-with-navbar">
 
 <?php
-// $nopol=$_POST['nopol'];
-$muat = $_POST['muat'];
-$nopol = str_replace(' ', '', $_POST['nopol'])  ;
-$username=$_SESSION[APP_NAME]["username"];
-$id_shipment=$_POST['id_shipment'];
+/** * 1. INITIALIZATION & DATA FETCHING 
+ */
+$muat        = $_POST['muat'] ?? '';
+$nopol       = str_replace(' ', '', $_POST['nopol'] ?? '');
+$id_shipment = $_POST['id_shipment'] ?? '';
+$username    = User::$username;
+$plant_name  = User::$plant_name;
+$plant_id    = User::$plantid;
 
+$nama_sopir = 'Trial Driver';
+$seq_visitor = 'seq_trial';
+$id_barang  = 'Muat Trial';
 
-$date=date("Y-m-d");
-
-$sql_username = mysqli_query($con,"  SELECT * from tbm_user where nama='$username' ");
-
-
-          while($rowuser = mysqli_fetch_assoc($sql_username)){
-          $plant_name=$rowuser["plant_name"];
-          $plant_id=$rowuser["plant_id"];
-
-          }
-
-
-if ($id_shipment<>'trial') {
-                  
-
-$sql_nop=mysqli_query($con_3,"SELECT * from tbl_visit where no_pol='$nopol' order by tanggal_datang desc limit 1");
-
-$count_nopol=mysqli_num_rows($sql_nop); 
-if ($count_nopol==0) {echo "<script>window.alert('No Pol belum di input di e_Visitor...!!!');
-
-window.location='main?action=FG_cek_nopol';
-
-</script>";}
-
-foreach ($sql_nop as $row_nop){
-$nama_sopir=$row_nop['nama_visitor'];
-$seq_visitor=$row_nop['seq_visitor'];
-$id_barang=$row_nop['id_barang'];
-
-}
+// Fetch Driver Info if not trial
+if ($id_shipment !== 'trial') {
+    $sql_nop = mysqli_query($con_3, "SELECT * FROM tbl_visit WHERE no_pol='$nopol' ORDER BY tanggal_datang DESC LIMIT 1");
+    if (mysqli_num_rows($sql_nop) == 0) {
+        echo "<script>alert('No Pol belum di input di e_Visitor!'); window.location='main?action=FG_cek_nopol';</script>";
+        exit;
+    }
+    $row_nop    = mysqli_fetch_assoc($sql_nop);
+    $nama_sopir  = $row_nop['nama_visitor'];
+    $seq_visitor = $row_nop['seq_visitor'];
+    $id_barang   = $row_nop['id_barang'];
 }
 
-if ($id_shipment=='trial') {
-$nama_sopir='Trial Driver';
-$seq_visitor='seq_trial';
-$id_barang='Muat Trial';
-
+/** * 2. VALIDATION LOGIC (License & Age)
+ */
+if ($seq_visitor !== 'seq_trial') {
+    $row_visitor = mysqli_fetch_assoc(mysqli_query($con_3, "SELECT * FROM tbm_visitor WHERE seq='$seq_visitor'"));
+    $tgl_lahir   = $row_visitor['tanggal_lahir'];
+    $valid_sim   = $row_visitor['valid_id_date'];
+    $tipe_sim    = $row_visitor['tipe_id'];
+    $valid_ddt   = $row_visitor['valid_ddt_date'];
+} else {
+    $tgl_lahir = '1987-03-17'; $valid_sim = '2022-03-17'; $tipe_sim = 'SIM B2'; $valid_ddt = '2020-12-31';
 }
 
-
-
-
-      // if ($plant_id=='90A8') {
-
-
-      // $sql_shipment=mysqli_query($con_140,"SELECT * from tbl_otm_upload where shipment_id='$id_shipment' ");
-
-      // $count_shipment=mysqli_num_rows($sql_shipment); 
-      // if ($count_shipment==0) {echo "<script>window.alert('ID SHIPMENT Tidak Ditemukan...!!!');
-
-      // window.location='main?action=FG_cek_nopol';
-
-      // </script>";}
-
-      // }
-
-
-
-
-if ($seq_visitor<>'seq_trial') {
-
-
-$sql_seq_visitor=mysqli_query($con_3,"SELECT * from tbm_visitor where seq='$seq_visitor' ");
-foreach ($sql_seq_visitor as $row_visitor){
-$tgl_lahir=$row_visitor['tanggal_lahir'];
-$valid=$row_visitor['valid_id_date'];
-$tipe_sim=$row_visitor['tipe_id'];
-$valid_ddt=$row_visitor['valid_ddt_date'];
-
-}
-
-}
-
-if ($seq_visitor=='seq_trial') {
-$tgl_lahir='1987-03-17';
-$valid='2022-03-17';
-$tipe_sim='SIM B2';
-$valid_ddt='2020-12-31';
-
-
-}  
-
-
-
-
-
-
-
-$lahir= new DateTime($tgl_lahir);
-$val= new DateTime($valid);
-$val_ddt= new DateTime($valid_ddt);
-$today= new DateTime();
-
-$diff=$today -> diff($lahir);
-$umur= $diff -> y;
-
-
-
-$year_today= date("Y");
-$year_expired= date_format($val, 'Y');
-$year_diff=$year_expired-$year_today;
-
-$year_expired_ddt= date_format($val_ddt, 'Y');
-$year_diff_ddt=$year_expired_ddt-$year_today;
-
-
-
-
-
-$month_today= date("m");
-$month_expired= date_format($val, 'm');
-$month_diff=$month_expired-$month_today;
-
-$month_expired_ddt= date_format($val_ddt, 'm');
-$month_diff_ddt=$month_expired_ddt-$month_today;
-
-
-
-$day_today= date("d");
-$day_expired= date_format($val, 'd');
-$day_diff=$day_expired-$day_today;
-
-$day_expired_ddt= date_format($val_ddt, 'd');
-$day_diff_ddt=$day_expired_ddt-$day_today;
-
-
-
-
-
-
-$valid_date='SIM Masih Berlaku'; $color_expired='green';  $color_text_sim='white';
-$valid_date_ddt='ID DDT Masih Berlaku'; $color_expired_ddt='green';  $color_text_ddt='white';
-
-if ($year_diff<0) {$valid_date='SIM Sudah Kadaluwarsa'; $color_expired='red';  $color_text_sim='white';}
-
-
-if ($year_diff==0 and $month_diff<0) {$valid_date='SIM Sudah Kadaluwarsa'; $color_expired='red';  $color_text_sim='white';}
-if ($year_diff==0 and $month_diff==0 and $day_diff<0 ) {$valid_date='SIM Sudah Kadaluwarsa'; $color_expired='red';  $color_text_sim='white';}
-
-
-if ($year_diff_ddt<0) {$valid_date_ddt='ID DDT Sudah Kadaluwarsa'; $color_expired_ddt='red';  $color_text_ddt='white';}
-if ($year_diff_ddt==0 and $month_diff_ddt<0) {$valid_date_ddt='ID DDT Sudah Kadaluwarsa'; $color_expired_ddt='red';  $color_text_ddt='white';}
-if ($year_diff_ddt==0 and $month_diff_ddt==0 and $day_diff_ddt<0 ) {$valid_date_ddt='ID DDT Sudah Kadaluwarsa'; $color_expired_ddt='red';  $color_text_ddt='white';}
-
-
-
-
-
-//$valid_date=$valid_date.' '.'('.$valid.')';
-
-$status_sim=$valid_date;
-$status_ddt=$valid_date_ddt;
-
-$valid_date=$valid_date.' '.'||'.' '.'Expired Date :'.' '.$valid;
-$valid_date_ddt=$valid_date_ddt.' '.'||'.' '.'Expired Date :'.' '.$valid_ddt;
-
-
-
-
-
-
-
-if ($umur<=55) {$color_usia='green'; $color_text='white'; $status_usia='Low Risk';}
-if ($umur>55 and $umur <=60) {$color_usia='yellow';$color_text='black'; $status_usia='Medium Risk';}
-if ($umur>60) {$color_usia='red'; $color_text='black'; $status_usia='High Risk';}
-
-
-// if ($umur<17) {echo "<script>window.alert('Tanggal Lahir Sopir di e_Visitor Salah...!!!');
-
-// window.location='main?action=FG_cek_nopol';
-
-// </script>";}
-
-
-         
-
-
-function get_date(){
-                echo date("Y-m-d");
-            }
-
-function get_jam(){
-                echo date("H:i:s");
-            }
-
-$jam=date("H:i:s");           
-
-
-$idref=mktime();
-$seq=1;
-
-//$query="INSERT INTO tb_ceklist SET seq='$seq', idref='$idref', petugas_pemeriksa='$username' , nopol='$nopol', nama_transporter='$supplier' , kode_transporter='$supplier_id', plant_id='$plant_id', plant_name='$plant_name', nama_sopir='$driver', tgl_pemeriksaan='$date', jam_pemeriksaan='$jam', lokasi_pemeriksaan='$plant_name', muatan='$muat' ";
-
-//mysqli_query($con, $query);
-
-//print_r($_SESSION);
-//exit;
+$dt_lahir   = new DateTime($tgl_lahir);
+$dt_sim     = new DateTime($valid_sim);
+$dt_ddt     = new DateTime($valid_ddt);
+$dt_today   = new DateTime();
+
+// Age Calculation
+$umur = $dt_today->diff($dt_lahir)->y;
+if ($umur <= 55) { $color_usia = 'green'; $status_usia = 'Low Risk'; $text_usia = 'white'; }
+elseif ($umur <= 60) { $color_usia = 'yellow'; $status_usia = 'Medium Risk'; $text_usia = 'black'; }
+else { $color_usia = 'red'; $status_usia = 'High Risk'; $text_usia = 'white'; }
+
+// SIM & DDT Expiry Check
+$is_sim_expired = $dt_today > $dt_sim;
+$is_ddt_expired = $dt_today > $dt_ddt;
+
+$status_sim = $is_sim_expired ? 'SIM Sudah Kadaluwarsa' : 'SIM Masih Berlaku';
+$color_sim  = $is_sim_expired ? 'red' : 'green';
+
+$status_ddt = $is_ddt_expired ? 'ID DDT Sudah Kadaluwarsa' : 'ID DDT Masih Berlaku';
+$color_ddt  = $is_ddt_expired ? 'red' : 'green';
+
+// Constants
+$current_date = date("Y-m-d");
+$current_time = date("H:i:s");
+$idref        = time(); 
+$seq          = 1;
 ?>
-
-<div class='container'>
-<form method="post" action="main?action=N_gate1">
-
-<div class="row justify-content-md-center">
-
-
-<div class="col">
-      <label>Nama Supplier</label>
-      <!-- <input type="text" class="form-control text-uppercase" id="supplier" name="supplier" required>  -->
-
-      <select class="form-control text-uppercase" id="supplier" name="supplier" required >
-      <option value=""></option>
-          
-<?php
-
-
-
-          
-          $name_transporter = mysqli_query($con, "SELECT nama_supplier FROM tbm_tempat_muat where id_tempat_muat='$plant_id' Group by nama_transporter   ");
-          $no=1;
-          foreach ($name_transporter as $row){
-          ?>
-           
-           <option value="<?php echo $row['nama_supplier'];?>"><?php echo $row['nama_supplier'];?></option>
-          <?php
-          $no++;
-          }
-
-
-
-?>
-
-       </select>
-
-  </div>
-  </br>
-
-
-
-  
-  <div class="col">
-      <label>Nama Transporter</label>
-      <!-- <input type="text" class="form-control text-uppercase" id="supplier" name="supplier" required>  -->
-
-      <select class="form-control text-uppercase" id="transporter" name="transporter" required >
-      <option value=""></option>
-          
-<?php
-if ($plant_id=='90A8') {
-
-
-          
-          $name_transporter = mysqli_query($con_140, "SELECT planned_transporter_name FROM tbl_otm_upload GROUP BY planned_transporter_name asc");
-          $no=1;
-          foreach ($name_transporter as $row){
-          ?>
-           <option value="<?php echo $row['planned_transporter_name'];?>"><?php echo $row['planned_transporter_name'];?></option>
-          <?php
-          $no++;
-          }
-          
-
-}
-
-
-if ($plant_id<>'90A8') {
-
-
-          
-          $name_transporter = mysqli_query($con, "SELECT nama_transporter FROM tbm_tempat_muat where id_tempat_muat='$plant_id' Group by nama_transporter   ");
-          $no=1;
-
-          foreach ($name_transporter as $row){
-          ?>
-           
-           <option value="<?php echo $row['nama_transporter'];?>"><?php echo $row['nama_transporter'];?></option>
-          <?php
-          $no++;
-          }
-
-}
-
-?>
-
-       </select>
-
-  </div>
-  </br>
-
-
-
-
-  <div class="col">
-        <label>No Polisi</label>
-        <input type="text" class="form-control text-uppercase" id="nopol" name="nopol" value="<?php echo $nopol; ?>" readonly >
-  </div>
-  </br>
-  <div class="col">
-        <label>Nama Sopir</label>
-        <input type="text" class="form-control text-uppercase" id="driver" name="driver" value="<?php echo $nama_sopir; ?>"  >
-  </div>
-  </br>
- 
-
-      
-  <div class="col">  
-        <label>Usia</label>
-       <strong><input type="text" class="form-control" style="background-color: <?php echo $color_usia; ?>; color: <?php echo $color_text; ?>    "  value="<?php echo $umur.' '. 'Tahun'; ?>" readonly></strong>
-
-       <input type="text"  id="usia" name="usia" value="<?php echo $umur; ?>" hidden>
-       <input type="text"  id="status_usia" name="status_usia" value="<?php echo $status_usia; ?>" hidden>
-
-
-  </div>
-  </br>
-
-  <div class="col">  
-        <label>Jenis SIM</label>
-        <input type="text" class="form-control" id="tipe_sim" name="tipe_sim" value="<?php echo $tipe_sim; ?>" readonly>
-
-
-
-  </div>
-  </br>
-
-  <div class="col">  
-        <label>Masa Berlaku SIM</label>
-        <input type="text" class="form-control" style="background-color: <?php echo $color_expired; ?>; color: <?php echo $color_text_sim; ?>" value="<?php echo $valid_date; ?>"  readonly>
-        <input type="text"  id="expired_sim" name="expired_sim" value="<?php echo $valid; ?>" hidden>
-        <input type="text"  id="status_sim" name="status_sim" value="<?php echo $status_sim; ?>" hidden>
-  </div>
-  </br>
-
-  <div class="col">  
-        <label>Masa Berlaku ID DDT</label>
-        <input type="text" class="form-control" style="background-color: <?php echo $color_expired_ddt; ?>; color: <?php echo $color_text_ddt; ?>" value="<?php echo $valid_date_ddt; ?>"  readonly>
-        <input type="text"  id="expired_ddt" name="expired_ddt" value="<?php echo $valid_ddt; ?>" hidden>
-        <input type="text"  id="status_ddt" name="status_ddt" value="<?php echo $status_ddt; ?>" hidden>
-  </div>
-  </br>
-
-
-  <div class="col">
-        <label>Jam Pemeriksaan</label>
-        <input type="text" class="form-control" id="jam" name="jam" aria-describedby="emailHelp"   value="<?php get_jam(); ?>" readonly>
-  </div>
-  </br>
-
-
-
-  <div class="col">
-        <label>Tanggal Pemeriksaan</label>
-        <input type="text" class="form-control text-uppercase" id="tgl" name="tgl" value="<?php get_date(); ?>" readonly>
-  </div>
-  </br>
-  <div class="col">
-      <label>Petugas Pemeriksa</label>
-      <input type="text" class="form-control" id="petugas" name="petugas" value="<?php echo $_SESSION[APP_NAME]["username"]; ?>" readonly>
-  </div>
-  </br>
-  <div class="col">
-      <label>Lokasi Plant</label>
-      <input type="text" class="form-control" id="lokasi" name="lokasi" value="<?php echo $plant_name; ?>" readonly>
-  </div>
-  </br>
-
-  <input type="text" id="seq" name="seq" value="<?php echo $seq ?>" hidden>
-  <input type="text" id="idref" name="idref" value="<?php echo $idref ?>" hidden>
-  <input type="text" name="kode_kirim" value="<?php echo $kode_kirim ?>" hidden>
-  <input type="text" name="muat" value="<?php echo $muat ?>" hidden>
-  <input type="text" name="plant_id" value="<?php echo $plant_id ?>" hidden>
-  <input type="text" name="id_barang" value="<?php echo $id_shipment ?>" hidden>
-  
-
-
-</div>
-<hr>
-<div class="row">
-<button type="submit" class="btn btn-success center-block">Go Ceklist</button>
-  
-</div>
-<hr>
-
-
-</form>
-</div>
-
 
 <style type="text/css">
-  
-body {
-  background-color:white;
-}
-.fileUpload {
-    position: relative;
-    overflow: hidden;
-    margin: 10px;
-}
-.fileUpload input.upload {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
-    font-size: 20px;
-    cursor: pointer;
-    opacity: 0;
-    filter: alpha(opacity=0);
-}
+    body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; }
+    .body-wrap-with-navbar {
+        display: flex; justify-content: center; align-items: center;
+        min-height: 100vh; background-color: #f0f2f5; padding: 20px;
+    }
+    .main-card {
+        background: white; padding: 30px; border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1); width: 100%; max-width: 700px;
+    }
+    .form-label { font-weight: 600; color: #444; font-size: 0.9rem; margin-bottom: 5px; display: block; }
+    .form-control-static { 
+        padding: 10px; border-radius: 6px; border: 1px solid #ddd; 
+        background-color: #f8f9fa; margin-bottom: 15px; width: 100%; box-sizing: border-box;
+    }
+    .grid-row { display: flex; gap: 15px; margin-bottom: 5px; }
+    .grid-col { flex: 1; }
+    .badge-status { 
+        padding: 10px; border-radius: 6px; font-weight: bold; text-align: center; 
+        color: white; margin-bottom: 15px; border: none; width: 100%;
+    }
+    .btn-submit {
+        background-color: #28a745; color: white; padding: 15px; border: none;
+        border-radius: 8px; width: 100%; font-size: 1.1rem; font-weight: bold;
+        cursor: pointer; transition: 0.3s; margin-top: 10px;
+    }
+    .btn-submit:hover { background-color: #218838; }
+    hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
 </style>
+
+<div class="main-card">
+    <h4 style="margin-top:0; color: #333;">Checklist Pemeriksaan</h4>
+    <form method="post" action="main?action=N_gate1">
+        
+        <div class="grid-row">
+            <div class="grid-col">
+                <label class="form-label">Nama Supplier</label>
+                <select class="form-control-static" name="supplier" required>
+                    <option value="">-- Pilih --</option>
+                    <?php
+                    $res = mysqli_query($con, "SELECT nama_supplier FROM tbm_tempat_muat WHERE id_tempat_muat='$plant_id' GROUP BY nama_supplier");
+                    while($r = mysqli_fetch_assoc($res)) echo "<option value='{$r['nama_supplier']}'>{$r['nama_supplier']}</option>";
+                    ?>
+                </select>
+            </div>
+            <div class="grid-col">
+                <label class="form-label">Nama Transporter</label>
+                <select class="form-control-static" name="transporter" required>
+                    <option value="">-- Pilih --</option>
+                    <?php
+                    $sql_t = ($plant_id=='90A8') ? "SELECT planned_transporter_name as n FROM tbl_otm_upload GROUP BY n" : "SELECT nama_transporter as n FROM tbm_tempat_muat WHERE id_tempat_muat='$plant_id' GROUP BY n";
+                    $res_t = mysqli_query(($plant_id=='90A8' ? $con_140 : $con), $sql_t);
+                    while($r = mysqli_fetch_assoc($res_t)) echo "<option value='{$r['n']}'>{$r['n']}</option>";
+                    ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="grid-col">
+                <label class="form-label">No Polisi</label>
+                <input type="text" class="form-control-static" name="nopol" value="<?php echo $nopol; ?>" readonly>
+            </div>
+            <div class="grid-col">
+                <label class="form-label">Nama Sopir</label>
+                <input type="text" class="form-control-static" name="driver" value="<?php echo $nama_sopir; ?>">
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="grid-col">
+                <label class="form-label">Usia Driver</label>
+                <div class="badge-status" style="background-color: <?php echo $color_usia; ?>; color: <?php echo $text_usia; ?>;">
+                    <?php echo $umur; ?> Tahun (<?php echo $status_usia; ?>)
+                </div>
+            </div>
+            <div class="grid-col">
+                <label class="form-label">Jenis SIM</label>
+                <input type="text" class="form-control-static" value="<?php echo $tipe_sim; ?>" readonly>
+            </div>
+        </div>
+
+        <label class="form-label">Masa Berlaku SIM</label>
+        <div class="badge-status" style="background-color: <?php echo $color_sim; ?>;">
+            <?php echo $status_sim; ?> | Exp: <?php echo $valid_sim; ?>
+        </div>
+
+        <label class="form-label">Masa Berlaku ID DDT</label>
+        <div class="badge-status" style="background-color: <?php echo $color_ddt; ?>;">
+            <?php echo $status_ddt; ?> | Exp: <?php echo $valid_ddt; ?>
+        </div>
+
+        <div class="grid-row">
+            <div class="grid-col">
+                <label class="form-label">Waktu</label>
+                <input type="text" class="form-control-static" value="<?php echo $current_time . ' / ' . $current_date; ?>" readonly>
+            </div>
+            <div class="grid-col">
+                <label class="form-label">Lokasi</label>
+                <input type="text" class="form-control-static" value="<?php echo $plant_name; ?>" readonly>
+            </div>
+        </div>
+
+        <input type="hidden" name="usia" value="<?php echo $umur; ?>">
+        <input type="hidden" name="status_usia" value="<?php echo $status_usia; ?>">
+        <input type="hidden" name="expired_sim" value="<?php echo $valid_sim; ?>">
+        <input type="hidden" name="status_sim" value="<?php echo $status_sim; ?>">
+        <input type="hidden" name="expired_ddt" value="<?php echo $valid_ddt; ?>">
+        <input type="hidden" name="status_ddt" value="<?php echo $status_ddt; ?>">
+        <input type="hidden" name="jam" value="<?php echo $current_time; ?>">
+        <input type="hidden" name="tgl" value="<?php echo $current_date; ?>">
+        <input type="hidden" name="petugas" value="<?php echo $username; ?>">
+        <input type="hidden" name="seq" value="<?php echo $seq; ?>">
+        <input type="hidden" name="idref" value="<?php echo $idref; ?>">
+        <input type="hidden" name="muat" value="<?php echo $muat; ?>">
+        <input type="hidden" name="plant_id" value="<?php echo $plant_id; ?>">
+        <input type="hidden" name="id_barang" value="<?php echo $id_shipment; ?>">
+
+        <button type="submit" class="btn-submit">Lanjutkan ke Checklist</button>
+    </form>
+</div>
+
+</div>
