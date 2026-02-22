@@ -1,7 +1,6 @@
 <?php
 // include 'koneksi.php';
 include 'application/assets/Table.php';
-include 'application/assets/TableASN.php';
 
 $kode	      				= (isset($_POST['kode'])? $_POST['kode'] : '');
 $petugas         			= (isset($_POST['petugas'])? $_POST['petugas'] : '');
@@ -83,42 +82,6 @@ $controller = 'truck';
 
 $condition = "pengiriman_id='$kode_kirim'";
 
-$table = new TableASN("tbl_item_pengiriman");
-$item = $table->get()->where($condition)->fetchOne();
-if (count($item) > 0){
-	if ($item['keterangan'] == 'CREATE'){
-		echo "<h4 style = \"color : red\">Nomor pengiriman {$kode_kirim} belum tersinkron, mohon tunggu beberapa menit lalu coba lagi</h4>";
-		exit();
-	}
-	$supplier = $item['supplier_id'];
-		
-	$updateData = array(
-		"status" => $status,
-		"keterangan" => $komentar,
-		"security_gate_in" => $petugas_pemeriksa,
-		"tgl_gate_in" => date("Y-m-d H:i:s")
-	);
-
-	$condition = "kode_pengiriman='$kode_kirim'";
-
-	$table = new TableASN("tbl_pengiriman", $supplier);
-	$table->update($updateData)->where($condition)->execute();
-	if ($status == 'PASS GATEIN'){
-		$updateData = array(
-			"keterangan" => $status
-		);
-		$condition = "pengiriman_id='$kode_kirim'";
-
-		$table = new TableASN("tbl_item_pengiriman", $supplier);
-		$table->update($updateData)->where($condition)->execute();
-	}
-
-
-}
-else{
-	$supplier = 0;
-	//weird..
-}
 
 
 

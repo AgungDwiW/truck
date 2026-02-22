@@ -1,6 +1,5 @@
 <?php
 include 'application/assets/class.phpmailer.php';
-include 'application/assets/TableASN.php';
 
 // Initialize variables cleanly using Null Coalescing Operator (??)
 $idref             = $_POST['idref'] ?? '';
@@ -83,41 +82,6 @@ mysqli_query($con, $update_ceklist);
 
 if (mysqli_error($con)){
     die("Database Error: " . mysqli_error($con));
-}
-
-// Update Table and TableASN if kode_kirim exists
-if (!empty($kode_kirim)) {
-    
-    // Get Supplier ID
-    $condition = "kode_pengiriman='$kode_kirim'";
-    $table     = new Table("tbl_pengiriman");
-    $supp_data = $table->get("supplier_id")->where($condition)->fetchOne();
-    $supplier_id = $supp_data['supplier_id'] ?? $supplier;
-
-    // Determine Status
-    if ($hasil == "Layak di Operasikan (Stiker Hijau)" || $hasil == "Lanjut Pemeriksaan Gate 2") {
-        $status = 'PASS GATEIN';
-    } else {
-        $status = 'NOT PASS GATEIN';
-    }
-
-    // Update tbl_pengiriman via TableASN
-    $updateDataPengiriman = [
-        "status"           => $status,
-        "keterangan"       => $komentar,
-        "security_gate_in" => $petugas_pemeriksa,
-        "tgl_gate_in"      => date("Y-m-d H:i:s")
-    ];
-    $tableASN = new TableASN("tbl_pengiriman", $supplier_id);
-    $tableASN->update($updateDataPengiriman)->where($condition)->execute();
-
-    // Update tbl_item_pengiriman via TableASN
-    $updateDataItem = [
-        "keterangan" => $status
-    ];
-    $condition_item = "pengiriman_id='$kode_kirim'";
-    $tableASN_item = new TableASN("tbl_item_pengiriman", $supplier_id);
-    $tableASN_item->update($updateDataItem)->where($condition_item)->execute();
 }
 
 // Redirect back to main index
