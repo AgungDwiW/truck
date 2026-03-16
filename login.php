@@ -4,7 +4,6 @@ include_once "application/library/autoloader.php";
 
 session_start();
 // $debug = 1;
-printpre($_SESSION,1);
 # Event Login 
 if(isset($_POST["username"]) AND isset($_POST["password"])) {
 	$USER = new User();

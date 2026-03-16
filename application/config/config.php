@@ -11,7 +11,7 @@ define('APP_DIR', 'application/');
 define('APP_NAME', 'e_Truck Inspection');
 define('APP_DESCRIPTION', 'Truck Inspection');
 define('APP_VER', '1.0');
-define('AUTH_SERVER', 'https://adop.co.id/simu_api/');
+define('AUTH_SERVER', 'https://adop.co.id/sandbox_api/');
 
 
 ?>
