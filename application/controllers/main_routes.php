@@ -17,6 +17,7 @@ Router::group('main', function() {
     Router::addGet('index',  'main_index');
     Router::addGet('cek_gate1',  'cek_gate1');
     Router::addGet('gate1',  'gate1');
+    Router::addGet('gate1_new',  'gate1_new');
     Router::addGet('foto_gate1',  'foto_gate1');
     Router::addGet('upload_fail',  'upload_fail');
     Router::addGet('gate1_temp',  'gate1_temp');

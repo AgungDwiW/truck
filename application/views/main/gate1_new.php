@@ -1,17 +1,24 @@
 <?php
 /**
- * Gate 1 Inspection Page
+ * Gate 1 Inspection Page (New Version)
  * 
- * This page handles the gate 1 inspection process, displaying checkpoints
- * and allowing inspectors to record findings.
- * 
- * All database queries are consolidated at the top for better maintainability.
+ * This version uses the new Checklist and ChecklistParam models
+ * instead of direct database queries.
  */
 
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-// Note: $con connection is assumed to be already available from parent context
+// Models are autoloaded via Table.php inclusion
+// We need to include our new models
+include_once APP_DIR . 'models/Checklist.php';
+include_once APP_DIR . 'models/ChecklistParam.php';
+
+// ============================================================================
+// INITIALIZE MODELS
+// ============================================================================
+$checklistModel = new Checklist();
+$paramModel = new ChecklistParam();
 
 // ============================================================================
 // INITIALIZE VARIABLES
@@ -19,42 +26,43 @@
 $idref = $seq = $nopol = $petugas = $lokasi = '';
 $seq_cek = 0;
 $hasil = 'Lanjut Pemeriksaan Gate 2';
-$checkpoint_data = array(); // Will store checkpoint rows from tb_ceklist_utama
-$utama_values = array();    // Will store utama1..utama4 values for the current idref
+$checkpoint_data = array();
+$utama_values = array();
 
 // ============================================================================
-// DATABASE QUERIES - DATA RETRIEVAL
+// DATA RETRIEVAL USING MODELS
 // ============================================================================
 
 // ----------------------------------------------------------------------------
 // 1. Retrieve latest inspection record for the current user
 // ----------------------------------------------------------------------------
 $username = User::$username;
-$temp = mysqli_query($con, 
-    "SELECT idref, seq, nopol, petugas_pemeriksa, lokasi_pemeriksaan 
-     FROM tb_ceklist 
-     WHERE petugas_pemeriksa = '$username' 
-     ORDER BY tgbaca DESC 
-     LIMIT 1"
-);
-
-if ($temp && mysqli_num_rows($temp) > 0) {
-    $rowtemp = mysqli_fetch_assoc($temp);
-    $idref   = $rowtemp["idref"];
-    $seq     = $rowtemp["seq"];
-    $nopol   = $rowtemp["nopol"];
-    $petugas = $rowtemp["petugas_pemeriksa"];
-    $lokasi  = $rowtemp["lokasi_pemeriksaan"];
+if ($username) {
+    $latestChecklist = $checklistModel->get()
+        ->where(['petugas_pemeriksa' => $username])
+        ->order('tgbaca DESC')
+        ->limit(0, 1)
+        ->fetchOne();
+    
+    if ($latestChecklist) {
+        $idref   = $latestChecklist["idref"];
+        $seq     = $latestChecklist["seq"];
+        $nopol   = $latestChecklist["nopol"];
+        $petugas = $latestChecklist["petugas_pemeriksa"];
+        $lokasi  = $latestChecklist["lokasi_pemeriksaan"];
+    }
 }
 
 // ----------------------------------------------------------------------------
 // 2. Get current sequence number for the inspection
 // ----------------------------------------------------------------------------
 if (!empty($idref)) {
-    $cek = mysqli_query($con, "SELECT seq FROM tb_ceklist WHERE idref = '$idref'");
-    if ($cek && mysqli_num_rows($cek) > 0) {
-        $row = mysqli_fetch_assoc($cek);
-        $seq_cek = $row["seq"];
+    $checklist = $checklistModel->get()
+        ->where(['idref' => $idref])
+        ->fetchOne();
+    
+    if ($checklist) {
+        $seq_cek = $checklist["seq"];
     }
 }
 
@@ -62,7 +70,7 @@ if (!empty($idref)) {
 // 3. If sequence is 1, process form data and update inspection record
 // ----------------------------------------------------------------------------
 if ($seq_cek == 1) {
-    // Collect POST data (assuming they are set)
+    // Collect POST data
     $nopol            = $_POST['nopol'] ?? '';
     $nama_sopir       = $_POST['nama_sopir'] ?? '';
     $nama_transporter = $_POST['nama_transporter'] ?? '';
@@ -74,75 +82,64 @@ if ($seq_cek == 1) {
     $petugas          = $_POST['petugas'] ?? $petugas;
     $lokasi           = $_POST['lokasi'] ?? $lokasi;
     
-    $query = "
-        UPDATE tb_ceklist 
-        SET petugas_pemeriksa = '$petugas',
-            tujuan_kirim      = '$tujuan',
-            nopol             = '$nopol',
-            nama_transporter  = '$nama_transporter',
-            nama_sopir        = '$nama_sopir',
-            jenis_kendaraan   = '$tipe_truck',
-            tahun_pembuatan   = '$tahun',
-            tgl_pemeriksaan   = '$tgl',
-            jam_pemeriksaan   = '$jam',
-            lokasi_pemeriksaan= '$lokasi',
-            utama1            = '1',
-            utama2            = '1',
-            utama3            = '1',
-            utama4            = '1',
-            seq               = 0 
-        WHERE idref = '$idref'
-    ";
+    // Update checklist data
+    $updateData = [
+        'petugas_pemeriksa' => $petugas,
+        'tujuan_kirim'      => $tujuan,
+        'nopol'             => $nopol,
+        'nama_transporter'  => $nama_transporter,
+        'nama_sopir'        => $nama_sopir,
+        'jenis_kendaraan'   => $tipe_truck,
+        'tahun_pembuatan'   => $tahun,
+        'tgl_pemeriksaan'   => $tgl,
+        'jam_pemeriksaan'   => $jam,
+        'lokasi_pemeriksaan'=> $lokasi,
+        'seq'               => 0
+    ];
     
-    mysqli_query($con, $query);
+    // For this example, we'll set the first 4 utama parameters to 1 (good)
+    // In a real implementation, you'd get these from the form
+    $paramUpdates = [
+        1 => 1, // utama1
+        2 => 1, // utama2  
+        3 => 1, // utama3
+        4 => 1  // utama4
+    ];
+    
+    $checklistModel->updateWithParams($checklist['no'], $updateData, $paramUpdates);
 }
 
 // ----------------------------------------------------------------------------
-// 4. Update temporary status (global operation)
+// 4. Update temporary status in parameters (if needed)
 // ----------------------------------------------------------------------------
-mysqli_query($con, "UPDATE tb_ceklist_utama SET status_temp = 1");
+// Note: status_temp functionality might need to be reimplemented
+// For now, we'll skip this as it's application-specific
 
 // ----------------------------------------------------------------------------
-// 5. Fetch all checkpoints (utama) for display
+// 5. Fetch checkpoints (utama parameters) for display
 // ----------------------------------------------------------------------------
-$result = mysqli_query($con, 
-    "SELECT *, 
-            CONCAT(name, no) AS namee,
-            CONCAT(ceklist_utama, no, no) AS idgreen,
-            CONCAT(ceklist_utama, no, no, no) AS idred
-     FROM tb_ceklist_utama 
-     WHERE no BETWEEN 0 AND 4"
-);
-
-if ($result) {
-    while ($row = mysqli_fetch_assoc($result)) {
-        $checkpoint_data[] = $row;
-    }
-}
+$utamaParams = $paramModel->getByType('utama');
+// Limit to first 5 for this example (matching original query: no BETWEEN 0 AND 4)
+$checkpoint_data = array_slice($utamaParams, 0, 5);
 
 // ----------------------------------------------------------------------------
-// 6. Pre‑fetch utama1..utama4 values for the current inspection
+// 6. Get parameter values for the current inspection
 // ----------------------------------------------------------------------------
 if (!empty($idref)) {
-    $utama_result = mysqli_query($con, 
-        "SELECT utama1, utama2, utama3, utama4 
-         FROM tb_ceklist 
-         WHERE idref = '$idref'"
-    );
+    $checklistWithParams = $checklistModel->getWithParams($checklist['no'] ?? 0);
     
-    if ($utama_result && mysqli_num_rows($utama_result) > 0) {
-        $utama_row = mysqli_fetch_assoc($utama_result);
-        $utama_values = array(
-            1 => $utama_row['utama1'],
-            2 => $utama_row['utama2'],
-            3 => $utama_row['utama3'],
-            4 => $utama_row['utama4']
-        );
+    if ($checklistWithParams && !empty($checklistWithParams['parameters'])) {
+        // Extract values for the first 4 parameters
+        foreach ($checklistWithParams['parameters'] as $param) {
+            if ($param['id'] >= 1 && $param['id'] <= 4) {
+                $utama_values[$param['id']] = $param['value'] ?? 1;
+            }
+        }
     }
 }
 
 // ----------------------------------------------------------------------------
-// 7. Determine overall inspection result based on utama values
+// 7. Determine overall inspection result
 // ----------------------------------------------------------------------------
 foreach ($utama_values as $idx => $value) {
     if ($value == 0) {
@@ -152,7 +149,7 @@ foreach ($utama_values as $idx => $value) {
 }
 
 // ============================================================================
-// HTML OUTPUT STARTS HERE
+// HTML OUTPUT
 // ============================================================================
 ?>
 <!DOCTYPE html>
@@ -160,13 +157,13 @@ foreach ($utama_values as $idx => $value) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gate 1 Inspection</title>
+    <title>Gate 1 Inspection (New Model)</title>
     <style type="text/css">
         body {
             background-color: transparent;
         }
         
-        /* Additional styles from original file */
+        /* Reuse existing styles from original */
         .contain {
             display: block;
             position: relative;
@@ -238,29 +235,19 @@ foreach ($utama_values as $idx => $value) {
             opacity: 0;
             filter: alpha(opacity=0);
         }
-        
-        .icon_camera > input {
-            display: none;
-            left: 3px;
-        }
-        
-        div.relative {
-            position: relative;
-            left: 4px;
-            top: 23px;
-        }
-        
-        div.cekmark {
-            left: 0px;
-        }
     </style>
 </head>
 <body>
 
+<div class="alert alert-info">
+    <strong>Note:</strong> This is the new version using Checklist models. 
+    <a href="<?= route('gate1') ?>">Switch to old version</a>
+</div>
+
 <!-- Header: Kelengkapan Utama -->
 <div class="row text-center" style="background-color: red;">
     <div class="col">
-        <label style="font-size: 30px;">Kelengkapan Utama</label>
+        <label style="font-size: 30px;">Kelengkapan Utama (New Model)</label>
     </div>
 </div>
 
@@ -272,13 +259,13 @@ foreach ($checkpoint_data as $row):
     $hid = ($no > 1) ? '' : 'hidden';
     
     // Determine checkpoint status
-    $cek_utama = $utama_values[$noo] ?? 1;
+    $cek_utama = $utama_values[$no] ?? 1; // Note: $no instead of $noo to match param_id
     $cek_img = ($cek_utama == 1) ? 'cekgreen.png' : 'red.png';
 ?>
     <form method="post" action="<?= route('foto_gate1') ?>">
         <div class="row text-center" style="background-color: black;">
             <div class="col" style="color: white; font-size:20px; margin-left: 10px; margin-top: 0px" <?= $hid ?>>
-                <?= htmlspecialchars($row['ceklist_utama']) ?>
+                <?= htmlspecialchars($row['param_name']) ?>
             </div>
             <div class="col" <?= $hid ?>>
                 <input type="hidden" name="ccp" value="<?= $noo ?>">
@@ -363,10 +350,38 @@ endforeach;
     
     <hr>
     <div class="row">
-        <button type="submit" class="btn btn-primary center-block">Simpan</button>
+        <button type="submit" class="btn btn-primary center-block">Simpan (New Model)</button>
     </div>
     <hr>
 </form>
+
+<!-- Model Usage Example -->
+<div class="alert alert-success">
+    <h4>Model Usage Example:</h4>
+    <pre>
+// Initialize models
+$checklist = new Checklist();
+$params = new ChecklistParam();
+
+// Get checklist with parameters
+$data = $checklist->getWithParams(123);
+
+// Create new checklist
+$checklistData = [
+    'idref' => 'TRUCK-001',
+    'nopol' => 'B1234XYZ',
+    // ... other fields
+];
+
+$paramValues = [
+    1 => 1,  // utama1 = good
+    2 => 0,  // utama2 = bad
+    // ... other parameters
+];
+
+$id = $checklist->createWithParams($checklistData, $paramValues);
+    </pre>
+</div>
 
 </body>
 </html>

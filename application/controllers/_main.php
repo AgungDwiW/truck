@@ -21,6 +21,7 @@ switch($action){
     case 'index':        # 20181227
     case 'cek_gate1':    
     case 'gate1':
+    case 'gate1_new':
     case 'foto_gate1':
     case 'upload_fail':    
     case 'gate1_temp':

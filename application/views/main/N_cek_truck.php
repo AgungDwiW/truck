@@ -1,265 +1,321 @@
-
-
 <?php
-$kode_kirim=$_POST['kode_kirim'];
-$muat = $_POST['muat'];
+/**
+ * Truck Check & Synchronization Page
+ * 
+ * This page verifies delivery codes, synchronizes data between cloud and local
+ * databases, and prepares the Gate 1 inspection form.
+ * 
+ * All database queries are consolidated at the top for better maintainability.
+ */
 
-// printpre($_SESSION,1);
-// exit();
-// include_once "/concloud.php";
-if (User::$username == 'Latihan Wonosobo 1'){
-    $debug = 1;
-}
-// ===============================================================================================================
-// ============================================================ SYNC ============================================
-// ===============================================================================================================
-// =========================== checking the credibility of on premise data ===================================
-$result = mysqli_query($concloud, "SELECT * from tbl_pengiriman_combined where kode_pengiriman='{$kode_kirim}'");
-$count_cloud        = mysqli_num_rows($result);
+// ============================================================================
+// INCLUDES & CONFIGURATION
+// ============================================================================
+// Note: Database connections $concloud, $conSL, $con2, $con are assumed to be already available.
+
+// ============================================================================
+// INITIALIZE VARIABLES
+// ============================================================================
+$kode_kirim = $_POST['kode_kirim'] ?? '';
+$muat       = $_POST['muat'] ?? '';
+
+$debug = (User::$username == 'Latihan Wonosobo 1') ? 1 : 0;
+
+$count_cloud = $count_local = 0;
+$pengiriman_cloud = $pengiriman_local = array();
+$item_cloud = $item_local = array();
+$pengiriman_synced = 0;
+$item_synced = array();
+
+$date = date("Y-m-d");
+$jam  = date("H:i:s");
+$idref = time();
+$seq   = 1;
+$username = User::$username;
+
+$driver = $supplier = $supplier_id = $plant_name = $plant_id = $nopol = '';
+$count_nopol = 0;
+
+$tujuan_options = array(); // will store tujuan_pengiriman rows
+
+// ============================================================================
+// DATABASE QUERIES - SYNC LOGIC
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// 1. Check credibility of on‑premise data (cloud vs local)
+// ----------------------------------------------------------------------------
+
+// 1.1 Cloud pengiriman data
+$result = mysqli_query($concloud, 
+    "SELECT * FROM tbl_pengiriman_combined WHERE kode_pengiriman = '{$kode_kirim}'"
+);
+$count_cloud = mysqli_num_rows($result);
 $pengiriman_cloud = mysqli_fetch_assoc($result);
 
-
-$result = mysqli_query($conSL, "SELECT * from tbl_pengiriman where kode_pengiriman='{$kode_kirim}'");
-$count_local        = mysqli_num_rows($result);
+// 1.2 Local pengiriman data
+$result = mysqli_query($conSL, 
+    "SELECT * FROM tbl_pengiriman WHERE kode_pengiriman = '{$kode_kirim}'"
+);
+$count_local = mysqli_num_rows($result);
 $pengiriman_local = mysqli_fetch_assoc($result);
 
-
-
-// ------------checking pengiriman data end-------------------
-
-// ------------checking item pengiriman data-------------------
-$result = mysqli_query($concloud, "SELECT * from tbl_item_pengiriman where pengiriman_id='{$kode_kirim}'");
-$item_cloud = [];
-
-while ($row = mysqli_fetch_assoc($result)){
-    $item_cloud [$row['kode_item_kirim']] = $row;
-
-}
-$result = mysqli_query($conSL, "SELECT * from tbl_item_pengiriman where pengiriman_id='{$kode_kirim}'");
-$item_local = [];
-while ($row = mysqli_fetch_assoc($result)){
-    $item_local [$row['kode_item_kirim']] = $row;
+// 1.3 Cloud item pengiriman data
+$result = mysqli_query($concloud, 
+    "SELECT * FROM tbl_item_pengiriman WHERE pengiriman_id = '{$kode_kirim}'"
+);
+while ($row = mysqli_fetch_assoc($result)) {
+    $item_cloud[$row['kode_item_kirim']] = $row;
 }
 
-printpre(['n'=>'cloud',  'pengiriman' => $pengiriman_cloud, 'item' =>array_keys($item_cloud)]);
-printpre(['n'=>'local',  'pengiriman' => $pengiriman_local, 'item' =>array_keys($item_local)]);
+// 1.4 Local item pengiriman data
+$result = mysqli_query($conSL, 
+    "SELECT * FROM tbl_item_pengiriman WHERE pengiriman_id = '{$kode_kirim}'"
+);
+while ($row = mysqli_fetch_assoc($result)) {
+    $item_local[$row['kode_item_kirim']] = $row;
+}
 
-printpre("aaaaaaaaaaaaaa");
-//================================== syncing pengiriman ========================
-if ($count_cloud!=$count_local){
-    $pengiriman_synced = 1;    
+// Debug output (only for specific user)
+if ($debug) {
+    printpre(['n' => 'cloud', 'pengiriman' => $pengiriman_cloud, 'item' => array_keys($item_cloud)]);
+    printpre(['n' => 'local', 'pengiriman' => $pengiriman_local, 'item' => array_keys($item_local)]);
+    printpre("aaaaaaaaaaaaaa");
+}
+
+// ----------------------------------------------------------------------------
+// 2. Sync pengiriman table if counts differ
+// ----------------------------------------------------------------------------
+if ($count_cloud != $count_local) {
+    $pengiriman_synced = 1;
     $col = array_keys($pengiriman_cloud);
     $values = array_values($pengiriman_cloud);
-    $col = "`" . implode("`, `",$col) . "`"; 
+    $col = "`" . implode("`, `", $col) . "`";
     $val = "";
-    foreach($values as $v){
-        if ($v == '')
+    
+    foreach ($values as $v) {
+        if ($v == '') {
             $val .= "NULL, ";
-        else
+        } else {
             $val .= "'$v', ";
-
+        }
     }
+    
     $val = rtrim($val, ", ");
-    $SQL = "INSERT into tbl_pengiriman ({$col}) VALUES({$val})";
-    printpre($SQL);
-    mysqli_query($conSL,$SQL);
-    print_r(mysqli_error($conSL));
+    $SQL = "INSERT INTO tbl_pengiriman ({$col}) VALUES ({$val})";
     
+    if ($debug) printpre($SQL);
+    
+    mysqli_query($conSL, $SQL);
+    if ($debug) print_r(mysqli_error($conSL));
 }
-printpre($item_cloud);
 
-foreach($item_cloud as $key => $row_cloud){
-    
-    if(!isset($item_local[$key])){
+// ----------------------------------------------------------------------------
+// 3. Sync item_pengiriman table for missing items
+// ----------------------------------------------------------------------------
+foreach ($item_cloud as $key => $row_cloud) {
+    if (!isset($item_local[$key])) {
         $item_synced[] = $key;
         $col = array_keys($row_cloud);
         $val = array_values($row_cloud);
-        $col = "`" . implode("`, `",$col) . "`"; 
-        // $val = "'" . implode("', '",$val) . "'"; 
-        $val_str= '';
-        foreach($val as $item){
-            if ($item == '')
-                $val_str.='NULL,';
-            else
-                $val_str.="'{$item}',";
-            
+        $col = "`" . implode("`, `", $col) . "`";
+        $val_str = '';
+        
+        foreach ($val as $item) {
+            if ($item == '') {
+                $val_str .= 'NULL,';
+            } else {
+                $val_str .= "'{$item}',";
+            }
         }
+        
         $val_str = rtrim($val_str, ",");
+        $SQL = "REPLACE INTO tbl_item_pengiriman ({$col}) VALUES ({$val_str})";
         
-        // $val = rtrim($val, ",");
-        $SQL = "REPLACE into tbl_item_pengiriman ({$col}) VALUES({$val_str})";
-        printpre($SQL);
-        mysqli_query($conSL,$SQL);
-        printpre(mysqli_error($conSL));
+        if ($debug) printpre($SQL);
         
+        mysqli_query($conSL, $SQL);
+        if ($debug) printpre(mysqli_error($conSL));
     }
 }
-if (User::$username == 'Latihan Wonosobo 1'){
+
+// Stop execution for debug user
+if ($debug) {
     exit();
 }
-// ===============================================================================================================
-// ============================================================ SYNC ============================================
-// ===============================================================================================================
 
+// ============================================================================
+// DATABASE QUERIES - DELIVERY DATA RETRIEVAL
+// ============================================================================
 
-$date=date("Y-m-d");
+// ----------------------------------------------------------------------------
+// 4. Check if the delivery exists for today
+// ----------------------------------------------------------------------------
+$sql_nopol = mysqli_query($con2, 
+    "SELECT * FROM tbl_pengiriman 
+     WHERE kode_pengiriman = '$kode_kirim' AND tgl_kedatangan = '$date'"
+);
+$count_nopol = mysqli_num_rows($sql_nopol);
 
-$sql_nopol = mysqli_query($con2,"  SELECT * from tbl_pengiriman where kode_pengiriman='$kode_kirim' and tgl_kedatangan='$date'  ");
-
-$count_nopol=mysqli_num_rows($sql_nopol); 
-if ($count_nopol==0) {
-    echo "<script>window.alert('Schedule Truck Tidak Ditemukan...!!!');
-
-window.location='cek_nopol';
-
-</script>";}
-
-
-          while($rownopol = mysqli_fetch_assoc($sql_nopol)){
-          $driver=$rownopol["driver_name"];
-          $supplier=$rownopol["supplier_name"];
-          $supplier_id=$rownopol["supplier_id"];
-          $plant_name=$rownopol["plant_name"];
-          $plant_id=$rownopol["plant_id"];
-          $kode_kirim=$rownopol["kode_pengiriman"];
-          $nopol=$rownopol["no_pol"];
-          }
-
-         
-
-
-function get_date(){
-                echo date("Y-m-d");
-            }
-
-function get_jam(){
-                echo date("H:i:s");
-            }
-
-$jam=date("H:i:s");           
-
-
-$idref=time();
-$seq=1;
-$username=User::$username;
-
-
-if ($count_nopol<>0) {
-$query="INSERT INTO tb_ceklist SET seq='$seq', idref='$idref', petugas_pemeriksa='$username' , nopol='$nopol', nama_transporter='$supplier' , kode_transporter='$supplier_id', plant_id='$plant_id', plant_name='$plant_name', nama_sopir='$driver', tgl_pemeriksaan='$date', jam_pemeriksaan='$jam', lokasi_pemeriksaan='$plant_name', muatan='$muat', kode_kirim='$kode_kirim' ";
-
-mysqli_query($con, $query);
-
+if ($count_nopol == 0) {
+    echo "<script>
+            window.alert('Schedule Truck Tidak Ditemukan...!!!');
+            window.location = 'cek_nopol';
+          </script>";
+    exit;
 }
 
-//print_r($_SESSION);
-//exit;
+// ----------------------------------------------------------------------------
+// 5. Extract delivery details
+// ----------------------------------------------------------------------------
+while ($rownopol = mysqli_fetch_assoc($sql_nopol)) {
+    $driver       = $rownopol["driver_name"];
+    $supplier     = $rownopol["supplier_name"];
+    $supplier_id  = $rownopol["supplier_id"];
+    $plant_name   = $rownopol["plant_name"];
+    $plant_id     = $rownopol["plant_id"];
+    $kode_kirim   = $rownopol["kode_pengiriman"];
+    $nopol        = $rownopol["no_pol"];
+}
+
+// ----------------------------------------------------------------------------
+// 6. Insert a new inspection record if delivery exists
+// ----------------------------------------------------------------------------
+if ($count_nopol != 0) {
+    $query = "
+        INSERT INTO tb_ceklist 
+        SET seq                = '$seq',
+            idref              = '$idref',
+            petugas_pemeriksa  = '$username',
+            nopol              = '$nopol',
+            nama_transporter   = '$supplier',
+            kode_transporter   = '$supplier_id',
+            plant_id           = '$plant_id',
+            plant_name         = '$plant_name',
+            nama_sopir         = '$driver',
+            tgl_pemeriksaan    = '$date',
+            jam_pemeriksaan    = '$jam',
+            lokasi_pemeriksaan = '$plant_name',
+            muatan             = '$muat',
+            kode_kirim         = '$kode_kirim'
+    ";
+    
+    mysqli_query($con, $query);
+}
+
+// ----------------------------------------------------------------------------
+// 7. Fetch tujuan_pengiriman options for dropdown (if needed in future)
+// ----------------------------------------------------------------------------
+$tujuan_result = mysqli_query($con, 
+    "SELECT * FROM tujuan_pengiriman ORDER BY tujuan ASC"
+);
+while ($row = mysqli_fetch_assoc($tujuan_result)) {
+    $tujuan_options[] = $row;
+}
+
+// ============================================================================
+// HTML OUTPUT STARTS HERE
+// ============================================================================
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truck Check</title>
+    <style type="text/css">
+        body {
+            background-color: white;
+        }
+        
+        .fileUpload {
+            position: relative;
+            overflow: hidden;
+            margin: 10px;
+        }
+        
+        .fileUpload input.upload {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+    </style>
+</head>
+<body>
 
 <div class='container'>
-<form method="post" action="N_gate1">
-
-<div class="row justify-content-md-center">
-  <div class="col">
-        <label>No Polisi</label>
-        <input type="text" class="form-control text-uppercase" id="nopol" name="nopol" value="<?php echo $nopol; ?>" readonly >
-  </div>
-  </br>
-  <div class="col">
-        <label>Nama Sopir</label>
-        <input type="text" class="form-control text-uppercase" id="driver" name="driver" value="<?php echo $driver; ?>" readonly>
-  </div>
-  </br>
-  <div class="col">
-      <label>Nama Supplier</label>
-      <input type="text" class="form-control text-uppercase" id="supplier" name="supplier" value="<?php echo $supplier; ?>" readonly> 
-  </div>
-  </br>
-  <!-- <div class="col">
-      <label>Jenis Kendaraan</label>
-      <input type="text" class="form-control" id="tipe_truck" name="tipe_truck" required>
-  </div>
-  </br>
-  <div class="col">
-      <label>Tujuan Pengiriman</label>
-      <select class="form-control" id="tujuan" name="tujuan">
-          <?php
-          $tujuan = mysqli_query($con, "SELECT * from tujuan_pengiriman order by tujuan asc");
-          $no=1;
-          foreach ($tujuan as $row){
-          ?>
-           <option value="<?php echo $row['tujuan'];?>"><?php echo $row['tujuan'];?></option>
-          <?php
-          $no++;
-          }
-          ?>
-        </select>
-  </div>
-  </br>
-  <div class="col">
-      <label>Tahun Pembuatan</label>
-      <input type="text" class="form-control" id="tahun" name="tahun">
-  </div> 
-  </br>-->
-  <div class="col">
-        <label>Jam Pemeriksaan</label>
-        <input type="text" class="form-control" id="jam" name="jam" aria-describedby="emailHelp"   value="<?php get_jam(); ?>" readonly>
-  </div>
-  </br>
-  <div class="col">
-        <label>Tanggal Pemeriksaan</label>
-        <input type="text" class="form-control text-uppercase" id="tgl" name="tgl" value="<?php get_date(); ?>" readonly>
-  </div>
-  </br>
-  <div class="col">
-      <label>Petugas Pemeriksa</label>
-      <input type="text" class="form-control" id="petugas" name="petugas" value="<?php echo User::$username; ?>" readonly>
-  </div>
-  </br>
-  <div class="col">
-      <label>Lokasi Plant</label>
-      <input type="text" class="form-control" id="lokasi" name="lokasi" value="<?php echo $plant_name; ?>" readonly>
-  </div>
-  </br>
-
-  <input type="text" id="seq" name="seq" value="<?php echo $seq ?>" hidden>
-  <input type="text" id="idref" name="idref" value="<?php echo $idref ?>" hidden>
-  <input type="text" name="nopol" value="<?php echo $nopol ?>" hidden>
-  <input type="text" name="kode_kirim" value="<?php echo $kode_kirim ?>" hidden>
-  
-
-
-</div>
-<hr>
-<div class="row">
-<button type="submit" class="btn btn-success center-block">Go Ceklist</button>
-  
-</div>
-<hr>
-
-
-</form>
+    <form method="post" action="N_gate1">
+        
+        <!-- Row 1: No Polisi, Nama Sopir, Nama Supplier -->
+        <div class="row justify-content-md-center">
+            <div class="col">
+                <label>No Polisi</label>
+                <input type="text" class="form-control text-uppercase" id="nopol" name="nopol" 
+                       value="<?= htmlspecialchars($nopol) ?>" readonly>
+            </div>
+            
+            <div class="col">
+                <label>Nama Sopir</label>
+                <input type="text" class="form-control text-uppercase" id="driver" name="driver" 
+                       value="<?= htmlspecialchars($driver) ?>" readonly>
+            </div>
+            
+            <div class="col">
+                <label>Nama Supplier</label>
+                <input type="text" class="form-control text-uppercase" id="supplier" name="supplier" 
+                       value="<?= htmlspecialchars($supplier) ?>" readonly>
+            </div>
+        </div>
+        
+        <!-- Row 2: Jam Pemeriksaan, Tanggal Pemeriksaan, Petugas, Lokasi -->
+        <div class="row justify-content-md-center">
+            <div class="col">
+                <label>Jam Pemeriksaan</label>
+                <input type="text" class="form-control" id="jam" name="jam" 
+                       value="<?= date('H:i:s') ?>" readonly>
+            </div>
+            
+            <div class="col">
+                <label>Tanggal Pemeriksaan</label>
+                <input type="text" class="form-control text-uppercase" id="tgl" name="tgl" 
+                       value="<?= date('Y-m-d') ?>" readonly>
+            </div>
+            
+            <div class="col">
+                <label>Petugas Pemeriksa</label>
+                <input type="text" class="form-control" id="petugas" name="petugas" 
+                       value="<?= htmlspecialchars(User::$username) ?>" readonly>
+            </div>
+            
+            <div class="col">
+                <label>Lokasi Plant</label>
+                <input type="text" class="form-control" id="lokasi" name="lokasi" 
+                       value="<?= htmlspecialchars($plant_name) ?>" readonly>
+            </div>
+        </div>
+        
+        <!-- Hidden fields -->
+        <input type="hidden" id="seq" name="seq" value="<?= $seq ?>">
+        <input type="hidden" id="idref" name="idref" value="<?= $idref ?>">
+        <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
+        <input type="hidden" name="kode_kirim" value="<?= htmlspecialchars($kode_kirim) ?>">
+        
+        <hr>
+        
+        <!-- Submit button -->
+        <div class="row">
+            <button type="submit" class="btn btn-success center-block">Go Ceklist</button>
+        </div>
+        <hr>
+        
+    </form>
 </div>
 
-
-<style type="text/css">
-  
-body {
-  background-color:white;
-}
-.fileUpload {
-    position: relative;
-    overflow: hidden;
-    margin: 10px;
-}
-.fileUpload input.upload {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
-    font-size: 20px;
-    cursor: pointer;
-    opacity: 0;
-    filter: alpha(opacity=0);
-}
-</style>
+</body>
+</html>
