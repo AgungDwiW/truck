@@ -1,7 +1,7 @@
 <?php
 $username=User::$username;
 
-// $upload_dir = "application/views/main/capture/";
+// $upload_dir = "application/views/capture/";
 // echo $img = $_POST['hidden_data'];                 
 // $img = str_replace('data:image/png;base64,', '', $img);
 // $img = str_replace(' ', '+', $img);
@@ -12,7 +12,7 @@ $username=User::$username;
 // print $success ? $file : 'Unable to save the file.';
 
 
-$upload_dir = "application/views/main/capture/";
+$upload_dir = "application/views/capture/";
 $img = $_POST['hidden_data'];                 
 $img = str_replace('data:image/png;base64,', '', $img);
 $img = str_replace(' ', '+', $img);

@@ -14,7 +14,7 @@ $seq_foto=$row["seq_foto"];
 }
 if ($seq_foto==1) {
 mysqli_query($con,"UPDATE tb_ceklist SET seq_foto=0, utama".$ccp."=0 where idref='$idref'");}
-header("location:main?action=N_gate1");
+header("location:N_gate1");
 
 
 

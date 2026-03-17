@@ -1,15 +1,14 @@
 ﻿<?php
 include "application/models/auth/User.php";
-include_once "application/library/autoloader.php";
+include_once "application/library/autoload.php";
 
-session_start();
 // $debug = 1;
 # Event Login 
 if(isset($_POST["username"]) AND isset($_POST["password"])) {
 	$USER = new User();
   	if($USER->login( $_POST['username'], $_POST['password'])){
 		if (!$debug)
-			header("location:main");
+			header("location:main/index");
 	}
 	echo "<script type='text/javascript'>document.getElementById('log').innerHTML='ALERT! Login failed...'</script>";
 }

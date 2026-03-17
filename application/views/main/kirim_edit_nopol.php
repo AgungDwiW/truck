@@ -14,7 +14,7 @@ $con = new mysqli($host, $user, $pass, $dbname);
 if ($con->connect_error) {
     $_SESSION['pesan'] = "❌ Koneksi database gagal: " . $con->connect_error;
     $_SESSION['pesan_tipe'] = "danger";
-    header("Location: main?action=start");
+    header("Location: start");
     exit();
 }
 
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt === false) {
         $_SESSION['pesan'] = "❌ Gagal menyiapkan query: " . $con->error;
         $_SESSION['pesan_tipe'] = "danger";
-        header("Location: main?action=edit_nopol&nopol=" . urlencode($nopol));
+        header("Location: edit_nopol?nopol=" . urlencode($nopol));
         exit();
     }
 
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
     $con->close();
 
-    header("Location: main?action=start");
+    header("Location: start");
     exit();
 }
 ?>

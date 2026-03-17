@@ -91,7 +91,7 @@ if ($muat == 'FG') {
         }
     ?>    
         
-        <form method="post" action="main?action=N_foto_gate1" class="mb-2 <?php echo $hid; ?>">   
+        <form method="post" action="N_foto_gate1" class="mb-2 <?php echo $hid; ?>">   
             <div class="row align-items-center rounded shadow-sm mx-0" style="background-color: #212529; color: white;">
                 <div class="col-10 py-2 fs-5">
                     <?php echo $row['ceklist_utama']; ?>
@@ -120,7 +120,7 @@ if ($muat == 'FG') {
 
     <hr class="my-4">
 
-    <form method="post" action="main?action=simpan_gate1">
+    <form method="post" action="simpan_gate1">
         
         <div class="mb-4 shadow-sm" style='margin-bottom:10px'>
             <div class="bg-info text-dark text-center fw-bold py-2 rounded header-box">

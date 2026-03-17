@@ -1,21 +1,19 @@
 <div class="body-wrap-with-navbar">
 
 <?php
-// 1. Initialize Variables
+include "application/config/connection.php";
 $muat        = $_POST['muat'] ?? '';
 $nopol       = str_replace(' ', '', $_POST['nopol'] ?? '');
 $id_shipment = $_POST['id_shipment'] ?? '';
-
-// 2. User & Plant Data
 $username    = User::$username;
 $plant_name  = User::$plant_name;
 $plant_id    = User::$plantid;
-
-// 3. Time & Identifiers
 $current_date = date("Y-m-d");
 $current_time = date("H:i:s");
 $idref        = time(); // Fixed mktime() error for PHP 8+
 $seq          = 1;
+
+
 ?>
 
 <style type="text/css">
@@ -81,7 +79,7 @@ $seq          = 1;
 </style>
 
 <div class="main-card">
-    <form method="post" action="main?action=N_gate1">
+    <form method="post" action="N_gate1">
         
         <div class="mb-4">
             <label class="form-label">Nama Supplier</label>

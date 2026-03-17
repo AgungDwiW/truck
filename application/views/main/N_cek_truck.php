@@ -4,24 +4,6 @@
 $kode_kirim=$_POST['kode_kirim'];
 $muat = $_POST['muat'];
 
-function printpre($str, $fl = -1){
-	//function to print string for debug purpose
-	//change $debug variable to enable
-	//use second argument to override global debug variable
-	global $debug;
-	if ($fl == -1)
-		$fl = $debug;
-
-	if ($fl){
-		// echo "";
-		echo "<pre>";
-		print_r ($str);
-		echo "</pre>";	
-	}
-	
-	return 0;
-}
-
 // printpre($_SESSION,1);
 // exit();
 // include_once "/concloud.php";
@@ -128,7 +110,7 @@ $count_nopol=mysqli_num_rows($sql_nopol);
 if ($count_nopol==0) {
     echo "<script>window.alert('Schedule Truck Tidak Ditemukan...!!!');
 
-window.location='main?action=cek_nopol';
+window.location='cek_nopol';
 
 </script>";}
 
@@ -174,7 +156,7 @@ mysqli_query($con, $query);
 ?>
 
 <div class='container'>
-<form method="post" action="main?action=N_gate1">
+<form method="post" action="N_gate1">
 
 <div class="row justify-content-md-center">
   <div class="col">

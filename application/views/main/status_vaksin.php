@@ -24,7 +24,7 @@ $plant_id = @$_POST['plant_id'];
 
 <h1><label style="font-size: 20px">DRIVER</label></h1>
 
-<form method="post" action="main?action=foto_vaksin">
+<form method="post" action="foto_vaksin">
 
 
         <input type="text" name="nama_driver" value="<?php echo $nama_driver ;  ?>" hidden></input>
@@ -41,7 +41,7 @@ $plant_id = @$_POST['plant_id'];
 
 
 </br>
-<form method="post" action="main?action=foto_vaksin">
+<form method="post" action="foto_vaksin">
 
 
         <input type="text" name="nama_driver" value="<?php echo $nama_driver ;  ?>" hidden></input>
@@ -56,7 +56,7 @@ $plant_id = @$_POST['plant_id'];
 	
 </form>
 </br>
-<form method="post" action="main?action=foto_vaksin">
+<form method="post" action="foto_vaksin">
 
 
         <input type="text" name="nama_driver" value="<?php echo $nama_driver ;  ?>" hidden></input>
@@ -76,7 +76,7 @@ $plant_id = @$_POST['plant_id'];
 
 
 
-<form method="post" action="main?action=pilih_helper">
+<form method="post" action="pilih_helper">
 
 
         <input type="text" name="nama_driver" value="<?php echo $nama_driver ;  ?>" hidden></input>
@@ -92,7 +92,7 @@ $plant_id = @$_POST['plant_id'];
 
 </br>
 
-<form method="post" action="main?action=pilih_helper">
+<form method="post" action="pilih_helper">
     <input type="text" name="dosis" value="skip" hidden></input>
     <button type="submit" class="btn btn-primary tombol_no">SKIP</button>
 </form> 

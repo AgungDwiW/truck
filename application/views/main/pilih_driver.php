@@ -17,7 +17,7 @@ $plant_id = @$_POST['plant_id'];
 
 <h1><label style="font-size: 20px">DRIVER</label></h1>
 
-<form method="post" action="main?action=status_vaksin">
+<form method="post" action="status_vaksin">
 
 <input type="text" id="orang" name="orang" value="driver" hidden >
 <input type="text" id="plant_name" name="plant_name" value="<?php echo $plant_name ;  ?>" hidden >
@@ -72,7 +72,7 @@ $plant_id = @$_POST['plant_id'];
 
 </br>
 
-<form method="post" action="main?action=pilih_helper">
+<form method="post" action="pilih_helper">
     <input type="text" id="plant_name" name="plant_name" value="<?php echo $plant_name ;  ?>" hidden >
     <input type="text" id="plant_id" name="plant_id" value="<?php echo $plant_id ;  ?>" hidden >
     <input type="text" name="muat" value="Material" hidden></input>

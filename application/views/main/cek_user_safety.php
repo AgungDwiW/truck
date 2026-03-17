@@ -9,6 +9,6 @@ $user_safety = mysqli_fetch_assoc($query);
 if ($user_safety["user"]<>"safety") {
   				echo "<script>alert('Anda bukan User Safety..!!!');history.go(-1);</script>";
   			}
-else {header("location:main?action=pilih_gate");}
+else {header("location:pilih_gate");}
   			
 ?>

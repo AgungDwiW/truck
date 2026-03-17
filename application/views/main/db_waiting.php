@@ -113,7 +113,7 @@
         <td class="text-uppercase"><?=$data['nopol']; ?></td>
         <td class="text-uppercase"><?=$data['muatan']; ?></td>
         <td>
-          <form method="post" action="main?action=cek_gate2">
+          <form method="post" action="cek_gate2">
           <?=$BTN;?>
           </form>
         </td>
@@ -121,3 +121,4 @@
     <?php } ?>
     </tbody>
   </table>
+

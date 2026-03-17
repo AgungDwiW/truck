@@ -18,7 +18,7 @@ $id_barang  = 'Muat Trial';
 if ($id_shipment !== 'trial') {
     $sql_nop = mysqli_query($con_3, "SELECT * FROM tbl_visit WHERE no_pol='$nopol' ORDER BY tanggal_datang DESC LIMIT 1");
     if (mysqli_num_rows($sql_nop) == 0) {
-        echo "<script>alert('No Pol belum di input di e_Visitor!'); window.location='main?action=FG_cek_nopol';</script>";
+        echo "<script>alert('No Pol belum di input di e_Visitor!'); window.location='FG_cek_nopol';</script>";
         exit;
     }
     $row_nop    = mysqli_fetch_assoc($sql_nop);
@@ -99,7 +99,7 @@ $seq          = 1;
 
 <div class="main-card">
     <h4 style="margin-top:0; color: #333;">Checklist Pemeriksaan</h4>
-    <form method="post" action="main?action=N_gate1">
+    <form method="post" action="N_gate1">
         
         <div class="grid-row">
             <div class="grid-col">

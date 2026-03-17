@@ -51,7 +51,7 @@ foreach ($sql as $row){  ?>
       
 
       <td width="100px" style="color: white; text-align: center">
-      <form method="post" action="main?action=edit_user"> 
+      <form method="post" action="edit_user"> 
 
       <input type="text" name="plant_name" value="<?php echo $row['plant_name']; ?>" hidden></input> 
       <input type="text" name="plant_id" value="<?php echo $row['plant_id']; ?>" hidden></input> 
@@ -74,7 +74,7 @@ foreach ($sql as $row){  ?>
 <br>
 
 
-<form method="post" action="main?action=add_reg_user"> 
+<form method="post" action="add_reg_user"> 
 <input type="text" name="plant_id" value="<?php echo $nPlant; ?>" hidden></input> 
 <button type="submit" class="btn" style="background-color: yellow"><strong>Add Plant</strong></button>
 </form>

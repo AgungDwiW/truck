@@ -36,7 +36,7 @@ while($rowuser = mysqli_fetch_assoc($sql_username)){
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
-    <a class="navbar-brand" href="main?action=index">
+    <a class="navbar-brand" href="index">
       <img src="plugins/icon.png" alt="Logo" style="height: 24px; display: inline-block; margin-top: -4px;">
       Home
     </a>
@@ -65,7 +65,7 @@ while($rowuser = mysqli_fetch_assoc($sql_username)){
     }
     ?>
 
-    <form action="main?action=kirim_input_nopol" method="POST">
+    <form action="kirim_input_nopol" method="POST">
         <input type="hidden" class="form-control" name="plant_update_id" value="<?= $plant_id; ?>" required>
         <input type="hidden" class="form-control" name="plant_update_desc" value="<?= $plant_name; ?>" required>
         <input type="hidden" class="form-control" name="update_by" value="<?= $username; ?>" required>
@@ -123,3 +123,4 @@ while($rowuser = mysqli_fetch_assoc($sql_username)){
 <script src="plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
 </body>
 </html>
+

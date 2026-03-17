@@ -17,7 +17,7 @@ $seq_foto=$row["seq_foto"];
 if ($utama==0 AND $seq_foto==0) {
   mysqli_query($con,"UPDATE tb_ceklist SET utama".$ccp."=1 where idref='$idref'");
   mysqli_query($con,"DELETE FROM tb_foto where idref='$idref' and utama='$ccp' and username='$username'");
-  header("location:main?action=gate1");
+  header("location:gate1");
 }
 
 ?>
@@ -26,7 +26,7 @@ if ($utama==0 AND $seq_foto==0) {
 <div class="container-fluid text-center" style="margin-top: 0px">
 <div style="padding-top: 60px; margin-left: 10px">
 
-<form method="post" action="main?action=gate1_temp"> 
+<form method="post" action="gate1_temp"> 
 <input type="text" id="temp" name="temp" value="1" hidden>
 <input type="text" id="seq" name="seq" value="<?php echo $seq ?>" hidden>
 <input type="text" id="idref" name="idref" value="<?php echo $idref ?>" hidden>
@@ -212,7 +212,7 @@ var loadImageFile = function () {
                 var fd = new FormData(document.forms["form1"]);
  
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'main?action=upload_fail', true);
+                xhr.open('POST', 'upload_fail', true);
 
                 xhr.upload.onprogress = function(e) {
                     if (e.lengthComputable) {

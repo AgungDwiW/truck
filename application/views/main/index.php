@@ -66,7 +66,7 @@ $plant_id   = User::$plantid;
   <div class="kotak_sq">    
     <button type="button" class="btn tombol_hijau" onclick="goToStep(2)">Sudah</button>
 
-    <form method="post" action="main?action=pilih_driver" style="margin: 0;">
+    <form method="post" action="<?=route('pilih_driver')?>" style="margin: 0;">
       <input type="hidden" name="muat" value="">
       <input type="hidden" name="plant_name" value="<?php echo $plant_name; ?>">
       <input type="hidden" name="plant_id" value="<?php echo $plant_id; ?>">
@@ -86,14 +86,14 @@ $plant_id   = User::$plantid;
 <div id="step3" class="step-container">
   <h1><label>Pilih Gate</label></h1>
   <div class="kotak_sq">
-    <form id="formGate1" method="post" action="" style="margin: 0;">
+    <form id="formGate1" method="get" action="" style="margin: 0;">
       <input type="hidden" name="muat" id="muatGate1" value="">
       <button type="submit" class="btn tombol_gate1">GATE 1</button>
     </form>	
     
     <br>
 
-    <form method="post" action="main?action=db_waiting" style="margin: 0;">
+    <form method="get" action="<?=route('db_waiting')?>" style="margin: 0;">
       <input type="hidden" name="muat" id="muatGate2" value="">
       <button type="submit" class="btn tombol_gate2">GATE 2</button>
     </form>	
@@ -118,9 +118,9 @@ $plant_id   = User::$plantid;
     // Dynamically set the Gate 1 URL based on the PHP logic requirement
     var formGate1 = document.getElementById('formGate1');
     if (truckType === 'FG') {
-      formGate1.action = 'main?action=FG_cek_nopol';
+      formGate1.action = '<?=route("FG_cek_nopol")?>';
     } else {
-      formGate1.action = 'main?action=cek_nopol';
+      formGate1.action = 'cek_nopol';
     }
 
     // Proceed to Step 3

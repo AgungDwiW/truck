@@ -4,7 +4,7 @@
 # Auth  : DamarTeduh©2019
 # Create: Cyber 2 | 2019-07-31 11:30 AM
 # Ket   : Main Top Navigation
-# Rev   : 
+# Rev   : Updated for clean URL routing
 */
 ?>
 
@@ -32,16 +32,16 @@
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		<ul class="nav navbar-nav">
 			<li class="nav-item">
-                    <a class="nav-link" href="main?action=index">Home<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="<?=BASE_URL?>main/index">Home<span class="sr-only">(current)</span></a>
             </li>
 			<li class="nav-item">
-                    <a class="nav-link" href="main?action=cek_kpi">Cek KPI<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="<?=BASE_URL?>main/cek_kpi">Cek KPI<span class="sr-only">(current)</span></a>
             </li>     
 		</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user"></i> <?php echo User::$username; ?> <span class="caret"></span></a>
 				  	<ul class="dropdown-menu">
-						<li><a href="auth?action=signout">Sign out</a></li>
+						<li><a href="<?= route("auth_signout") ?>">Sign out</a></li>
 					</ul>
 				</li>
 			</ul>

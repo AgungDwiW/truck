@@ -24,7 +24,7 @@ $plant_id=$_POST['plant_id'];
 
 </div>
 
-<form method="post" action="main?action=reg_user"> 
+<form method="post" action="reg_user"> 
 
 
 <div class="row">

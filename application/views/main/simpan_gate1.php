@@ -85,6 +85,6 @@ if (mysqli_error($con)){
 }
 
 // Redirect back to main index
-header("location:main?action=index");
+header("location:index");
 exit();
 ?>

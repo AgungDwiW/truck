@@ -39,7 +39,7 @@ mysqli_query($con,"INSERT INTO tb_vaksin SET pengendara='$orang', nama='$nama_dr
 
 <h1><label style="font-size: 20px">HELPER</label></h1>
 
-<form method="post" action="main?action=status_vaksin_helper">
+<form method="post" action="status_vaksin_helper">
 <input type="text" id="orang" name="orang" value="helper" hidden >
 
 
@@ -95,7 +95,7 @@ mysqli_query($con,"INSERT INTO tb_vaksin SET pengendara='$orang', nama='$nama_dr
 
 </br>
 
-<form method="post" action="main?action=start">
+<form method="post" action="start">
     <input type="text" name="muat" value="Material" hidden></input>
     <button type="submit" class="btn btn-primary tombol_no">SKIP</button>
 </form> 

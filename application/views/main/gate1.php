@@ -93,7 +93,7 @@ mysqli_query($con,"UPDATE tb_ceklist_utama SET  status_temp=1");
 
 ?>    
       
-    <form method="post" action="main?action=foto_gate1">   
+    <form method="post" action="<?=route('foto_gate1')?>">   
     <div class="row text-center" style="background-color: black">
         <div class="col" style="color: white; font-size:20px; margin-left: 10px; margin-top: 0px" <?php echo $hid; ?> >
           <?php echo "$row[ceklist_utama]"; ?>
@@ -117,7 +117,7 @@ $seq_cek1=$row1["seq"];
             <input type="text" name="lokasi" value="<?php echo $lokasi; ?>" hidden>
 
 
-            <button type="submit" style="margin-left: 10px; margin-bottom: 0px" ><img src="static/css/img/<?php echo $cek; ?>" width="30" height="30"></button>
+            <button type="submit" style="margin-left: 10px; margin-bottom: 0px" ><img src="<?=url('static/css/img/'.$cek)?>" width="30" height="30"></button>
 
         </div>
 
@@ -131,7 +131,7 @@ $seq_cek1=$row1["seq"];
       ?>    
   
 
-<form method="post" action="main?action=simpan_gate1">
+<form method="post" action="<?=route('simpan_gate1')?>">
 <div class="row">
 <div class="col-md-12">
 <div class="text-center bg-info text-dark font-weight-bold" >
@@ -346,3 +346,4 @@ div.cekmark {
   
 </body>
 </html>
+

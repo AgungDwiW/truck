@@ -70,7 +70,7 @@ if ($nopol) {
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
-    <a class="navbar-brand" href="main?action=index">
+    <a class="navbar-brand" href="index">
       <img src="plugins/icon.png" alt="Logo" style="height: 24px; display: inline-block; margin-top: -4px;">
       Home
     </a>
@@ -99,7 +99,7 @@ if ($nopol) {
     }
     ?>
 
-    <form action="main?action=kirim_edit_nopol" method="POST">
+    <form action="kirim_edit_nopol" method="POST">
         <input type="hidden" name="nopol" value="<?= $data['nopol']; ?>">
         <input type="hidden" name="update_by" value="<?= $username; ?>">
 
@@ -149,3 +149,4 @@ if ($nopol) {
 <script src="plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
 </body>
 </html>
+

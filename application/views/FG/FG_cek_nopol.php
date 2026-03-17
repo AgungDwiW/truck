@@ -24,7 +24,7 @@ if ($plant_id<>'90A8') {$link='FG_cek_truck_rev';}
 
   	<div class="kotak_sq">
 
-  	<form method="post" action="main?action=<?php echo $link;  ?>">
+  	<form method="post" action="<?php echo $link;  ?>">
  			 
  		
     <h2><strong><label style="color: yellow; text-align: center;" class="center-block">INPUT NOPOL</label></strong></h2> 

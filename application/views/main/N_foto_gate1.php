@@ -37,7 +37,7 @@ while($row1 = mysqli_fetch_assoc($cek_utama)){
 
 
           <div class="kotak_sq">
-          <form method="post" action="main?action=N_gate1"> 
+          <form method="post" action="N_gate1"> 
              <input type="text" name="idref" value="<?php echo $idref; ?>" hidden></input> 
              <input type="text" name="nopol" value="<?php echo $nopol; ?>" hidden></input> 
              <input type="text" name="lokasi" value="<?php echo $lokasi; ?>" hidden></input> 
@@ -63,7 +63,7 @@ while($row1 = mysqli_fetch_assoc($cek_utama)){
 
 
           <div class="kotak_sq">
-          <form method="post" action="main?action=N_gate1"> 
+          <form method="post" action="N_gate1"> 
              <input type="text" name="idref" value="<?php echo $idref; ?>" hidden></input> 
              <input type="text" name="nopol" value="<?php echo $nopol; ?>" hidden></input> 
              <input type="text" name="lokasi" value="<?php echo $lokasi; ?>" hidden></input> 
@@ -89,7 +89,7 @@ while($row1 = mysqli_fetch_assoc($cek_utama)){
 
 
           <div class="kotak_sq">
-          <form method="post" action="main?action=N_gate1"> 
+          <form method="post" action="N_gate1"> 
              <input type="text" name="idref" value="<?php echo $idref; ?>" hidden></input> 
              <input type="text" name="nopol" value="<?php echo $nopol; ?>" hidden></input> 
              <input type="text" name="lokasi" value="<?php echo $lokasi; ?>" hidden></input> 
@@ -119,7 +119,7 @@ while($row1 = mysqli_fetch_assoc($cek_utama)){
 
 
           <div class="kotak_sq">
-          <form method="post" action="main?action=N_gate1"> 
+          <form method="post" action="N_gate1"> 
              <input type="text" name="idref" value="<?php echo $idref; ?>" hidden></input> 
              <input type="text" name="nopol" value="<?php echo $nopol; ?>" hidden></input> 
              <input type="text" name="lokasi" value="<?php echo $lokasi; ?>" hidden></input> 
@@ -151,7 +151,7 @@ if ($utama==1 and $utama1<>0) {  ?>
 
 
 
-<form method="post" action="main?action=N_gate1"> 
+<form method="post" action="N_gate1"> 
    <input type="text" name="idref" value="<?php echo $idref; ?>" hidden></input> 
    <input type="text" name="nopol" value="<?php echo $nopol; ?>" hidden></input> 
    <input type="text" name="lokasi" value="<?php echo $lokasi; ?>" hidden></input> 
@@ -186,7 +186,7 @@ if ($utama==1 and $utama1<>0) {  ?>
     </div>
 </div>
 <hr>
-<form action="main?action=N_upload_fail" method="post" enctype="multipart/form-data"> 
+<form action="N_upload_fail" method="post" enctype="multipart/form-data"> 
 
 <div class="row">
     <div class="col" >
@@ -250,7 +250,7 @@ if ($utama==2 and $utama2<>0) {  ?>
 
 
 
-<form method="post" action="main?action=N_gate1"> 
+<form method="post" action="N_gate1"> 
    <input type="text" name="idref" value="<?php echo $idref; ?>" hidden></input> 
    <input type="text" name="nopol" value="<?php echo $nopol; ?>" hidden></input> 
    <input type="text" name="lokasi" value="<?php echo $lokasi; ?>" hidden></input> 
@@ -285,7 +285,7 @@ if ($utama==2 and $utama2<>0) {  ?>
     </div>
 </div>
 <hr>
-<form action="main?action=N_upload_fail" method="post" enctype="multipart/form-data"> 
+<form action="N_upload_fail" method="post" enctype="multipart/form-data"> 
 
 <div class="row">
     <div class="col" >
@@ -349,7 +349,7 @@ if ($utama==3 and $utama3<>0) {  ?>
 
 
 
-<form method="post" action="main?action=N_gate1"> 
+<form method="post" action="N_gate1"> 
    <input type="text" name="idref" value="<?php echo $idref; ?>" hidden></input> 
    <input type="text" name="nopol" value="<?php echo $nopol; ?>" hidden></input> 
    <input type="text" name="lokasi" value="<?php echo $lokasi; ?>" hidden></input> 
@@ -384,7 +384,7 @@ if ($utama==3 and $utama3<>0) {  ?>
     </div>
 </div>
 <hr>
-<form action="main?action=N_upload_fail" method="post" enctype="multipart/form-data"> 
+<form action="N_upload_fail" method="post" enctype="multipart/form-data"> 
 
 <div class="row">
     <div class="col" >
@@ -449,7 +449,7 @@ if ($utama==4 and $utama4<>0) {  ?>
 
 
 
-<form method="post" action="main?action=N_gate1"> 
+<form method="post" action="N_gate1"> 
    <input type="text" name="idref" value="<?php echo $idref; ?>" hidden></input> 
    <input type="text" name="nopol" value="<?php echo $nopol; ?>" hidden></input> 
    <input type="text" name="lokasi" value="<?php echo $lokasi; ?>" hidden></input> 
@@ -484,7 +484,7 @@ if ($utama==4 and $utama4<>0) {  ?>
     </div>
 </div>
 <hr>
-<form action="main?action=N_upload_fail" method="post" enctype="multipart/form-data"> 
+<form action="N_upload_fail" method="post" enctype="multipart/form-data"> 
 
 <div class="row">
     <div class="col" >
@@ -635,7 +635,7 @@ var loadImageFile = function () {
                 document.getElementById('hidden_data').value = dataURL;
                 var fd = new FormData(document.forms["form1"]);
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'main?action=N_upload_fail', true);
+                xhr.open('POST', 'N_upload_fail', true);
                 xhr.upload.onprogress = function(e) {
                     if (e.lengthComputable) {
                         var percentComplete = (e.loaded / e.total) * 100;

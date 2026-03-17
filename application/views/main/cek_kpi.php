@@ -49,7 +49,7 @@ $day = date("d");
 ?>
 
 <div class="container-fluid text-center" >
-<a class="btn btn-danger" href="main?action=index">BACK</a>
+<a class="btn btn-danger" href="index">BACK</a>
 </div>
 </br>
 </br>

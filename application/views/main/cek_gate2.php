@@ -39,7 +39,7 @@ if ($muat == 'FG') {
     $sql_nop = mysqli_query($con_3, "SELECT * FROM tbl_visit WHERE REPLACE(no_pol,' ','')='$clean_nopol' ORDER BY tanggal_datang DESC LIMIT 1");
     
     if (mysqli_num_rows($sql_nop) == 0) {
-        echo "<script>alert('No Pol belum di input di e_Visitor...!!!'); window.location='main?action=index';</script>";
+        echo "<script>alert('No Pol belum di input di e_Visitor...!!!'); window.location='index';</script>";
         exit;
     }
 
@@ -116,7 +116,7 @@ if ($muat == 'FG') {
 </style>
 
 <div class="container bg-white p-4 shadow-sm rounded mt-3 mb-5">
-    <form method="post" action="main?action=lanjut_gate2">
+    <form method="post" action="lanjut_gate2">
         <input type="hidden" id="code" name="code" value="<?php echo htmlspecialchars($kode); ?>">
 
         <h4 class="mb-4 text-primary border-bottom pb-2">Informasi Kendaraan & Pengemudi</h4>
