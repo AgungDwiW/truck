@@ -99,7 +99,7 @@ $seq          = 1;
 
 <div class="main-card">
     <h4 style="margin-top:0; color: #333;">Checklist Pemeriksaan</h4>
-    <form method="post" action="N_gate1">
+    <form method="post" action="<?=route('N_gate1')?>">
         
         <div class="grid-row">
             <div class="grid-col">

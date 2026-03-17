@@ -1,6 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<?php
+// Include configuration and static helper
+include_once "application/config/config.php";
+include_once "application/library/autoload.php";
+
+// Initialize static helper
+StaticHelper::init();
+?>
+include  "application/config/connection.php";
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,7 +17,7 @@
 			font-family: 'Stone Sans Regular';
 			font-style: normal;
 			font-weight: normal;
-			src: local('Stone Sans Regular'), url('static/fonts/OpenSans.woff') format('woff');
+			src: local('Stone Sans Regular'), url('<?= static_url('fonts/OpenSans.woff') ?>') format('woff');
 		}
 		body { font-family:'Stone Sans Regular'; }
 		.content { margin-top: 80px; text-align: center; }
@@ -47,7 +53,7 @@
 		<div class="content">
 		
 			<div class="logo">
-				<img src="static/images/logo.png">
+				<?= static_img('images/logo.png') ?>
 			</div>
 			<div id="log"></div>
 			<div class="footer-holder">
@@ -67,4 +73,3 @@
 		</div>
 	</body>
 </html>
-

@@ -11,7 +11,7 @@
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-// Note: $con database connection is assumed to be already available.
+include  "application/config/connection.php";
 
 // ============================================================================
 // INITIALIZE VARIABLES
@@ -42,10 +42,7 @@ if ($sql_username && mysqli_num_rows($sql_username) > 0) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Input Truck</title>
     <link rel="stylesheet" href="plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css">
@@ -63,8 +60,6 @@ if ($sql_username && mysqli_num_rows($sql_username) > 0) {
             text-transform: uppercase;
         }
     </style>
-</head>
-<body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -97,7 +92,7 @@ if ($sql_username && mysqli_num_rows($sql_username) > 0) {
     }
     ?>
     
-    <form action="kirim_input_nopol" method="POST">
+    <form action="<?=route('kirim_input_nopol')?>" method="POST">
         <input type="hidden" class="form-control" name="plant_update_id" value="<?= htmlspecialchars($plant_id) ?>" required>
         <input type="hidden" class="form-control" name="plant_update_desc" value="<?= htmlspecialchars($plant_name) ?>" required>
         <input type="hidden" class="form-control" name="update_by" value="<?= htmlspecialchars($username) ?>" required>
@@ -158,5 +153,3 @@ if ($sql_username && mysqli_num_rows($sql_username) > 0) {
 
 <script src="plugins/js/jquery-3.6.0.min.js"></script>
 <script src="plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
-</body>
-</html>

@@ -1,7 +1,33 @@
 <div class="body-wrap-with-navbar">
 
 <?php
+
 include "application/config/connection.php";
+
+$data = sendPOST("https://adop.co.id/sandbox_api/Customer/GetOrders/", json_encode(
+    [
+    "orderIds"=> ["8000000303"],
+    "orderType"=> null,
+    "OrderStatusId"=> "10",
+    "siteIds"=> [
+        "9045"
+    ],
+    "materialIds"=> null,
+    "pdtStart"=> "2025-02-01",
+    "pdtEnd"=> "2026-02-11",
+    "customerIds"=> ["666"],
+    "customerShipToes"=> ["666"],
+    "transporterId"=> null,
+    "modifiedBy"=> "string",
+    "createdBy"=> "string",
+    "skip"=> 0,
+    "take"=> 1000
+    ]
+    
+    
+    ));
+// Debuger::show();
+// Debuger::dump($data);
 $muat        = $_POST['muat'] ?? '';
 $nopol       = str_replace(' ', '', $_POST['nopol'] ?? '');
 $id_shipment = $_POST['id_shipment'] ?? '';
@@ -15,20 +41,20 @@ $seq          = 1;
 
 
 ?>
-
 <style type="text/css">
-    /* Center the container on the entire screen */
+    /* Ensure the card is always 250px from top, never under navbar */
     body, html {
         height: 100%;
         margin: 0;
     }
 
     .body-wrap-with-navbar {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        padding-top: 250px;           /* Fixed space from top */
         min-height: 100vh;
-        margin-top :-200px;
+        margin: 0;                     /* Remove any negative margin */
+        display: flex;
+        justify-content: center;       /* Keep horizontal centering */
+        align-items: flex-start;       /* Align to top (padding handles spacing) */
     }
 
     .main-card {
@@ -37,7 +63,8 @@ $seq          = 1;
         border-radius: 12px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         width: 100%;
-        max-width: 600px; /* Limits width for better readability */
+        max-width: 600px;
+        margin: 0;                      /* No extra margin – padding on parent controls top */
     }
 
     .form-label {
@@ -66,7 +93,6 @@ $seq          = 1;
         background-color: #218838;
     }
 
-    /* Remove default spacing for cleaner rows */
     .row-custom {
         display: flex;
         gap: 15px;
@@ -79,7 +105,7 @@ $seq          = 1;
 </style>
 
 <div class="main-card">
-    <form method="post" action="N_gate1">
+    <form method="post" action=<?=route("N_gate1")?>>
         
         <div class="mb-4">
             <label class="form-label">Nama Supplier</label>

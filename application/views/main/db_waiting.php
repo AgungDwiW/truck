@@ -61,10 +61,7 @@ if ($result) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Waiting List Gate 2</title>
     <style type="text/css">
@@ -99,8 +96,6 @@ if ($result) {
             font-size: 13px;
         }
     </style>
-</head>
-<body>
 
 <table id="demoA">
     <thead>
@@ -124,7 +119,7 @@ if ($result) {
             <td class="text-uppercase"><?= htmlspecialchars($data['nopol']) ?></td>
             <td class="text-uppercase"><?= htmlspecialchars($data['muatan']) ?></td>
             <td>
-                <form method="post" action="cek_gate2">
+                <form method="post" action="<?=route('cek_gate2')?>">
                     <button type="submit" class="btn btn-success" name="kode" value="<?= htmlspecialchars($data['no']) ?>">
                         Lanjut Gate 2
                     </button>
@@ -135,5 +130,3 @@ if ($result) {
     </tbody>
 </table>
 
-</body>
-</html>

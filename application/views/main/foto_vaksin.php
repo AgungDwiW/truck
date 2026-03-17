@@ -46,12 +46,12 @@ $dosis       = $_POST['dosis'] ?? '';
     <hr>
     
     <!-- Camera input -->
-    <form action="upload_vaksin" method="post" enctype="multipart/form-data">
+    <form action="<?=route('upload_vaksin')?>" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col">
                 <div class="icon_camera">
                     <label for="upload-Image">
-                        <img src="static/css/img/icon_camera.png" width="70" height="70">
+                        <?= static_img('css/img/icon_camera.png', ['width' => '70', 'height' => '70']) ?>
                     </label>
                     <input type="file" name="file" id="upload-Image" capture="capture" onchange="loadImageFile()"/>
                     <div hidden>Original Img - <img id="original-Img"/></div>
@@ -178,5 +178,3 @@ div.cekmark {
 }
 </style>
 
-</body>
-</html>

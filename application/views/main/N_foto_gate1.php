@@ -11,8 +11,8 @@
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-// Note: $con database connection is assumed to be already available.
-
+include  "application/config/connection.php";
+include  "application/config/connection.php";
 // ============================================================================
 // INITIALIZE VARIABLES
 // ============================================================================
@@ -111,7 +111,7 @@ if ($tambah_foto != 1) {
         </head>
         <body>
             <div class="kotak_sq">
-                <form method="post" action="N_gate1">
+                <form method="post" action="<?=route("N_gate1")?>">
                     <input type="hidden" name="idref" value="<?= htmlspecialchars($idref) ?>">
                     <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
                     <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
@@ -144,10 +144,7 @@ if ($utama < 1 || $utama > 4 || $utama_values[$utama] == 0) {
 // HTML OUTPUT STARTS HERE (Photo Upload Form)
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Foto Temuan</title>
     <style type="text/css">
@@ -188,15 +185,13 @@ if ($utama < 1 || $utama > 4 || $utama_values[$utama] == 0) {
             left: 0px;
         }
     </style>
-</head>
-<body>
 
 <script type="text/javascript">window.refresh();</script>
 
 <div class="container-fluid text-center">
     
     <!-- BACK button -->
-    <form method="post" action="N_gate1">
+    <form method="post" action="<?=route("N_gate1")?>">
         <input type="hidden" name="idref" value="<?= htmlspecialchars($idref) ?>">
         <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
         <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
@@ -244,7 +239,7 @@ if ($utama < 1 || $utama > 4 || $utama_values[$utama] == 0) {
             <div class="col">
                 <div class="icon_camera">
                     <label for="upload-Image">
-                        <img src="static/css/img/icon_camera.png" width="70" height="70">
+                        <?= static_img('css/img/icon_camera.png', ['width' => '70', 'height' => '70']) ?>
                     </label>
                     <input type="file" name="file" id="upload-Image" capture="capture" onchange="loadImageFile()"/>
                     <div hidden>Original Img - <img id="original-Img"/></div>
@@ -339,5 +334,3 @@ function klikk() {
 }
 </script>
 
-</body>
-</html>

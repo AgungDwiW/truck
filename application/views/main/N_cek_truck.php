@@ -217,10 +217,7 @@ while ($row = mysqli_fetch_assoc($tujuan_result)) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Truck Check</title>
     <style type="text/css">
@@ -246,11 +243,9 @@ while ($row = mysqli_fetch_assoc($tujuan_result)) {
             filter: alpha(opacity=0);
         }
     </style>
-</head>
-<body>
 
 <div class='container'>
-    <form method="post" action="N_gate1">
+    <form method="post" action="<?=route("N_gate1")?>">
         
         <!-- Row 1: No Polisi, Nama Sopir, Nama Supplier -->
         <div class="row justify-content-md-center">
@@ -317,5 +312,3 @@ while ($row = mysqli_fetch_assoc($tujuan_result)) {
     </form>
 </div>
 
-</body>
-</html>

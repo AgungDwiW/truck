@@ -11,7 +11,7 @@
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-// Note: $con database connection is assumed to be already available.
+include  "application/config/connection.php";
 
 // ============================================================================
 // INITIALIZE VARIABLES
@@ -88,10 +88,7 @@ if ($sukses == 1) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Vaksin</title>
     <style type="text/css">
@@ -136,14 +133,12 @@ if ($sukses == 1) {
             padding: 20px 20px;
         }
     </style>
-</head>
-<body>
 
 <br><br><br><br><br>
 
 <?php if ($orang == 'driver'): ?>
 <div class="kotak_sq">
-    <form method="post" action="pilih_helper">
+    <form method="post" action="<?=route('pilih_helper')?>">
         <input type="hidden" id="plant_name" name="plant_name" value="<?= htmlspecialchars($plant_name) ?>">
         <input type="hidden" id="plant_id" name="plant_id" value="<?= htmlspecialchars($plant_id) ?>">
         <button type="submit" class="btn btn-success tombol_pass">Next Helper</button>
@@ -154,12 +149,10 @@ if ($sukses == 1) {
 
 <?php if ($orang == 'helper'): ?>
 <div class="kotak_sq">
-    <form method="post" action="start">
+    <form method="post" action="<?=route('start')?>">
         <button type="submit" class="btn btn-success tombol_pass">Lanjut</button>
         <br><br>
     </form>
 </div>
 <?php endif; ?>
 
-</body>
-</html>

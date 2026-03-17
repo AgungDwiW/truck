@@ -61,10 +61,7 @@ if (!empty($plants)) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration Overview</title>
     <style>
@@ -98,8 +95,6 @@ if (!empty($plants)) {
             color: white;
         }
     </style>
-</head>
-<body>
 
 <table id="fixed" class="stripe row-border">
     <thead>
@@ -124,7 +119,7 @@ if (!empty($plants)) {
             <td><?= htmlspecialchars($plant_id) ?></td>
             <td><?= $count_user ?></td>
             <td width="100px">
-                <form method="post" action="edit_user">
+                <form method="post" action="<?=route('edit_user')?>">
                     <input type="hidden" name="plant_name" value="<?= htmlspecialchars($row['plant_name']) ?>">
                     <input type="hidden" name="plant_id" value="<?= htmlspecialchars($plant_id) ?>">
                     <button type="submit" class="btn" style="background-color: blue">Add</button>
@@ -140,10 +135,8 @@ if (!empty($plants)) {
 <br>
 
 <!-- Add Plant button -->
-<form method="post" action="add_reg_user">
+<form method="post" action="<?=route('add_reg_user')?>">
     <input type="hidden" name="plant_id" value="<?= htmlspecialchars($nPlant ?? '') ?>">
     <button type="submit" class="btn" style="background-color: yellow"><strong>Add Plant</strong></button>
 </form>
 
-</body>
-</html>

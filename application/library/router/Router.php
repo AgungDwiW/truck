@@ -82,6 +82,7 @@ class Router
 
     public static function addGet($pattern, $name = null)
     {
+        
         // Prepend current group prefix
         if (self::$currentPrefix !== '') {
             $pattern = rtrim(self::$currentPrefix, '/') . '/' . ltrim($pattern, '/');
@@ -321,7 +322,7 @@ class Router
         $view_path = 'index';  // Default view path
         $url = '';
         $route_params = [];
-
+        
         // Get request url and script url
         $request_url = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : '';
         $script_url  = (isset($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : '';

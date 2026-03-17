@@ -13,6 +13,9 @@
 // ============================================================================
 // Note: $con connection is assumed to be already available from parent context
 
+// Initialize static helper
+StaticHelper::init();
+
 // ============================================================================
 // INITIALIZE VARIABLES
 // ============================================================================
@@ -155,10 +158,7 @@ foreach ($utama_values as $idx => $value) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gate 1 Inspection</title>
     <style type="text/css">
@@ -254,8 +254,6 @@ foreach ($utama_values as $idx => $value) {
             left: 0px;
         }
     </style>
-</head>
-<body>
 
 <!-- Header: Kelengkapan Utama -->
 <div class="row text-center" style="background-color: red;">
@@ -290,7 +288,7 @@ foreach ($checkpoint_data as $row):
                 <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
                 
                 <button type="submit" style="margin-left: 10px; margin-bottom: 0px;">
-                    <img src="<?= url('static/css/img/' . $cek_img) ?>" width="30" height="30">
+                    <?= static_img('css/img/' . $cek_img, ['width' => '30', 'height' => '30']) ?>
                 </button>
             </div>
         </div>
@@ -345,28 +343,26 @@ endforeach;
             <div class="text-center bg-info text-dark font-weight-bold">
                 <label>Tindakan Perbaikan :</label>
             </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="text-center font-weight-bold">
+            <input type="text" class="form-control" id="tindakan" name="tindakan">
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="text-center font-weight-bold">
-                <input type="text" class="form-control" id="tindakan" name="tindakan">
-            </div>
-        </div>
-    </div>
-    
-    <!-- Hidden fields -->
-    <input type="hidden" name="idref" value="<?= $idref ?>">
-    <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
-    <input type="hidden" name="petugas" value="<?= htmlspecialchars($petugas) ?>">
-    <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
-    
-    <hr>
-    <div class="row">
-        <button type="submit" class="btn btn-primary center-block">Simpan</button>
-    </div>
-    <hr>
+</div>
+
+<!-- Hidden fields -->
+<input type="hidden" name="idref" value="<?= $idref ?>">
+<input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
+<input type="hidden" name="petugas" value="<?= htmlspecialchars($petugas) ?>">
+<input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
+
+<hr>
+<div class="row">
+    <button type="submit" class="btn btn-primary center-block">Simpan</button>
+</div>
+<hr>
 </form>
 
-</body>
-</html>

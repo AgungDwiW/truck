@@ -11,7 +11,7 @@
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-// Note: $con database connection is assumed to be already available.
+include  "application/config/connection.php";
 
 // ============================================================================
 // INITIALIZE VARIABLES
@@ -105,13 +105,10 @@ if ($day_total > 0) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KPI Dashboard</title>
-    <link rel="stylesheet" href="static/css/kotak.css">
+    <?= static_css('css/kotak.css') ?>
     <style>
         table {
             width: 100%;
@@ -136,8 +133,6 @@ if ($day_total > 0) {
             font-weight: bold;
         }
     </style>
-</head>
-<body>
 
 <div class="container-fluid text-center">
     <a class="btn btn-danger" href="index">BACK</a>
@@ -167,5 +162,3 @@ if ($day_total > 0) {
     </tbody>
 </table>
 
-</body>
-</html>

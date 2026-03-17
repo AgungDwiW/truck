@@ -11,7 +11,7 @@
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-// Note: $con database connection is assumed to be already available.
+include  "application/config/connection.php";
 
 // ============================================================================
 // INITIALIZE VARIABLES
@@ -48,10 +48,7 @@ if ($dosis == 'belum') {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Helper Registration</title>
     <style type="text/css">
@@ -97,13 +94,11 @@ if ($dosis == 'belum') {
             padding: 20px 20px;
         }
     </style>
-</head>
-<body>
 
 <div class="kotak_sq" style="padding-top: 0px;">
     <h1><label style="font-size: 20px">HELPER</label></h1>
     
-    <form method="post" action="status_vaksin_helper">
+    <form method="post" action="<?=route('status_vaksin_helper')?>">
         <input type="hidden" id="orang" name="orang" value="helper">
         
         <!-- Helper Name -->
@@ -150,11 +145,9 @@ if ($dosis == 'belum') {
     <br>
     
     <!-- Skip button -->
-    <form method="post" action="start">
+    <form method="post" action="<?=route('start')?>">
         <input type="hidden" name="muat" value="Material">
         <button type="submit" class="btn btn-primary tombol_no">SKIP</button>
     </form>
 </div>
 
-</body>
-</html>

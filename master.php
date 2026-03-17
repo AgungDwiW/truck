@@ -7,6 +7,9 @@
 */
 
 date_default_timezone_set("Asia/Jakarta");
+
+// Initialize static helper
+StaticHelper::init();
 ?>
 
 <!DOCTYPE html>
@@ -19,22 +22,23 @@ date_default_timezone_set("Asia/Jakarta");
     <link rel="shortcut icon" href="favicon.ico" />
 
     <!-- Fontawesome -->
-    <link href="<?=BASE_URL?>static/css/font-awesome.min.css" rel="stylesheet">
+    <?= static_css('css/font-awesome.min.css') ?>
     
     <!-- Custome Style -->
-    <link rel="stylesheet" href="<?=BASE_URL?>static/css/damarteduh.css">
+    <?= static_css('css/damarteduh.css') ?>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="<?=BASE_URL?>static/css/bootstrap.min.css">
+    <?= static_css('css/bootstrap.min.css') ?>
 
     <!-- table CSS -->
-    <link rel="stylesheet" href="<?=BASE_URL?>static/css/table.css">
+    <?= static_css('css/table.css') ?>
 
     <!-- Load JavaScript Libraries -->
-    <script type="text/javascript" src="<?=BASE_URL?>static/js/jquery-1.12.0.min.js"></script>
+    <?= static_js('js/jquery-1.12.0.min.js') ?>
 
     <!-- Load JavaScript table -->
-    <script type="text/javascript" src="<?=BASE_URL?>static/js/fixed-header.js"></script>
+    <?= static_js('js/fixed-header.js') ?>
+
 
     <title><?php echo APP_DESCRIPTION; ?></title>
   </head>
@@ -48,6 +52,6 @@ date_default_timezone_set("Asia/Jakarta");
     ?>
 
     <!-- Bootstrap Javascript -->
-    <script type="text/javascript" src="<?=BASE_URL?>static/js/bootstrap.min.js"></script>
+    <?= static_js('js/bootstrap.min.js') ?>
   </body>
 </html>

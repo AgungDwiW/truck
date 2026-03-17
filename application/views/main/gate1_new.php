@@ -14,6 +14,9 @@
 include_once APP_DIR . 'models/Checklist.php';
 include_once APP_DIR . 'models/ChecklistParam.php';
 
+// Initialize static helper
+StaticHelper::init();
+
 // ============================================================================
 // INITIALIZE MODELS
 // ============================================================================
@@ -152,10 +155,7 @@ foreach ($utama_values as $idx => $value) {
 // HTML OUTPUT
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gate 1 Inspection (New Model)</title>
     <style type="text/css">
@@ -236,8 +236,6 @@ foreach ($utama_values as $idx => $value) {
             filter: alpha(opacity=0);
         }
     </style>
-</head>
-<body>
 
 <div class="alert alert-info">
     <strong>Note:</strong> This is the new version using Checklist models. 
@@ -277,7 +275,7 @@ foreach ($checkpoint_data as $row):
                 <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
                 
                 <button type="submit" style="margin-left: 10px; margin-bottom: 0px;">
-                    <img src="<?= url('static/css/img/' . $cek_img) ?>" width="30" height="30">
+                    <?= static_img('css/img/' . $cek_img, ['width' => '30', 'height' => '30']) ?>
                 </button>
             </div>
         </div>
@@ -383,5 +381,3 @@ $id = $checklist->createWithParams($checklistData, $paramValues);
     </pre>
 </div>
 
-</body>
-</html>

@@ -12,7 +12,7 @@
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-// Note: $con database connection is assumed to be already available.
+include  "application/config/connection.php";
 
 // ============================================================================
 // INITIALIZE VARIABLES

@@ -64,10 +64,7 @@ function get_jam() {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gate 1 Data Entry</title>
     <style type="text/css">
@@ -93,11 +90,9 @@ function get_jam() {
             filter: alpha(opacity=0);
         }
     </style>
-</head>
-<body>
 
 <div class='container'>
-    <form method="post" action="gate1">
+    <form method="post" action="<?=route('gate1_new')?>">
         
         <!-- Row 1: No Polisi, Nama Sopir, Nama Transporter -->
         <div class="row justify-content-md-center">
@@ -182,5 +177,3 @@ function get_jam() {
     </form>
 </div>
 
-</body>
-</html>

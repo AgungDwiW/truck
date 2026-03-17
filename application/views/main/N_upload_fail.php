@@ -11,7 +11,7 @@
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-// Note: $con database connection is assumed to be already available.
+include  "application/config/connection.php";
 
 // ============================================================================
 // INITIALIZE VARIABLES
@@ -121,10 +121,7 @@ if ($sukses == 1 && !empty($temuan)) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Failure</title>
     <style type="text/css">
@@ -169,15 +166,13 @@ if ($sukses == 1 && !empty($temuan)) {
             padding: 20px 20px;
         }
     </style>
-</head>
-<body>
 
 <br><br><br><br><br>
 
 <div class="kotak_sq">
     
     <!-- BACK button form -->
-    <form method="post" action="N_gate1">
+    <form method="post" action="<?=route("N_gate1")?>">
         <input type="hidden" name="idref" value="<?= htmlspecialchars($idref) ?>">
         <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
         <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
@@ -190,7 +185,7 @@ if ($sukses == 1 && !empty($temuan)) {
     </form>
     
     <!-- Tambah Foto button form -->
-    <form method="post" action="N_foto_gate1">
+    <form method="post" action="<?=route('N_foto_gate1')?>">
         <input type="hidden" name="utama" value="<?= htmlspecialchars($utama) ?>">
         <input type="hidden" name="idref" value="<?= htmlspecialchars($idref) ?>">
         <input type="hidden" name="ceklist" value="<?= htmlspecialchars($ccp) ?>">
@@ -207,5 +202,3 @@ if ($sukses == 1 && !empty($temuan)) {
     
 </div>
 
-</body>
-</html>

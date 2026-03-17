@@ -11,7 +11,7 @@
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-// Note: $con database connection is assumed to be already available.
+include  "application/config/connection.php";
 
 // ============================================================================
 // INITIALIZE VARIABLES
@@ -60,7 +60,7 @@ if (!empty($idref) && !empty($ccp)) {
                AND username = '$username'"
         );
         
-        header("location: gate1");
+        header("location: "+ route("gate1_new"));
         exit;
     }
 }
@@ -85,10 +85,7 @@ if (!empty($ccp)) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foto Gate 1</title>
     <style type="text/css">
@@ -129,14 +126,12 @@ if (!empty($ccp)) {
             left: 0px;
         }
     </style>
-</head>
-<body>
 
 <div class="container-fluid text-center" style="margin-top: 0px">
     <div style="padding-top: 60px; margin-left: 10px">
         
         <!-- BACK button -->
-        <form method="post" action="gate1_temp">
+        <form method="post" action="<?=route('gate1_temp')?>">
             <input type="hidden" id="temp" name="temp" value="1">
             <input type="hidden" id="seq" name="seq" value="<?= htmlspecialchars($seq) ?>">
             <input type="hidden" id="idref" name="idref" value="<?= htmlspecialchars($idref) ?>">
@@ -184,7 +179,7 @@ if (!empty($ccp)) {
         <div class="col">
             <div class="icon_camera">
                 <label for="upload-Image">
-                    <img src="static/css/img/icon_camera.png" width="70" height="70">
+                    <?= static_img('css/img/icon_camera.png', ['width' => '70', 'height' => '70']) ?>
                 </label>
                 <input type="file" name="file" id="upload-Image" capture="capture" onchange="loadImageFile()"/>
                 <div hidden>Original Img - <img id="original-Img"/></div>
@@ -293,5 +288,3 @@ function ambil() {
 }
 </script>
 
-</body>
-</html>

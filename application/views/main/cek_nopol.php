@@ -10,7 +10,7 @@
 <br><br><br>
 
 <div class="kotak_sq">
-    <form method="post" action="N_cek_truck">
+    <form method="post" action="<?= route('N_cek_truck')?>">
         <h2><strong><label style="color: yellow; text-align: center;" class="center-block">INPUT KODE KIRIM</label></strong></h2>
         <input type="text" class="center-block text-uppercase" 
                style="width: 300px; height: 80px; font-size: 50px; text-align: center;" 

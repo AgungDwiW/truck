@@ -6,6 +6,9 @@
 # Ket   : Main Top Navigation
 # Rev   : Updated for clean URL routing
 */
+
+// Initialize static helper
+StaticHelper::init();
 ?>
 
 <style type="text/css">
@@ -27,15 +30,15 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		  </button>
-		  <a class="navbar-brand"><img src="static/images/adop32.png"> <?php echo APP_NAME.'<sup>'.APP_VER.'</sup>'; ?> </a>
+		  <a class="navbar-brand"><?= static_img('images/adop32.png') ?> <?php echo APP_NAME.'<sup>'.APP_VER.'</sup>'; ?> </a>
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		<ul class="nav navbar-nav">
 			<li class="nav-item">
-                    <a class="nav-link" href="<?=BASE_URL?>main/index">Home<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="<?= url('main/index') ?>">Home<span class="sr-only">(current)</span></a>
             </li>
 			<li class="nav-item">
-                    <a class="nav-link" href="<?=BASE_URL?>main/cek_kpi">Cek KPI<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="<?= url('main/cek_kpi') ?>">Cek KPI<span class="sr-only">(current)</span></a>
             </li>     
 		</ul>
 			<ul class="nav navbar-nav navbar-right">

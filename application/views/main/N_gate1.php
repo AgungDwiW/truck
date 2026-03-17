@@ -11,7 +11,7 @@
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-// Note: $con database connection is assumed to be already available.
+include  "application/config/connection.php";
 
 // ============================================================================
 // INITIALIZE VARIABLES
@@ -154,10 +154,7 @@ for ($i = 0; $i <= 4; $i++) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gate 1 Inspection</title>
     <style type="text/css">
@@ -175,8 +172,6 @@ for ($i = 0; $i <= 4; $i++) {
             border-top-right-radius: 0; 
         }
     </style>
-</head>
-<body>
 
 <div class="container-fluid mt-3 mb-5" style="max-width: 800px;">
     
@@ -187,61 +182,54 @@ for ($i = 0; $i <= 4; $i++) {
         </div>
     </div>
     
-    <!-- Checkpoint List -->
-    <?php
-    $no = 1;
-    $hasil = 'Lanjut Pemeriksaan Gate 2';
-    $hasil_color = 'bg-success';
+<!-- Checkpoint List -->
+<?php
+$no = 1;
+$hasil = 'Lanjut Pemeriksaan Gate 2';
+$hasil_color = 'bg-success';
+
+foreach ($checkpoints as $row):
+    $noo = $no - 1;
+    // All checkpoints are now visible (removed hidden logic)
+    $cek_utama = $utama_values[$noo] ?? 1;
     
-    foreach ($checkpoints as $row):
-        $noo = $no - 1;
-        $hid = ($no > 1) ? '' : 'd-none'; // Bootstrap class to hide first? Actually original hides first? Wait original hid first? They used hidden attribute. We'll keep original logic: first checkpoint hidden? Let's examine original: they had $hid='hidden' for $no>1? Actually they set $hid='' for $no>1, else 'hidden'. That means the first checkpoint is hidden? That seems odd. We'll keep original logic.
-        if ($no > 1) {
-            $hid = '';
-        } else {
-            $hid = 'hidden';
-        }
-        
-        $cek_utama = $utama_values[$noo] ?? 1;
-        
-        if ($cek_utama == 1) {
-            $cek_img = 'cekgreen.png';
-        } else {
-            $cek_img = 'red.png';
-            $hasil = 'Di Tolak di Pos 1';
-            $hasil_color = 'bg-danger';
-        }
-    ?>
-    <form method="post" action="N_foto_gate1" class="mb-2 <?= $hid ?>">
-        <div class="row align-items-center rounded shadow-sm mx-0" style="background-color: #212529; color: white;">
-            <div class="col-10 py-2 fs-5">
-                <?= htmlspecialchars($row['ceklist_utama']) ?>
-            </div>
-            <div class="col-2 text-end py-2">
-                <input type="hidden" name="utama" value="<?= $noo ?>">
-                <input type="hidden" name="idref" value="<?= htmlspecialchars($idref) ?>">
-                <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
-                <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
-                <input type="hidden" name="ceklist" value="<?= htmlspecialchars($row['ceklist_utama']) ?>">
-                <input type="hidden" name="kode_kirim" value="<?= htmlspecialchars($kode_kirim) ?>">
-                <input type="hidden" name="driver" value="<?= htmlspecialchars($driver) ?>">
-                <input type="hidden" name="supplier" value="<?= htmlspecialchars($supplier) ?>">
-                
-                <button type="submit" class="btn btn-light btn-sm p-1 rounded">
-                    <img src="static/css/img/<?= $cek_img ?>" width="28" height="28">
-                </button>
-            </div>
+    if ($cek_utama == 1) {
+        $cek_img = 'cekgreen.png';
+    } else {
+        $cek_img = 'red.png';
+        $hasil = 'Di Tolak di Pos 1';
+        $hasil_color = 'bg-danger';
+    }
+?>
+<form method="post" action="<?=route('N_foto_gate1')?>" style="margin-bottom: 12px;">
+    <div class="row" style="background-color: #212529; color: white; border-radius: 6px; padding: 10px 0; margin: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <div class="col-xs-10" style="font-size: 16px; font-weight: 500; line-height: 1.8; padding-left: 15px; white-space: normal; word-wrap: break-word;">
+            <?= htmlspecialchars($row['ceklist_utama']) ?>
         </div>
-    </form>
-    <?php
-        $no++;
-    endforeach;
-    ?>
-    
+        <div class="col-xs-2 text-right" style="padding-right: 10px;">
+            <input type="hidden" name="utama" value="<?= $noo ?>">
+            <input type="hidden" name="idref" value="<?= htmlspecialchars($idref) ?>">
+            <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
+            <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
+            <input type="hidden" name="ceklist" value="<?= htmlspecialchars($row['ceklist_utama']) ?>">
+            <input type="hidden" name="kode_kirim" value="<?= htmlspecialchars($kode_kirim) ?>">
+            <input type="hidden" name="driver" value="<?= htmlspecialchars($driver) ?>">
+            <input type="hidden" name="supplier" value="<?= htmlspecialchars($supplier) ?>">
+            
+            <button type="submit" class="btn btn-default btn-sm" style="padding: 3px 8px; background-color: #f8f9fa; border: none; border-radius: 4px;">
+                <?= static_img('css/img/' . $cek_img, ['width' => '26', 'height' => '26']) ?>
+            </button>
+        </div>
+    </div>
+</form>
+<?php
+    $no++;
+endforeach;
+?>
     <hr class="my-4">
     
     <!-- Inspection Result Form -->
-    <form method="post" action="simpan_gate1">
+    <form method="post" action="<?=route('simpan_gate1')?>">
         
         <!-- Hasil Pemeriksaan -->
         <div class="mb-4 shadow-sm" style='margin-bottom:10px'>
@@ -288,5 +276,3 @@ for ($i = 0; $i <= 4; $i++) {
     </form>
 </div>
 
-</body>
-</html>

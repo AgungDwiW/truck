@@ -18,7 +18,7 @@ $plant_id   = $_POST['plant_id'] ?? '';
     </div>
 </div>
 
-<form method="post" action="reg_user">
+<form method="post" action="<?=route('reg_user')?>">
     
     <!-- Full Name -->
     <div class="row">

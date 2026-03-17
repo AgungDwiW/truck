@@ -13,10 +13,7 @@ $plant_name  = $_POST['plant_name'] ?? '';
 $plant_id    = $_POST['plant_id'] ?? '';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Helper Vaccination Status</title>
     <style type="text/css">
@@ -95,14 +92,12 @@ $plant_id    = $_POST['plant_id'] ?? '';
             padding: 20px 20px;
         }
     </style>
-</head>
-<body>
 
 <div class="kotak_sq" style="padding-top: 0px;">
     <h1><label style="font-size: 20px">HELPER</label></h1>
     
     <!-- 2 doses -->
-    <form method="post" action="foto_vaksin">
+    <form method="post" action="<?= route('foto_vaksin')?>">
         <input type="hidden" name="nama_driver" value="<?= htmlspecialchars($nama_driver) ?>">
         <input type="hidden" name="nik" value="<?= htmlspecialchars($nik) ?>">
         <input type="hidden" name="nama_trans" value="<?= htmlspecialchars($nama_trans) ?>">
@@ -116,7 +111,7 @@ $plant_id    = $_POST['plant_id'] ?? '';
     <br>
     
     <!-- 1 dose -->
-    <form method="post" action="foto_vaksin">
+    <form method="post" action="<?= route('foto_vaksin')?>">
         <input type="hidden" name="nama_driver" value="<?= htmlspecialchars($nama_driver) ?>">
         <input type="hidden" name="nik" value="<?= htmlspecialchars($nik) ?>">
         <input type="hidden" name="nama_trans" value="<?= htmlspecialchars($nama_trans) ?>">
@@ -130,7 +125,7 @@ $plant_id    = $_POST['plant_id'] ?? '';
     <br>
     
     <!-- Exception -->
-    <form method="post" action="foto_vaksin">
+    <form method="post" action="<?= route('foto_vaksin')?>">
         <input type="hidden" name="nama_driver" value="<?= htmlspecialchars($nama_driver) ?>">
         <input type="hidden" name="nik" value="<?= htmlspecialchars($nik) ?>">
         <input type="hidden" name="nama_trans" value="<?= htmlspecialchars($nama_trans) ?>">
@@ -144,7 +139,7 @@ $plant_id    = $_POST['plant_id'] ?? '';
     <br>
     
     <!-- Not vaccinated (go to start) -->
-    <form method="post" action="start">
+    <form method="post" action="<?=route('start')?>">
         <input type="hidden" name="nama_driver" value="<?= htmlspecialchars($nama_driver) ?>">
         <input type="hidden" name="nik" value="<?= htmlspecialchars($nik) ?>">
         <input type="hidden" name="nama_trans" value="<?= htmlspecialchars($nama_trans) ?>">
@@ -158,11 +153,9 @@ $plant_id    = $_POST['plant_id'] ?? '';
     <br>
     
     <!-- Skip (go directly to start) -->
-    <form method="post" action="start">
+    <form method="post" action="<?=route('start')?>">
         <input type="hidden" name="dosis" value="skip">
         <button type="submit" class="btn btn-primary tombol_no">SKIP</button>
     </form>
 </div>
 
-</body>
-</html>

@@ -7,8 +7,8 @@ $username   = User::$username;
 $plant_name = User::$plant_name;
 $plant_id   = User::$plantid;
 
-if ($plant_id=='90A8') {$link='FG_cek_truck';}
-if ($plant_id<>'90A8') {$link='FG_cek_truck_rev';}
+if ($plant_id=='90A8') {$link=route('FG_cek_truck');}
+if ($plant_id<>'90A8') {$link=route('FG_cek_truck_rev');}
 
 
 

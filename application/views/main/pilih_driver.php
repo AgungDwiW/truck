@@ -9,10 +9,7 @@ $plant_name = $_POST['plant_name'] ?? '';
 $plant_id   = $_POST['plant_id'] ?? '';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Driver Registration</title>
     <style type="text/css">
@@ -58,13 +55,11 @@ $plant_id   = $_POST['plant_id'] ?? '';
             padding: 20px 20px;
         }
     </style>
-</head>
-<body>
 
 <div class="kotak_sq" style="padding-top: 0px;">
     <h1><label style="font-size: 20px">DRIVER</label></h1>
     
-    <form method="post" action="status_vaksin">
+    <form method="post" action="<?=route('status_vaksin')?>">
         <input type="hidden" id="orang" name="orang" value="driver">
         <input type="hidden" id="plant_name" name="plant_name" value="<?= htmlspecialchars($plant_name) ?>">
         <input type="hidden" id="plant_id" name="plant_id" value="<?= htmlspecialchars($plant_id) ?>">
@@ -109,7 +104,7 @@ $plant_id   = $_POST['plant_id'] ?? '';
     <br>
     
     <!-- Skip button (go directly to helper registration) -->
-    <form method="post" action="pilih_helper">
+    <form method="post" action="<?=route('pilih_helper')?>">
         <input type="hidden" id="plant_name" name="plant_name" value="<?= htmlspecialchars($plant_name) ?>">
         <input type="hidden" id="plant_id" name="plant_id" value="<?= htmlspecialchars($plant_id) ?>">
         <input type="hidden" name="muat" value="Material">
@@ -117,5 +112,3 @@ $plant_id   = $_POST['plant_id'] ?? '';
     </form>
 </div>
 
-</body>
-</html>

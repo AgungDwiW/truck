@@ -177,10 +177,7 @@ if ($result_tambahan) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gate 2 Inspection</title>
     <style type="text/css">
@@ -203,11 +200,9 @@ if ($result_tambahan) {
         }
         .contain input:checked ~ .checkmark:after { display: block; }
     </style>
-</head>
-<body>
 
 <div class="container bg-white p-4 shadow-sm rounded mt-3 mb-5">
-    <form method="post" action="lanjut_gate2">
+    <form method="post" action="<?=route('lanjut_gate2')?>">
         <input type="hidden" id="code" name="code" value="<?= htmlspecialchars($kode) ?>">
 
         <h4 class="mb-4 text-primary border-bottom pb-2">Informasi Kendaraan & Pengemudi</h4>
@@ -368,5 +363,3 @@ if ($result_tambahan) {
 
     </form>
 </div>
-</body>
-</html>
