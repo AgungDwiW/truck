@@ -1,10 +1,16 @@
+<?php
+// Include configuration and static helper
+include_once "application/config/config.php";
+include_once "application/library/autoload.php";
+
+// Initialize static helper
+StaticHelper::init();
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
-
       <link href="css/bootstrap.min.css" rel="stylesheet">
-      <script src="static/js/js_ori/highcharts.js"></script>
-
+      <?= static_js('js/js_ori/highcharts.js') ?>
   </head>
   <body>
     <?php

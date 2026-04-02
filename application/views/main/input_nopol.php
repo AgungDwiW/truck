@@ -1,19 +1,48 @@
 <?php
-$muat = @$_POST['muat'];
-$username = User::$username;
-$sql_username = mysqli_query($con, "SELECT * FROM tbm_user WHERE nama='$username'");
+/**
+ * Input New Truck Data Page
+ * 
+ * This page allows users to register a new truck by entering its license plate,
+ * type, year, and KIR expiry date.
+ * 
+ * All database queries are consolidated at the top for better maintainability.
+ */
 
-while($rowuser = mysqli_fetch_assoc($sql_username)){
-  $plant_name = $rowuser["plant_name"];
-  $plant_id = $rowuser["plant_id"];
+// ============================================================================
+// INCLUDES & CONFIGURATION
+// ============================================================================
+include  "application/config/connection.php";
+
+// ============================================================================
+// INITIALIZE VARIABLES
+// ============================================================================
+$muat = $_POST['muat'] ?? '';
+$username = User::$username;
+$plant_name = '';
+$plant_id = '';
+
+// ============================================================================
+// DATABASE QUERIES - DATA RETRIEVAL
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// 1. Fetch user's plant information
+// ----------------------------------------------------------------------------
+$sql_username = mysqli_query($con, 
+    "SELECT * FROM tbm_user WHERE nama = '$username'"
+);
+
+if ($sql_username && mysqli_num_rows($sql_username) > 0) {
+    $rowuser = mysqli_fetch_assoc($sql_username);
+    $plant_name = $rowuser["plant_name"];
+    $plant_id   = $rowuser["plant_id"];
 }
 
+// ============================================================================
+// HTML OUTPUT STARTS HERE
+// ============================================================================
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Input Truck</title>
     <link rel="stylesheet" href="plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css">
@@ -26,35 +55,33 @@ while($rowuser = mysqli_fetch_assoc($sql_username)){
             border-radius: 8px;
             background-color: #f9f9f9;
         }
+        
         .nopol-group input {
             text-transform: uppercase;
         }
     </style>
-</head>
-<body>
+
 <!-- Navbar -->
 <nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-    <a class="navbar-brand" href="main?action=index">
-      <img src="plugins/icon.png" alt="Logo" style="height: 24px; display: inline-block; margin-top: -4px;">
-      Home
-    </a>
-
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index">
+                <img src="plugins/icon.png" alt="Logo" style="height: 24px; display: inline-block; margin-top: -4px;">
+                Home
+            </a>
+        </div>
+        <ul class="nav navbar-nav">
+            <!-- Additional nav items can be added here -->
+        </ul>
     </div>
-    <ul class="nav navbar-nav">
-     
-   
-  </div>
 </nav>
 <br>
 
-
-
 <div class="container form-container">
     <h3 class="text-center">Input Data KIR Kendaraan</h3>
-
+    
     <?php
+    // Display session messages
     if (isset($_SESSION['pesan'])) {
         echo '<div class="alert alert-' . $_SESSION['pesan_tipe'] . '" role="alert">';
         echo '<button type="button" class="close" data-dismiss="alert">&times;</button>';
@@ -64,12 +91,13 @@ while($rowuser = mysqli_fetch_assoc($sql_username)){
         unset($_SESSION['pesan_tipe']);
     }
     ?>
-
-    <form action="main?action=kirim_input_nopol" method="POST">
-        <input type="hidden" class="form-control" name="plant_update_id" value="<?= $plant_id; ?>" required>
-        <input type="hidden" class="form-control" name="plant_update_desc" value="<?= $plant_name; ?>" required>
-        <input type="hidden" class="form-control" name="update_by" value="<?= $username; ?>" required>
+    
+    <form action="<?=route('kirim_input_nopol')?>" method="POST">
+        <input type="hidden" class="form-control" name="plant_update_id" value="<?= htmlspecialchars($plant_id) ?>" required>
+        <input type="hidden" class="form-control" name="plant_update_desc" value="<?= htmlspecialchars($plant_name) ?>" required>
+        <input type="hidden" class="form-control" name="update_by" value="<?= htmlspecialchars($username) ?>" required>
         
+        <!-- License plate split into three parts -->
         <label>Nomor Polisi</label>
         <div class="form-group nopol-group">
             <div class="row">
@@ -84,7 +112,8 @@ while($rowuser = mysqli_fetch_assoc($sql_username)){
                 </div>
             </div>
         </div>
-
+        
+        <!-- Truck type dropdown -->
         <div class="form-group">
             <label for="tipe_truck">Tipe Truck</label>
             <select class="form-control" name="tipe_truck" required>
@@ -96,7 +125,8 @@ while($rowuser = mysqli_fetch_assoc($sql_username)){
                 <option value="Wingbox">Wingbox</option>
             </select>
         </div>
-
+        
+        <!-- Year of manufacture dropdown -->
         <div class="form-group">
             <label for="tahun_pembuatan">Tahun Pembuatan</label>
             <select class="form-control" name="tahun_pembuatan" required>
@@ -104,22 +134,22 @@ while($rowuser = mysqli_fetch_assoc($sql_username)){
                 <?php
                 $tahun_sekarang = date('Y');
                 for ($i = $tahun_sekarang; $i >= 2000; $i--) {
-                    echo "<option value='$i'>$i</option>";
+                    echo "<option value='" . $i . "'>" . $i . "</option>";
                 }
                 ?>
             </select>
         </div>
-
+        
+        <!-- KIR expiry date -->
         <div class="form-group">
             <label for="kir_date">Tanggal Expired KIR</label>
             <input type="date" class="form-control" name="kir_date" required>
         </div>
-
+        
+        <!-- Submit button -->
         <button type="submit" class="btn btn-primary btn-block">Simpan Data</button>
     </form>
 </div>
 
 <script src="plugins/js/jquery-3.6.0.min.js"></script>
 <script src="plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
-</body>
-</html>

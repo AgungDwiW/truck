@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="static/css/pikaday.css" />
+<?= static_css('css/pikaday.css') ?>
 <?php
 /*
 # Auth  : Dyah PP Wardhana (c) DamarTeduh 2018
@@ -144,10 +144,10 @@ function setPeriode($judul,$tglStart,$tglEnd,$otherMenu){
 ?>
 
 <!-- Expport to Excel -->
-<script type="text/javascript" src="static/js/xlsx.core.min.js"></script>
-<script type="text/javascript" src="static/js/Blob.js"></script>
-<script type="text/javascript" src="static/js/FileSaver.js"></script>
-<script type="text/javascript" src="static/js/Export2Excel.js"></script>
+<?= static_js('js/xlsx.core.min.js') ?>
+<?= static_js('js/Blob.js') ?>
+<?= static_js('js/FileSaver.js') ?>
+<?= static_js('js/Export2Excel.js') ?>
 <style type="text/css">
 	.damarheader {margin: 15px 0;}
 	.damarheader > form {vertical-align: top; }
@@ -182,8 +182,8 @@ function setPeriode($judul,$tglStart,$tglEnd,$otherMenu){
 </style>
 
 <!-- Date Picker -->
-<!-- <script src="static/js/jquery-ui.js"></script> -->
-<!-- <link rel="stylesheet" href="static/css/jquery-ui.css"> -->
 
-<script src="static/js/moment.min.js"></script>
-<script src="static/js/pikaday.js"></script>
+
+
+<?= static_js('js/moment.min.js') ?>
+<?= static_js('js/pikaday.js') ?>

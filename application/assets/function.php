@@ -40,7 +40,7 @@ function utama(){
                 $.ajax({
 
                     type:"POST",
-                    url:"status_utama.php",
+                    url:"<?=route('status_utama.php')?>",
                     data:datas,
                     cache:false,
                     dataType:'json',
@@ -88,7 +88,7 @@ function utama(){
                 $.ajax({
 
                     type:"POST",
-                    url:"application/views/main/status_tambahan.php",
+                    url:"<?=route('status_tambahan.php')?>",
                     data:datas,
                     cache:false,
                     dataType:'json',
@@ -133,7 +133,7 @@ function utama(){
                 $.ajax({
 
                     type:"POST",
-                    url:"status_tambahan_qa.php",
+                    url:"<?=route('status_tambahan_qa.php')?>",
                     data:datas,
                     cache:false,
                     dataType:'json',
@@ -182,7 +182,7 @@ function utama(){
                 $.ajax({
 
                     type:"POST",
-                    url:"status_all.php",
+                    url:"<?=route('status_all.php')?>",
                     data:datas,
                     cache:false,
                     dataType:'json',
@@ -212,7 +212,7 @@ function utama(){
                 $.ajax({
 
                     type:"POST",
-                    url:"cari.php",
+                    url:"<?=route('cari.php')?>",
                     data:datadb,
                     cache:false,
                     dataType:'json',
@@ -241,7 +241,7 @@ function utama(){
                 $.ajax({
 
                     type:"POST",
-                    url:"cari_sopir.php",
+                    url:"<?=route('cari_sopir.php')?>",
                     data:datadb1,
                     cache:false,
                     dataType:'json',
@@ -361,7 +361,7 @@ function utama(){
                 $.ajax({
 
                     type:"POST",
-                    url:"simpan_db.php",
+                    url:"<?=route('simpan_db.php')?>",
                     data:datastring,
                     cache:false,
                     dataType:'json',
@@ -426,7 +426,7 @@ function simpan_gate(){
                 $.ajax({
 
                     type:"POST",
-                    url:"simpan_db_gate2.php",
+                    url:"<?=route('simpan_db_gate2.php')?>",
                     data:datastring,
                     cache:false,
                     dataType:'json',

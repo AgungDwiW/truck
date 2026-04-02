@@ -1,6 +1,9 @@
-﻿<?php
+<?php
 include "application/models/auth/User.php";
-include_once "application/library/autoloader.php";
+include_once "application/library/autoload.php";
+
+// Initialize static helper
+StaticHelper::init();
 
 session_start();
 if (User::checkLogin())
@@ -12,7 +15,7 @@ if(isset($_POST["username"]) AND isset($_POST["password"])) {
 	$USER = new User();
   	if($USER->login( $_POST['username'], $_POST['password'])){
 		if (!$debug)
-			header("location:main");
+			header("location:main/index");
 	}
 	echo "<script type='text/javascript'>document.getElementById('log').innerHTML='ALERT! Login failed...'</script>";
 }
@@ -26,8 +29,8 @@ if(isset($_POST["username"]) AND isset($_POST["password"])) {
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title><?php echo APP_NAME; ?></title>
 		<link rel="shortcut icon"  href="favicon.ico">
-		<link href="static/css/font-awesome.min.css" rel="stylesheet">
-		<link href="static/css/damar-login.css" rel="stylesheet">
+		<?= static_css('css/font-awesome.min.css') ?>
+		<?= static_css('css/damar-login.css') ?>
 	</head>
 	<body>
 		<div class="responsive-column">
@@ -38,7 +41,7 @@ if(isset($_POST["username"]) AND isset($_POST["password"])) {
 				<small><?php echo APP_DESCRIPTION; ?></small></h1>
 			</div>
 			<!-- <div><a href="loginsso.php">Login SSO</a></div> -->
-			<div class="logo"><img src="static/images/aqua217.png"></div>
+			<div class="logo"><?= static_img('images/aqua217.png') ?></div>
 			<div id="log"></div>
 			<div class="footer-holder">
 				<form action="#" method="POST">
@@ -61,4 +64,3 @@ if(isset($_POST["username"]) AND isset($_POST["password"])) {
 		</div>
 	</body>
 </html>
-

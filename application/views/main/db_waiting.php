@@ -1,123 +1,132 @@
-
 <?php
-  include_once "application/config/connectionSL.php";
-  include_once "application/config/connectionEvisitor.php";
-    $muat = @$_POST['muat'];
-    $PLANT = User::$plantid;
-    $MUATAN = $muat=='FG'?"FG":"Material";
-    $TGLTRUCK = date('Y-m-d', strtotime(date('Y-m-d') .' -2 day'));
-    $TGLEVISITOR = date('Y-m-d', strtotime(date('Y-m-d') .' -21 day'));
+/**
+ * Waiting List for Gate 2 Inspections
+ * 
+ * This page displays a list of trucks that have passed Gate 1 and are waiting
+ * for Gate 2 inspection. It allows inspectors to proceed to Gate 2.
+ * 
+ * All database queries are consolidated at the top for better maintainability.
+ */
+
+// ============================================================================
+// INCLUDES & CONFIGURATION
+// ============================================================================
+include_once "application/config/connectionSL.php";
+include_once "application/config/connectionEvisitor.php";
+
+// ============================================================================
+// INITIALIZE VARIABLES
+// ============================================================================
+$muat = $_POST['muat'] ?? '';
+$PLANT = User::$plantid;
+$MUATAN = ($muat == 'FG') ? "FG" : "Material";
+$TGLTRUCK = date('Y-m-d', strtotime(date('Y-m-d') . ' -2 day'));
+$TGLEVISITOR = date('Y-m-d', strtotime(date('Y-m-d') . ' -21 day'));
+$now = date("Y-m-d");
+
+$waiting_list = array(); // will store inspection records
+
+// ============================================================================
+// DATABASE QUERIES - DATA RETRIEVAL
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// 1. Fetch inspections waiting for Gate 2
+// ----------------------------------------------------------------------------
+$str = "
+    SELECT 
+        ck.`no`, 
+        ck.`petugas_pemeriksa`, 
+        ck.plant_name, 
+        ck.tgbaca, 
+        ck.nopol, 
+        ck.muatan, 
+        DATE(ck.tgbaca) AS TGLPERIKSA
+    FROM dbtruck.tb_ceklist ck
+    WHERE 
+        DATE(tgbaca) BETWEEN '{$TGLTRUCK}' AND '{$now}'
+        AND hasil_pemeriksaan = 'Lanjut Pemeriksaan Gate 2' 
+        AND ck.plant_id = '{$PLANT}' 
+        AND muatan = '{$MUATAN}'
+";
+
+$result = mysqli_query($conSL, $str);
+if ($result) {
+    while ($data = mysqli_fetch_assoc($result)) {
+        $waiting_list[] = $data;
+    }
+}
+
+// ============================================================================
+// HTML OUTPUT STARTS HERE
+// ============================================================================
 ?>
 
-<style type="text/css">
-  span.btn { background: red; color: white; padding: 5px; border: 1px solid red; border-radius: 5px; }
-  #demoA thead, #demoA tbody { display: block; }
-  #demoA tbody {
-    max-height: 350px;
-    overflow: auto;
-    font-size: 13px;
-  }
-  #demoA { 
-    width:100%; 
-    background-color: #566b91;
-  }
-  #demoA th, #demoA td {
-    width: 500px;
-    font-size: 20px;
-    padding: 10px;
-    text-align: left;
-    font-size: 13px;
-  }
-  /*#demoA thead { background: black; }*/
-</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waiting List Gate 2</title>
+    <style type="text/css">
+        span.btn { 
+            background: red; 
+            color: white; 
+            padding: 5px; 
+            border: 1px solid red; 
+            border-radius: 5px; 
+        }
+        
+        #demoA thead, #demoA tbody { 
+            display: block; 
+        }
+        
+        #demoA tbody {
+            max-height: 350px;
+            overflow: auto;
+            font-size: 13px;
+        }
+        
+        #demoA { 
+            width: 100%; 
+            background-color: #566b91;
+        }
+        
+        #demoA th, #demoA td {
+            width: 500px;
+            font-size: 20px;
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+        }
+    </style>
 
 <table id="demoA">
-  <thead>
-    <tr>
-      <th>No</th>
-      <th>Pemeriksa</th>
-      <th>Plant</th>
-      <th>Tanggal</th>
-      <th>Nopol</th>
-      <th>Muatan</th>
-      <th>Cek Gate</th>   
-    </tr>
-  </thead>
-  <tbody>
-  <?php 
-    // SELECT * FROM (SELECT `no`, `petugas_pemeriksa`, plant_name, tgbaca, nopol, muatan, DATE(tgbaca) TGLPERIKSA FROM dbtruck.tb_ceklist WHERE DATE(tgbaca) BETWEEN '2022-06-30' AND '2022-07-02' AND hasil_pemeriksaan = 'Lanjut Pemeriksaan Gate 2' and plant_id = '9009' and muatan='FG') T1 LEFT JOIN (SELECT DATE(tanggal_datang) TGLDATANG, TRIM(no_pol) NOPOL FROM evisitor.tbl_visit WHERE plant_id = '9009' AND tanggal_datang BETWEEN '2022-06-25' AND '2022-07-02') T2 ON UPPER(T2.NOPOL)=UPPER(T1.nopol)
-
-    //$str = "SELECT * FROM (SELECT `no`, `petugas_pemeriksa`, plant_name, tgbaca, nopol, muatan, DATE(tgbaca) TGLPERIKSA  FROM dbtruck.tb_ceklist WHERE MONTH(tgbaca) = ".$bln." AND YEAR(tgbaca) = ".$THN." AND hasil_pemeriksaan = 'Lanjut Pemeriksaan Gate 2' and plant_id = '".$PLANT."' and muatan='".$MUATAN."') T1 LEFT JOIN (SELECT DATE(tanggal_datang) TGLDATANG, TRIM(no_pol) NOPOL FROM evisitor.tbl_visit WHERE plant_id = '".$PLANT."') T2 ON T2.NOPOL=T1.nopol AND T1.TGLPERIKSA = T2.TGLDATANG";
-  
-    $str = "SELECT * FROM (SELECT `no`, `petugas_pemeriksa`, plant_name, tgbaca, nopol, muatan, DATE(tgbaca) TGLPERIKSA  FROM dbtruck.tb_ceklist WHERE DATE(tgbaca) BETWEEN '".$TGLTRUCK."' AND '".date("Y-m-d")."' AND hasil_pemeriksaan = 'Lanjut Pemeriksaan Gate 2' and plant_id = '".$PLANT."' and muatan='".$MUATAN."') T1 LEFT JOIN (SELECT TRIM(no_pol) NOPOL, DATE(tanggal_datang) TGLDATANG FROM evisitor.tbl_visit WHERE plant_id = '".$PLANT."' AND DATE(tanggal_datang) BETWEEN '".$TGLEVISITOR."' AND '".date("Y-m-d")."' AND no_pol != '' GROUP BY TRIM(no_pol)) T2 ON T2.NOPOL=T1.nopol";
-    $now = date("Y-m-d");
-    $str = "SELECT 
-                    ck.`no`, 
-                    ck.`petugas_pemeriksa`, 
-                    ck.plant_name, 
-                    ck.tgbaca, 
-                    ck.nopol, 
-                    ck.muatan, 
-                    DATE(ck.tgbaca) AS TGLPERIKSA ,
-                    DATE(vis.tanggal_datang) AS TGLDATANG 
-                FROM dbtruck.tb_ceklist ck
-                left join evisitor.tbl_visit vis
-                ON trim(ck.NOPOL) = trim(vis.no_pol)
-                WHERE 
-                    DATE(tgbaca) BETWEEN '{$TGLTRUCK}' AND '{$now}'
-                    AND hasil_pemeriksaan = 'Lanjut Pemeriksaan Gate 2' 
-                    AND ck.plant_id = '{$PLANT}' 
-                    AND muatan = '{$MUATAN}'
-                    AND DATE(tanggal_datang) BETWEEN '{$TGLEVISITOR}' AND '{$now}'
-                    AND no_pol != '' 
-            ";
-    $str = "SELECT 
-                    ck.`no`, 
-                    ck.`petugas_pemeriksa`, 
-                    ck.plant_name, 
-                    ck.tgbaca, 
-                    ck.nopol, 
-                    ck.muatan, 
-                    DATE(ck.tgbaca) AS TGLPERIKSA
-                FROM dbtruck.tb_ceklist ck
-                WHERE 
-                    DATE(tgbaca) BETWEEN '{$TGLTRUCK}' AND '{$now}'
-                    AND hasil_pemeriksaan = 'Lanjut Pemeriksaan Gate 2' 
-                    AND ck.plant_id = '{$PLANT}' 
-                    AND muatan = '{$MUATAN}'
-            ";
-
-    $result = mysqli_query($conSL, $str);
-    while ($data = mysqli_fetch_assoc($result)) {
-      // echo "<pre>";
-      // print_r($data);
-      // echo "</pre>";
-      // $str = "SELECT count(*) c FROM tbl_visit WHERE 
-      //       no_pol = '{$data['nopol']}' AND  
-      //       DATE(tanggal_datang) BETWEEN '{$TGLEVISITOR}' AND '{$now}'";
-      // echo "<pre>";
-      // print_r($str);
-      // echo "</pre>";
-      // $result2 = mysqli_query($con_3, $str);
-      // $count = mysqli_fetch_assoc($result2);
-      // $count = 0;  
-      // $BTN = "<a href='https://adop.danet/evisitor/tamu?ac=regtamu2'><span class='btn'>Input eVisitor</span></a>";
-      // if(isset($count['c']) && $count['c'] >0) 
-      $BTN = "<button type='submit' class='btn btn-success' name='kode' value='".$data['no']."'>Lanjut Gate 2</button>";
-  ?>
-      <tr>
-        <td><?=$data['no']; ?></td>
-        <td><?=$data['petugas_pemeriksa']; ?></td>
-        <td><?=$data['plant_name']; ?></td>
-        <td><?=$data['tgbaca']; ?></td>
-        <td class="text-uppercase"><?=$data['nopol']; ?></td>
-        <td class="text-uppercase"><?=$data['muatan']; ?></td>
-        <td>
-          <form method="post" action="main?action=cek_gate2">
-          <?=$BTN;?>
-          </form>
-        </td>
-      </tr>
-    <?php } ?>
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Pemeriksa</th>
+            <th>Plant</th>
+            <th>Tanggal</th>
+            <th>Nopol</th>
+            <th>Muatan</th>
+            <th>Cek Gate</th>   
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($waiting_list as $data): ?>
+        <tr>
+            <td><?= htmlspecialchars($data['no']) ?></td>
+            <td><?= htmlspecialchars($data['petugas_pemeriksa']) ?></td>
+            <td><?= htmlspecialchars($data['plant_name']) ?></td>
+            <td><?= htmlspecialchars($data['tgbaca']) ?></td>
+            <td class="text-uppercase"><?= htmlspecialchars($data['nopol']) ?></td>
+            <td class="text-uppercase"><?= htmlspecialchars($data['muatan']) ?></td>
+            <td>
+                <form method="post" action="<?=route('cek_gate2')?>">
+                    <button type="submit" class="btn btn-success" name="kode" value="<?= htmlspecialchars($data['no']) ?>">
+                        Lanjut Gate 2
+                    </button>
+                </form>
+            </td>
+        </tr>
+    <?php endforeach; ?>
     </tbody>
-  </table>
+</table>
+

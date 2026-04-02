@@ -16,17 +16,19 @@ foreach ($_GET as $key => $value) $_GET[$key] = preg_replace('/[^a-zA-Z0-9_ -]/s
 
 # Load config
 include_once "application/config/config.php";
-include_once "application/library/autoloader.php";
+include_once "application/library/autoload.php";
 include_once "application/models/auth/User.php";
+
 
 if(!User::checkLogin()){
     // printpre("login failed",1);
     echo"<script type='text/javascript'>alert('Session sudah habis, perubahan data pada sistem yang dilakukan sebelumnnya belum tersimpan. Mohon log in kembali dan lakukan perubahan kembali.');window.location.href='login.php'</script>";
 
     exit;
-    }
-
+}
+Router::handleRouting();
 // Set our defaults
+
 $controller = 'main';
 $action = 'index';
 $url = '';

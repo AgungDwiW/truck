@@ -6,7 +6,7 @@
 # Ket   : Main controller
 */
 
-define('ROOT_DIR', realpath(dirname(__FILE__)) .'/');
+define('ROOT_DIR', realpath(dirname(__FILE__))."/.."."/.." .'/');
 define('APP_DIR', 'application/');
 define('APP_NAME', 'e_Truck Inspection');
 define('APP_DESCRIPTION', 'Truck Inspection');
