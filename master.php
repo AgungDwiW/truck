@@ -36,6 +36,8 @@ date_default_timezone_set("Asia/Jakarta");
     <!-- Load JavaScript table -->
     <script type="text/javascript" src="static/js/fixed-header.js"></script>
 
+
+
     <title><?php echo APP_DESCRIPTION; ?></title>
   </head>
   <body>

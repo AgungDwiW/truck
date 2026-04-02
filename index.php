@@ -20,8 +20,8 @@ include_once "application/library/autoloader.php";
 include_once "application/models/auth/User.php";
 
 if(!User::checkLogin()){
-    printpre("login failed",1);
-    // echo"<script type='text/javascript'>alert('Session sudah habis, perubahan data pada sistem yang dilakukan sebelumnnya belum tersimpan. Mohon log in kembali dan lakukan perubahan kembali.');window.location.href='login.php'</script>";
+    // printpre("login failed",1);
+    echo"<script type='text/javascript'>alert('Session sudah habis, perubahan data pada sistem yang dilakukan sebelumnnya belum tersimpan. Mohon log in kembali dan lakukan perubahan kembali.');window.location.href='login.php'</script>";
 
     exit;
     }

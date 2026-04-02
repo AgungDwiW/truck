@@ -3,8 +3,10 @@ include "application/models/auth/User.php";
 include_once "application/library/autoloader.php";
 
 session_start();
+if (User::checkLogin())
+	header("location:main");
 // $debug = 1;
-printpre($_SESSION,1);
+// printpre($_SESSION,1);
 # Event Login 
 if(isset($_POST["username"]) AND isset($_POST["password"])) {
 	$USER = new User();
@@ -32,7 +34,7 @@ if(isset($_POST["username"]) AND isset($_POST["password"])) {
 		</div>
 		<div class="content">
 			<div class="header-holder">
-				<h1><sup><img src="static/images/adop16.png"></sup> <?php echo APP_NAME; ?> <sup><?php echo APP_VER; ?></sup> Buy & Sell
+				<h1><sup><img src="static/images/adop16.png"></sup> <?php echo APP_NAME; ?> <sup><?php echo APP_VER; ?></sup>
 				<small><?php echo APP_DESCRIPTION; ?></small></h1>
 			</div>
 			<!-- <div><a href="loginsso.php">Login SSO</a></div> -->
