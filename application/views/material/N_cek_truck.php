@@ -16,6 +16,8 @@
 // ============================================================================
 // INITIALIZE VARIABLES
 // ============================================================================
+include  "application/config/connectioncloud.php";
+include  "application/config/connection.php";
 $kode_kirim = $_POST['kode_kirim'] ?? '';
 $muat       = $_POST['muat'] ?? '';
 
@@ -151,10 +153,9 @@ if ($debug) {
 // ----------------------------------------------------------------------------
 // 4. Check if the delivery exists for today
 // ----------------------------------------------------------------------------
-$sql_nopol = mysqli_query($con2, 
-    "SELECT * FROM tbl_pengiriman 
-     WHERE kode_pengiriman = '$kode_kirim' AND tgl_kedatangan = '$date'"
-);
+$sql = "SELECT * FROM tbl_pengiriman_combined
+     WHERE kode_pengiriman = '$kode_kirim' AND tgl_kedatangan = '$date'";
+$sql_nopol = mysqli_query($concloud, $sql);
 $count_nopol = mysqli_num_rows($sql_nopol);
 
 if ($count_nopol == 0) {
@@ -183,7 +184,7 @@ while ($rownopol = mysqli_fetch_assoc($sql_nopol)) {
 // ----------------------------------------------------------------------------
 if ($count_nopol != 0) {
     $query = "
-        INSERT INTO tb_ceklist 
+        INSERT INTO tbl_checklist 
         SET seq                = '$seq',
             idref              = '$idref',
             petugas_pemeriksa  = '$username',
@@ -201,6 +202,7 @@ if ($count_nopol != 0) {
     ";
     
     mysqli_query($con, $query);
+    $id_checklist = mysqli_insert_id($con);
 }
 
 // ----------------------------------------------------------------------------
@@ -246,7 +248,7 @@ while ($row = mysqli_fetch_assoc($tujuan_result)) {
 
 <div class='container'>
     <form method="post" action="<?=route("N_gate1")?>">
-        
+        <input type='hidden' name='id_checklist' value='<?=$id_checklist?>'>
         <!-- Row 1: No Polisi, Nama Sopir, Nama Supplier -->
         <div class="row justify-content-md-center">
             <div class="col">

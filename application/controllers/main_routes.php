@@ -21,14 +21,11 @@ Router::group('main', function() {
     Router::addGet('foto_gate1',  'foto_gate1');
     Router::addGet('upload_fail',  'upload_fail');
     Router::addGet('gate1_temp',  'gate1_temp');
-    Router::addGet('db_waiting',  'db_waiting');
-    Router::addGet('cek_gate2',  'cek_gate2');
-    Router::addGet('lanjut_gate2',  'lanjut_gate2');
+
     Router::addGet('cek_kpi',  'cek_kpi');
-    Router::addGet('cek_nopol',  'cek_nopol');
-    Router::addGet('N_cek_truck',  'N_cek_truck');
-    Router::addGet('N_gate1',  'N_gate1');
-    Router::addGet('N_gate_api',  'N_gate_api');
+    
+
+    
     Router::addGet('N_foto_gate1',  'N_foto_gate1');
     Router::addGet('N_upload_fail',  'N_upload_fail');
     Router::addGet('reg_user',  'reg_user');
@@ -50,7 +47,7 @@ Router::group('main', function() {
     // ============================================
     // AJAX endpoints (POST)
     // ============================================
-    Router::addPost('simpan_gate1', 'simpan_gate1');
+
     Router::addPost('status_utama', 'status_utama');
     Router::addPost('status_tambahan', 'status_tambahan');
     Router::addPost('status_tambahan_qa', 'status_tambahan_qa');

@@ -131,7 +131,7 @@ $plant_id   = User::$plantid;
         if (truckType === 'FG') {
             formGate1.action = '<?= route("FG_cek_nopol") ?>';
         } else {
-            formGate1.action = 'cek_nopol';
+            formGate1.action = '<?= route("cek_nopol") ?>';
         }
         
         // Proceed to Step 3

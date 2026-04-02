@@ -2,7 +2,7 @@
 <?php
 include_once "application/config/connection.php";
 include_once "application/config/connection140.php";
-$muat = @$_POST['muat'];
+$muat = $_GET['muat'];
 $username   = User::$username;
 $plant_name = User::$plant_name;
 $plant_id   = User::$plantid;
@@ -24,7 +24,7 @@ if ($plant_id<>'90A8') {$link=route('FG_cek_truck_rev');}
 
   	<div class="kotak_sq">
 
-  	<form method="post" action="<?php echo $link;  ?>">
+  	<form method="get" action="<?php echo $link;  ?>">
  			 
  		
     <h2><strong><label style="color: yellow; text-align: center;" class="center-block">INPUT NOPOL</label></strong></h2> 

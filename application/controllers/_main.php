@@ -56,7 +56,6 @@ switch($action){
         break;
 
     // Cases that use master.php template without navigation header
-    case 'simpan_gate1':
     case 'vmipost':
     case 'simupost':
         require('master.php');
