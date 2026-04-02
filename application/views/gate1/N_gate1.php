@@ -97,25 +97,6 @@ else{
 }
 
 // ----------------------------------------------------------------------------
-// 2. Update temporary status (global operation)
-// ----------------------------------------------------------------------------
-mysqli_query($con, "UPDATE tb_param_name SET status_temp = 1");
-
-// ----------------------------------------------------------------------------
-// 3. Fetch current inspection record (if exists)
-// ----------------------------------------------------------------------------
-$row_utama = array();
-if (!empty($idref)) {
-    $ceklist_query = mysqli_query($con, 
-        "SELECT * FROM tb_ceklist WHERE idref = '$idref' LIMIT 1"
-    );
-    
-    if ($ceklist_query && mysqli_num_rows($ceklist_query) > 0) {
-        $row_utama = mysqli_fetch_assoc($ceklist_query);
-    }
-}
-
-// ----------------------------------------------------------------------------
 // 4. Fetch all checkpoints (utama) for display
 // ----------------------------------------------------------------------------
 $result = mysqli_query($con, 
@@ -133,14 +114,6 @@ if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
         $checkpoints[] = $row;
     }
-}
-
-// ----------------------------------------------------------------------------
-// 5. Determine overall inspection result based on utama values
-// ----------------------------------------------------------------------------
-$utama_values = array();
-for ($i = 0; $i <= 4; $i++) {
-    $utama_values[$i] = $row_utama["utama".$i] ?? 1;
 }
 
 // ============================================================================
@@ -352,17 +325,7 @@ $(document).ready(function() {
 
         foreach ($checkpoints as $row):
             $noo = $no - 1;
-            $cek_utama = $utama_values[$noo] ?? 1;
-            
-            // Set dynamic row background color and borders based on initial state
-            $row_bg       = ($cek_utama == 1) ? '#28a745' : '#dc3545';
-            $border_green = ($cek_utama == 1) ? '2px solid #ffffff' : '2px solid transparent';
-            $border_red   = ($cek_utama == 0) ? '2px solid #ffffff' : '2px solid transparent';
-            
-            if ($cek_utama != 1) {
-                $hasil = 'Di Tolak di Pos 1';
-                $hasil_color = 'bg-danger';
-            }
+           
         ?>
         <div id="row_<?=$row['id']?>" class="row" style="background-color: <?= $row_bg ?>; color: white; border-radius: 6px; padding: 10px 0; margin: 0 0 12px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.3s ease;">
             <div class="col-xs-8" style="font-size: 16px; font-weight: 500; line-height: 1.8; padding-left: 15px; white-space: normal; word-wrap: break-word;">
