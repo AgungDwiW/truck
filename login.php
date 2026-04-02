@@ -5,7 +5,6 @@ include_once "application/library/autoload.php";
 // Initialize static helper
 StaticHelper::init();
 
-session_start();
 if (User::checkLogin())
 	header("location:main");
 // $debug = 1;

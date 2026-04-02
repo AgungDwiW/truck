@@ -4,7 +4,8 @@
 
 include "application/config/connection.php";
 
-$data = sendPOST("https://adop.co.id/sandbox_api/Customer/GetOrders/", json_encode(
+// function ApiCall($method, $url, $data, $token = null, $bodyOnly = true)
+$data = ApiCall("POST","https://adop.co.id/sandbox_api/Customer/GetOrders/", json_encode(
     [
     "orderIds"=> ["8000000303"],
     "orderType"=> null,
@@ -28,6 +29,7 @@ $data = sendPOST("https://adop.co.id/sandbox_api/Customer/GetOrders/", json_enco
     ));
 // Debuger::show();
 // Debuger::dump($data);
+// exit();
 $muat        = $_POST['muat'] ?? '';
 $nopol       = str_replace(' ', '', $_POST['nopol'] ?? '');
 $id_shipment = $_POST['id_shipment'] ?? '';

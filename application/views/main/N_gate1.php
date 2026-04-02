@@ -154,7 +154,93 @@ for ($i = 0; $i <= 4; $i++) {
 // HTML OUTPUT STARTS HERE
 // ============================================================================
 ?>
+<script type="text/javascript">
+// 1. Populate Modal on Click
+function openModal(btn){
+    var btn = $(btn);
+    
+    // Fill hidden inputs
+    $('#modal_utama').val(btn.data('utama'));
+    $('#modal_idref').val(btn.data('idref'));
+    $('#modal_nopol').val(btn.data('nopol'));
+    $('#modal_lokasi').val(btn.data('lokasi'));
+    $('#modal_ceklist').val(btn.data('ceklist'));
+    $('#modal_kode_kirim').val(btn.data('kode_kirim'));
+    $('#modal_driver').val(btn.data('driver'));
+    $('#modal_supplier').val(btn.data('supplier'));
+    
+    // Fill UI text
+    $('#modalCeklistDisplay').text(btn.data('ceklist'));
+    $('#temuan').val('');
+    $('#upload-Image').val(''); // Reset file input
+    
+    // Clear the canvas
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Show Modal
+    $('#uploadModal').modal('show');
+}
 
+// 2. Handle Image Preview (Refactored from your original code)
+function loadImageFile(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var img = new Image();
+            img.onload = function() {
+                var canvas = document.getElementById("myCanvas");
+                var ctx = canvas.getContext("2d");
+                
+                // Scale down to 10% just like your original code
+                canvas.width = img.width / 10;
+                canvas.height = img.height / 10;
+                ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height);
+            }
+            img.src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// 3. Submit Form Data to API
+// 3. Submit Form Data to API
+$('#apiUploadForm').on('submit', function(e) {
+    e.preventDefault();
+    
+    var submitBtn = $('#btnSubmitApi');
+    // Disable the button and insert a Font Awesome spinner with the text
+    submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Uploading...');
+    // FormData automatically packages all inputs, including the file payload
+    var formData = new FormData(this);
+    $.ajax({
+        url: '<?= route("N_gate_api") ?>', // Point this to your API endpoint
+        type: 'POST',
+        data: formData,
+        contentType: false, // Required for file uploads via AJAX
+        processData: false, // Required for file uploads via AJAX
+        success: function(response) {
+            // Handle your API success logic here
+            alert('Upload Berhasil!');
+            $('#uploadModal').modal('hide');
+            
+            // Optional: Reload the page to reflect changes
+            // location.reload();
+        },
+        error: function(xhr, status, error) {
+            alert('Terjadi kesalahan saat upload data.');
+            console.error(error);
+        },
+        complete: function() {
+            // Re-enable the button and remove the spinner
+            submitBtn.prop('disabled', false).text('Upload via API');
+        }
+    });
+});
+
+
+</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gate 1 Inspection</title>
     <style type="text/css">
@@ -201,31 +287,89 @@ foreach ($checkpoints as $row):
         $hasil_color = 'bg-danger';
     }
 ?>
-<form method="post" action="<?=route('N_foto_gate1')?>" style="margin-bottom: 12px;">
-    <div class="row" style="background-color: #212529; color: white; border-radius: 6px; padding: 10px 0; margin: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <div class="col-xs-10" style="font-size: 16px; font-weight: 500; line-height: 1.8; padding-left: 15px; white-space: normal; word-wrap: break-word;">
-            <?= htmlspecialchars($row['ceklist_utama']) ?>
-        </div>
-        <div class="col-xs-2 text-right" style="padding-right: 10px;">
-            <input type="hidden" name="utama" value="<?= $noo ?>">
-            <input type="hidden" name="idref" value="<?= htmlspecialchars($idref) ?>">
-            <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
-            <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
-            <input type="hidden" name="ceklist" value="<?= htmlspecialchars($row['ceklist_utama']) ?>">
-            <input type="hidden" name="kode_kirim" value="<?= htmlspecialchars($kode_kirim) ?>">
-            <input type="hidden" name="driver" value="<?= htmlspecialchars($driver) ?>">
-            <input type="hidden" name="supplier" value="<?= htmlspecialchars($supplier) ?>">
-            
-            <button type="submit" class="btn btn-default btn-sm" style="padding: 3px 8px; background-color: #f8f9fa; border: none; border-radius: 4px;">
-                <?= static_img('css/img/' . $cek_img, ['width' => '26', 'height' => '26']) ?>
-            </button>
-        </div>
+<div class="row" style="background-color: #212529; color: white; border-radius: 6px; padding: 10px 0; margin: 0 0 12px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div class="col-xs-10" style="font-size: 16px; font-weight: 500; line-height: 1.8; padding-left: 15px; white-space: normal; word-wrap: break-word;">
+        <?= htmlspecialchars($row['ceklist_utama']) ?>
     </div>
-</form>
+    <div class="col-xs-2 text-right " style="padding-right: 10px;">
+        <button type="button" class="btn btn-default btn-sm " onclick="openModal(this)"
+            style="padding: 3px 8px; background-color: #f8f9fa; border: none; border-radius: 4px;"
+            data-utama="<?= $noo ?>"
+            data-idref="<?= htmlspecialchars($idref) ?>"
+            data-nopol="<?= htmlspecialchars($nopol) ?>"
+            data-lokasi="<?= htmlspecialchars($lokasi) ?>"
+            data-ceklist="<?= htmlspecialchars($row['ceklist_utama']) ?>"
+            data-kode_kirim="<?= htmlspecialchars($kode_kirim) ?>"
+            data-driver="<?= htmlspecialchars($driver) ?>"
+            data-supplier="<?= htmlspecialchars($supplier) ?>">
+            
+            <?= static_img('css/img/' . $cek_img, ['width' => '26', 'height' => '26']) ?>
+        </button>
+    </div>
+</div>
 <?php
     $no++;
 endforeach;
 ?>
+
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content text-center">
+        <form id="apiUploadForm" enctype="multipart/form-data">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 style="color: green;"><strong>Temuan</strong></h4>
+            </div>
+            
+            <div class="modal-body">
+                
+                <h4 id="modalCeklistDisplay"><strong></strong></h4>
+                
+                <div class="form-group">
+                    <textarea class="form-control" style="" id="temuan" name="temuan" rows="3" required placeholder = 'temuan..'></textarea>
+                </div>
+                
+                <hr>
+                
+                <input type="hidden" name="utama" id="modal_utama">
+                <input type="hidden" name="idref" id="modal_idref">
+                <input type="hidden" name="nopol" id="modal_nopol">
+                <input type="hidden" name="lokasi" id="modal_lokasi">
+                <input type="hidden" name="ceklist" id="modal_ceklist">
+                <input type="hidden" name="kode_kirim" id="modal_kode_kirim">
+                <input type="hidden" name="driver" id="modal_driver">
+                <input type="hidden" name="supplier" id="modal_supplier">
+                
+                <div class="icon_camera text-center">
+                    <label for="upload-Image" style="cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 10px;">
+                        
+                        <div style="margin-bottom: 8px;">
+                            <?= static_img('css/img/icon_camera.png', ['width' => '40', 'height' => '40']) ?>
+                        </div>
+                        
+                        <span style="font-size: 16px; font-weight: bold; color: #333;">Capture Image</span>
+                        
+                    </label>
+                    
+                    <input type="file" name="file" id="upload-Image" accept="image/*" capture="capture" style="display:none;" onchange="loadImageFile(this)">
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <canvas id="myCanvas" width="100" height="100" style="border:1px solid #ccc; background:#fff; display:block; margin:0 auto;"></canvas>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            <button type="submit" class="btn btn-success" id="btnSubmitApi">Simpan</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    </div>
+
     <hr class="my-4">
     
     <!-- Inspection Result Form -->
@@ -275,4 +419,3 @@ endforeach;
         </div>
     </form>
 </div>
-

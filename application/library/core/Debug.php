@@ -18,11 +18,13 @@ class Debuger
             error_reporting(E_ALL);
             ini_set('display_errors', '0'); // Hide everything in production
         }
+        if (!defined("ENVIRONMENT"))
+            define("ENVIRONMENT", "DEV");
 
         set_error_handler([self::class, 'handleError']);
         set_exception_handler([self::class, 'handleException']);
         register_shutdown_function([self::class, 'handleShutdown']);
-        if (ENVIRONMENT == "DEV")
+        if (defined("ENVIRONMENT") && ENVIRONMENT == "DEV")
             self::$verbose =1;
         else 
             self::$verbose =0;

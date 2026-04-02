@@ -61,83 +61,84 @@ $date      = date("Y-m-d");
 if ($muat == 'FG') {
     // Clean nopol for matching
     $clean_nopol = str_replace(' ', '', $nopol);
-    $sql_nop = mysqli_query($con_3, 
-        "SELECT * FROM tbl_visit 
-         WHERE REPLACE(no_pol, ' ', '') = '$clean_nopol' 
-         ORDER BY tanggal_datang DESC LIMIT 1"
-    );
+    // $sql_nop = mysqli_query($con_3, 
+    //     "SELECT * FROM tbl_visit 
+    //      WHERE REPLACE(no_pol, ' ', '') = '$clean_nopol' 
+    //      ORDER BY tanggal_datang DESC LIMIT 1"
+    // );
     
-    if (mysqli_num_rows($sql_nop) == 0) {
-        echo "<script>
-                alert('No Pol belum di input di e_Visitor...!!!');
-                window.location = 'index';
-              </script>";
-        exit;
-    }
+    // if (mysqli_num_rows($sql_nop) == 0) {
+    //     echo "<script>
+    //             alert('No Pol belum di input di e_Visitor...!!!');
+    //             window.location = 'index';
+    //           </script>";
+    //     exit;
+    // }
     
-    $row_nop = mysqli_fetch_assoc($sql_nop);
-    $nama_sopir  = $row_nop['nama_visitor'];
-    $seq_visitor = $row_nop['seq_visitor'];
+    // $row_nop = mysqli_fetch_assoc($sql_nop);
+    // $nama_sopir  = $row_nop['nama_visitor'];
+    // $seq_visitor = $row_nop['seq_visitor'];
+    $nama_sopir = '';
+    $seq_visitor = 0;
+    // // Get visitor details
+    // $sql_visitor = mysqli_query($con_3, 
+    //     "SELECT * FROM tbm_visitor WHERE seq = '$seq_visitor' LIMIT 1"
+    // );
     
-    // Get visitor details
-    $sql_visitor = mysqli_query($con_3, 
-        "SELECT * FROM tbm_visitor WHERE seq = '$seq_visitor' LIMIT 1"
-    );
-    
-    if ($sql_visitor && mysqli_num_rows($sql_visitor) > 0) {
-        $row_visitor = mysqli_fetch_assoc($sql_visitor);
-        $tgl_lahir   = $row_visitor['tanggal_lahir'];
-        $valid       = $row_visitor['valid_id_date'];
-        $tipe_sim    = $row_visitor['tipe_id'];
-        $valid_ddt   = $row_visitor['valid_ddt_date'];
+    // if ($sql_visitor && mysqli_num_rows($sql_visitor) > 0) {
+    //     $row_visitor = mysqli_fetch_assoc($sql_visitor);
+    //     $tgl_lahir   = $row_visitor['tanggal_lahir'];
+    //     $valid       = $row_visitor['valid_id_date'];
+    //     $tipe_sim    = $row_visitor['tipe_id'];
+    //     $valid_ddt   = $row_visitor['valid_ddt_date'];
         
-        // Date calculations
-        $lahir   = new DateTime($tgl_lahir);
-        $val     = new DateTime($valid);
-        $val_ddt = new DateTime($valid_ddt);
-        $today   = new DateTime();
-        $today->setTime(0, 0, 0);
+    //     // Date calculations
+    //     $lahir   = new DateTime($tgl_lahir);
+    //     $val     = new DateTime($valid);
+    //     $val_ddt = new DateTime($valid_ddt);
+    //     $today   = new DateTime();
+    //     $today->setTime(0, 0, 0);
         
-        $umul = $today->diff($lahir)->y;
+    //     $umul = $today->diff($lahir)->y;
         
-        // Risk Assessment based on age
-        if ($umul <= 55) {
-            $color_usia = 'green';
-            $status_usia = 'Low Risk';
-        } elseif ($umul > 55 && $umul <= 60) {
-            $color_usia = 'yellow';
-            $status_usia = 'Medium Risk';
-        } else {
-            $color_usia = 'red';
-            $status_usia = 'High Risk';
-        }
+    //     // Risk Assessment based on age
+    //     if ($umul <= 55) {
+    //         $color_usia = 'green';
+    //         $status_usia = 'Low Risk';
+    //     } elseif ($umul > 55 && $umul <= 60) {
+    //         $color_usia = 'yellow';
+    //         $status_usia = 'Medium Risk';
+    //     } else {
+    //         $color_usia = 'red';
+    //         $status_usia = 'High Risk';
+    //     }
         
-        // SIM & DDT Expiry Logic
-        $is_sim_valid = ($val >= $today);
-        $is_ddt_valid = ($val_ddt >= $today);
+    //     // SIM & DDT Expiry Logic
+    //     $is_sim_valid = ($val >= $today);
+    //     $is_ddt_valid = ($val_ddt >= $today);
         
-        $status_sim = $is_sim_valid ? 'SIM Masih Berlaku' : 'SIM Sudah Kadaluwarsa';
-        $status_ddt = $is_ddt_valid ? 'ID DDT Masih Berlaku' : 'ID DDT Sudah Kadaluwarsa';
+    //     $status_sim = $is_sim_valid ? 'SIM Masih Berlaku' : 'SIM Sudah Kadaluwarsa';
+    //     $status_ddt = $is_ddt_valid ? 'ID DDT Masih Berlaku' : 'ID DDT Sudah Kadaluwarsa';
         
-        $valid_date     = "$status_sim || Expired Date : $valid";
-        $valid_date_ddt = "$status_ddt || Expired Date : $valid_ddt";
+    //     $valid_date     = "$status_sim || Expired Date : $valid";
+    //     $valid_date_ddt = "$status_ddt || Expired Date : $valid_ddt";
         
-        // Update DB with fresh visitor data
-        $update_query = "
-            UPDATE tb_ceklist 
-            SET nama_sopir        = '$nama_sopir',
-                usia              = '$umul',
-                jenis_sim         = '$tipe_sim',
-                expired_date_sim  = '$valid',
-                expired_date_ddt  = '$valid_ddt',
-                status_sim        = '$status_sim',
-                status_ddt        = '$status_ddt',
-                status_usia       = '$status_usia' 
-            WHERE no = '$kode'
-        ";
+    //     // Update DB with fresh visitor data
+    //     $update_query = "
+    //         UPDATE tb_ceklist 
+    //         SET nama_sopir        = '$nama_sopir',
+    //             usia              = '$umul',
+    //             jenis_sim         = '$tipe_sim',
+    //             expired_date_sim  = '$valid',
+    //             expired_date_ddt  = '$valid_ddt',
+    //             status_sim        = '$status_sim',
+    //             status_ddt        = '$status_ddt',
+    //             status_usia       = '$status_usia' 
+    //         WHERE no = '$kode'
+    //     ";
         
-        mysqli_query($con, $update_query);
-    }
+    //     mysqli_query($con, $update_query);
+    // }
 }
 
 // ----------------------------------------------------------------------------

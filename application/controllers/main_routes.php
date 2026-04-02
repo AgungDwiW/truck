@@ -28,6 +28,7 @@ Router::group('main', function() {
     Router::addGet('cek_nopol',  'cek_nopol');
     Router::addGet('N_cek_truck',  'N_cek_truck');
     Router::addGet('N_gate1',  'N_gate1');
+    Router::addGet('N_gate_api',  'N_gate_api');
     Router::addGet('N_foto_gate1',  'N_foto_gate1');
     Router::addGet('N_upload_fail',  'N_upload_fail');
     Router::addGet('reg_user',  'reg_user');

@@ -168,13 +168,13 @@ class ApiClient
 			
 			// EXECUTE:
 			$response = curl_exec($curl);
-			printpre(['url' => $url, "payload" => $data, "response" => $response, "header" => $header]);
+			// printpre(['url' => $url, "payload" => $data, "response" => $response, "header" => $header],1);
 			
 			if (!$response) {
 				print_r( $url);
 				die("Connection Failure");
 			}
-
+		
 			// extract body
 			$headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
 			$header = substr($response, 0, $headerSize);
