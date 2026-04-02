@@ -62,7 +62,7 @@ if ($muat == 'FG') {
     }
     
     $query_insert = "
-        INSERT INTO tbl_checklist 
+        REPLACE INTO tbl_checklist 
         SET seq                = '$seq',
             idref              = '$idref',
             petugas_pemeriksa  = '$username',
