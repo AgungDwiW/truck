@@ -91,8 +91,10 @@ if ($muat == 'FG') {
     $id_checklist = mysqli_insert_id($con);
 }
 else{
-    if (!isset($_POST['id_checklist']))
+    if (!isset($_POST['id_checklist'])){
         echo "<span style='color:red'> something is wrong</span>";
+        exit();
+    }
     $id_checklist = $_POST['id_checklist'];
 }
 
@@ -325,7 +327,7 @@ $(document).ready(function() {
 
         foreach ($checkpoints as $row):
             $noo = $no - 1;
-           
+            $row_bg  = "#bcbcbc"
         ?>
         <div id="row_<?=$row['id']?>" class="row" style="background-color: <?= $row_bg ?>; color: white; border-radius: 6px; padding: 10px 0; margin: 0 0 12px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.3s ease;">
             <div class="col-xs-8" style="font-size: 16px; font-weight: 500; line-height: 1.8; padding-left: 15px; white-space: normal; word-wrap: break-word;">
