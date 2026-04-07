@@ -139,7 +139,7 @@ $plant_id    = $_POST['plant_id'] ?? '';
     <br>
     
     <!-- Not vaccinated (go to start) -->
-    <form method="post" action="<?=route('start')?>">
+    <form method="post" action="<?=route('index')?>">
         <input type="hidden" name="nama_driver" value="<?= htmlspecialchars($nama_driver) ?>">
         <input type="hidden" name="nik" value="<?= htmlspecialchars($nik) ?>">
         <input type="hidden" name="nama_trans" value="<?= htmlspecialchars($nama_trans) ?>">
@@ -153,7 +153,7 @@ $plant_id    = $_POST['plant_id'] ?? '';
     <br>
     
     <!-- Skip (go directly to start) -->
-    <form method="post" action="<?=route('start')?>">
+    <form method="post" action="<?=route('index')?>">
         <input type="hidden" name="dosis" value="skip">
         <button type="submit" class="btn btn-primary tombol_no">SKIP</button>
     </form>

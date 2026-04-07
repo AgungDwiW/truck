@@ -149,7 +149,7 @@ if ($sukses == 1) {
 
 <?php if ($orang == 'helper'): ?>
 <div class="kotak_sq">
-    <form method="post" action="<?=route('start')?>">
+    <form method="post" action="<?=route('index')?>">
         <button type="submit" class="btn btn-success tombol_pass">Lanjut</button>
         <br><br>
     </form>

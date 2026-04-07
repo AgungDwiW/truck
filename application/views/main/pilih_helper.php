@@ -145,7 +145,7 @@ if ($dosis == 'belum') {
     <br>
     
     <!-- Skip button -->
-    <form method="post" action="<?=route('start')?>">
+    <form method="post" action="<?=route('index')?>">
         <input type="hidden" name="muat" value="Material">
         <button type="submit" class="btn btn-primary tombol_no">SKIP</button>
     </form>
