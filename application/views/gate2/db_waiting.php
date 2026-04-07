@@ -11,7 +11,7 @@
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-include_once "application/config/connection.php";
+include "application/config/connection.php";
 
 // ============================================================================
 // INITIALIZE VARIABLES
