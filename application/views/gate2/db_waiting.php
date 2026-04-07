@@ -11,8 +11,7 @@
 // ============================================================================
 // INCLUDES & CONFIGURATION
 // ============================================================================
-include_once "application/config/connectionSL.php";
-include_once "application/config/connectionEvisitor.php";
+include_once "application/config/connection.php";
 
 // ============================================================================
 // INITIALIZE VARIABLES
@@ -49,7 +48,7 @@ $str = "
         AND ck.plant_id = '{$PLANT}' 
         AND muatan = '{$MUATAN}'
 ";
-$result = mysqli_query($conSL, $str);
+$result = mysqli_query($con, $str);
 if ($result) {
     while ($data = mysqli_fetch_assoc($result)) {
         $waiting_list[] = $data;
