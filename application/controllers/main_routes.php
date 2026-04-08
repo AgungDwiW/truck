@@ -11,7 +11,7 @@ Router::group('main', function() {
     // ============================================
     // Flat action routes (for compatibility with existing links)
     // ============================================
-    Router::addGet('',  'index');
+    Router::addGet('index',  'index');
     Router::addGet('cek_user_safety',  'cek_user_safety');
     Router::addGet('pilih_gate',  'pilih_gate');
     Router::addGet('index',  'main_index');
