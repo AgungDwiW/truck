@@ -7,28 +7,42 @@
  */
 
 include "application/config/connection.php";
+include "application/config/connectionSL.php";
 
-// API call (kept for compatibility, not used directly in UI)
-$data = ApiCall("POST","https://adop.co.id/sandbox_api/Customer/GetOrders/", json_encode(
-    [
-    "orderIds"=> ["8000000303"],
-    "orderType"=> null,
-    "OrderStatusId"=> "10",
-    "siteIds"=> [
-        "9045"
-    ],
-    "materialIds"=> null,
-    "pdtStart"=> "2025-02-01",
-    "pdtEnd"=> "2026-02-11",
-    "customerIds"=> ["666"],
-    "customerShipToes"=> ["666"],
-    "transporterId"=> null,
-    "modifiedBy"=> "string",
-    "createdBy"=> "string",
-    "skip"=> 0,
-    "take"=> 1000
-    ]
-));
+// Debuger::show();
+$table = new Table("tbl_picking_shipment_otm_upload", "smartlogistic", $conSL);
+$dataShipment = $table->get()->where("shipment_id= '{$_GET['id_shipment']}' and  truck_id='{$_GET['nopol']}'")->fetchOne();
+Debuger::dump($dataShipment);
+if(count($dataShipment)>0){
+    $supplier_id = $dataShipment['destination_location_id'] ;
+    $supplier_name = $dataShipment['destination_location_name'] ;
+    $transporter_id = $dataShipment['service_provider_id'] ;
+    $transporter_name = $dataShipment['transporter_name'] ;
+}
+else{
+    // // API call (kept for compatibility, not used directly in UI)
+    RefreshToken();
+    $dataTransporter = ApiCall("POST", API_SERVER. "Customer/GetTransporters", json_encode(
+        [
+        "customerId"=> " ",
+        "partnerFunctionId"=> "SH",
+        "skip"=> 0,
+        "take"=>1000
+        ]
+    ));
+    $dataTransporter = json_decode($dataTransporter,1);
+    Debuger::dump($dataTransporter);
+    $dataSupplier = ApiCall("POST", API_SERVER. "Customer/GetCustomers", json_encode(
+        [
+        "customerId"=> " ",
+        "partnerFunctionId"=> "SH",
+        "skip"=> 0,
+        "take"=>1000
+        ]
+    ));
+    $dataSupplier = json_decode($dataSupplier,1);
+    Debuger::dump($dataSupplier);
+}
 
 $muat        = $_GET['muat'] ?? '';
 $nopol       = str_replace(' ', '', $_GET['nopol'] ?? '');
@@ -45,6 +59,8 @@ $seq          = 1;
 $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
 ?>
 
+<?= static_css('css/select2.min.css') ?>
+<?= static_js('js/select2.min.js') ?>
     <style>
         /* ========== GLOBAL STYLES (mirroring db_waiting) ========== */
         * {
@@ -129,7 +145,6 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
 
         .form-control, select.form-control {
             width: 100%;
-            padding: 12px 14px;
             font-size: 1.3rem;
             font-weight: 500;
             border: 1px solid #cbd5e1;
@@ -228,33 +243,42 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
             <!-- Supplier Dropdown -->
             <div class="form-group">
                 <label class="form-label">Nama Supplier</label>
-                <select class="form-control text-uppercase" name="supplier" required>
-                    <option value="">-- Pilih Supplier --</option>
-                    <?php
-                    $res_sup = mysqli_query($con, "SELECT nama_supplier FROM tbm_tempat_muat WHERE id_tempat_muat='$plant_id' GROUP BY nama_supplier");
-                    while ($row = mysqli_fetch_assoc($res_sup)) {
-                        echo "<option value='" . htmlspecialchars($row['nama_supplier']) . "'>" . htmlspecialchars($row['nama_supplier']) . "</option>";
-                    }
-                    ?>
-                </select>
+                <?php if(count($dataShipment)>0): ?>
+                    <input type='hidden' name='supplier' value='<?=$supplier_id?>'>
+                    <input type='text' class="form-control text-uppercase select2"   readonly value='<?=$supplier_name?>'>
+                <?php else: ?>
+                    <select class="form-control text-uppercase" id='supplier_select' required name='supplier'>
+                        <?php 
+                            $outputed = [];
+                            foreach($dataSupplier as $row): 
+                            if(isset($outputed[$row['customerIdSap']])) continue;
+                            $outputed[$row['customerIdSap']] = 1;
+                            ?>
+                            <option value='<?=$row['customerIdSap']?>'><?= $row['customerIdSap'] ?> - <?=$row['customerName']?> </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <script>
+                        $("#supplier_select").select2()
+                    </script>
+                <?php endif;?>
             </div>
 
             <!-- Transporter Dropdown -->
             <div class="form-group">
                 <label class="form-label">Nama Transporter</label>
-                <select class="form-control text-uppercase" name="transporter" required>
-                    <option value="">-- Pilih Transporter --</option>
-                    <?php
-                    if ($plant_id == '90A8') {
-                        $res_trans = mysqli_query($con_140, "SELECT planned_transporter_name as name FROM tbl_otm_upload GROUP BY planned_transporter_name ASC");
-                    } else {
-                        $res_trans = mysqli_query($con, "SELECT nama_transporter as name FROM tbm_tempat_muat WHERE id_tempat_muat='$plant_id' GROUP BY nama_transporter");
-                    }
-                    while ($row = mysqli_fetch_assoc($res_trans)) {
-                        echo "<option value='" . htmlspecialchars($row['name']) . "'>" . htmlspecialchars($row['name']) . "</option>";
-                    }
-                    ?>
-                </select>
+                <?php if(count($dataShipment)>0): ?>
+                    <input type='hidden' name='transporter' value='<?=$transporter_id?>'>
+                    <input type='text' class="form-control text-uppercase select2"   readonly value='<?=$transporter_name?>'>
+                <?php else: ?>
+                    <select class="form-control text-uppercase" required name='transporter' id='transporter_select'>
+                        <?php foreach($dataTransporter as $row): ?>
+                            <option value='<?=$row['transporterId']?>'><?= $row['transporterId'] ?> - <?=$row['transporterName']?> </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <script>
+                        $("#transporter_select").select2()
+                    </script>
+                <?php endif;?>
             </div>
 
             <!-- Row: No Polisi + ID Shipment -->
@@ -308,3 +332,4 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
         </form>
     </div>
 </div>
+

@@ -53,7 +53,7 @@ function GetAccessToken($username, $password, $timeZoneOffsetMinutes = 420, $ten
 function RefreshToken()
 {
 	try {
-		$url = AUTH_SERVER.'auth/RefreshToken';
+		$url = AUTH_SERVER.'/Refresh';
 		if (!isset($_SESSION))
 			session_start();
 		$tokenData = array("AccessToken" => $_SESSION["cTkn"], "RefreshToken" => $_SESSION["cRefTkn"]);
