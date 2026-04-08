@@ -77,7 +77,7 @@ $dosis = @$_POST['dosis'];
     <div class="col" >
           <div class="icon_camera">
           <label for="upload-Image">
-            <img src="static/css/img/icon_camera.png" width="70" height="70">
+            <?= static_img('css/img/icon_camera.png', ['width' => '70', 'height' => '70']) ?>
           </label>
           <input type="file" name="file" id="upload-Image" capture="capture" onchange="loadImageFile()"/>
           <div hidden>Origal Img - <img id="original-Img"/></div>
