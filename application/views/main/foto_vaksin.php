@@ -72,7 +72,7 @@ $dosis = @$_POST['dosis'];
 </div>
 <hr>
 
-<form action="main?action=upload_vaksin" method="post" enctype="multipart/form-data"> 
+<form action="<?= route('upload_vaksin')?>" method="post" enctype="multipart/form-data"> 
 <div class="row">
     <div class="col" >
           <div class="icon_camera">
@@ -203,7 +203,7 @@ var loadImageFile = function () {
                 var fd = new FormData(document.forms["form1"]);
  
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'main?action=upload_vaksin', true);
+                xhr.open('POST', '<?=route('upload_vaksin') ?>', true);
 
                 xhr.upload.onprogress = function(e) {
                     if (e.lengthComputable) {
