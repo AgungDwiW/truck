@@ -42,7 +42,7 @@ $file_tmp = $_FILES['file']['tmp_name'] ?? '';
 
 if (in_array($ekstensi, $allowed_extensions)) {
     if ($ukuran < 1200000 && $ukuran != 0) {
-        $upload_path = 'application/views/capture/' . $nama;
+        $upload_path = 'static/files/capture/' . $nama;
         
         if (move_uploaded_file($file_tmp, $upload_path)) {
             // Insert file record into upload_vaksin table
