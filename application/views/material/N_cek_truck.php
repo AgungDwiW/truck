@@ -16,7 +16,6 @@
 // ============================================================================
 // INITIALIZE VARIABLES
 // ============================================================================
-include  "application/config/connectioncloud.php";
 include  "application/config/connection.php";
 
 // API call (kept for compatibility, not used directly in UI)
