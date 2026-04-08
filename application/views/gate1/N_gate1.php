@@ -17,7 +17,7 @@ include "application/config/connection.php";
 $idref       = $_POST['idref'] ?? '';
 $nopol       = $_POST['nopol'] ?? '';
 $lokasi      = User::$plant_name;
-$kode_kirim  = $_POST['kode_kirim'] ?? '';
+$no_po  = $_POST['no_po'] ?? '';
 $muat        = $_POST['muat'] ?? '';
 $driver      = $_POST['driver'] ?? '';
 $supplier    = $_POST['supplier'] ?? '';
@@ -388,7 +388,7 @@ $(document).ready(function() {
         <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
         <input type="hidden" name="petugas" value="<?= htmlspecialchars($username) ?>">
         <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
-        <input type="hidden" name="kode_kirim" value="<?= htmlspecialchars($kode_kirim) ?>">
+        <input type="hidden" name="no_po" value="<?= htmlspecialchars($no_po) ?>">
         <input type="hidden" name="driver" value="<?= htmlspecialchars($driver) ?>">
         <input type="hidden" name="supplier" value="<?= htmlspecialchars($supplier) ?>">
         <input type='hidden' name='id' value='<?=$id_checklist?>'

@@ -4,7 +4,7 @@
  * 
  * Expected POST fields:
  * - id (checklist ID from hidden input)
- * - idref, nopol, petugas, lokasi, kode_kirim, driver, supplier
+ * - idref, nopol, petugas, lokasi, no_po, driver, supplier
  * - hasil (Lanjut Pemeriksaan Gate 2 / Di Tolak di Pos 1)
  * - komentar, tindakan
  * - For each checkpoint (id = param ID):
@@ -15,7 +15,6 @@
 
 // Include database connection
 include "application/config/connection.php";
-
 // Helper function to save base64 image to file
 function saveBase64Image($base64Data, $checklistId, $paramId) {
     if (empty($base64Data)) {
@@ -68,8 +67,7 @@ $idref       = mysqli_real_escape_string($con, $_POST['idref'] ?? '');
 $nopol       = mysqli_real_escape_string($con, $_POST['nopol'] ?? '');
 $petugas     = mysqli_real_escape_string($con, $_POST['petugas'] ?? '');
 $lokasi      = mysqli_real_escape_string($con, $_POST['lokasi'] ?? '');
-$kode_kirim  = mysqli_real_escape_string($con, $_POST['kode_kirim'] ?? '');
-$driver      = mysqli_real_escape_string($con, $_POST['driver'] ?? '');
+$no_po       = mysqli_real_escape_string($con, $_POST['no_po'] ?? '');
 $supplier    = mysqli_real_escape_string($con, $_POST['supplier'] ?? '');
 $hasil       = mysqli_real_escape_string($con, $_POST['hasil'] ?? '');
 $komentar    = mysqli_real_escape_string($con, $_POST['komentar'] ?? '');
@@ -85,16 +83,16 @@ $updateHeader = "
         tindakan_perbaikan = '$tindakan',
         status_gate1 = 1
 ";
+
 if (!empty($idref))   $updateHeader .= ", idref = '$idref'";
 if (!empty($nopol))   $updateHeader .= ", nopol = '$nopol'";
 if (!empty($petugas)) $updateHeader .= ", petugas_pemeriksa = '$petugas'";
 if (!empty($lokasi))  $updateHeader .= ", lokasi_pemeriksaan = '$lokasi'";
-if (!empty($kode_kirim)) $updateHeader .= ", kode_kirim = '$kode_kirim'";
-if (!empty($driver))  $updateHeader .= ", nama_sopir = '$driver'";
+if (!empty($no_po))  $updateHeader .= ", no_po = '$no_po'";
 if (!empty($supplier))$updateHeader .= ", nama_supplier = '$supplier'";
 
 $updateHeader .= " WHERE no = $checklistId";
-
+Debuger::dump($updateHeader);
 if (!mysqli_query($con, $updateHeader)) {
     die("Failed to update header: " . mysqli_error($con));
 }
@@ -135,6 +133,7 @@ foreach ($_POST as $key => $value) {
                     photo = " . ($photoPath ? "'$photoPath'" : "photo") . "
                 WHERE checklist_id = $checklistId AND param_id = $paramId
             ";
+            Debuger::dump($updateDetail);
             mysqli_query($con, $updateDetail);
         } else {
             // Insert new detail
@@ -142,6 +141,7 @@ foreach ($_POST as $key => $value) {
                 INSERT INTO tbl_checklist_detail (checklist_id, param_id, `value`, temuan, photo)
                 VALUES ($checklistId, $paramId, '$paramValue', '$temuan', " . ($photoPath ? "'$photoPath'" : "NULL") . ")
             ";
+            Debuger::dump($insertDetail);
             mysqli_query($con, $insertDetail);
         }
     }

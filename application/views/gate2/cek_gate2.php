@@ -415,7 +415,7 @@ if ($result_tambahan) {
                     <div>
                         <label class="form-label-custom">ID Shipment</label>
                         <input type="text" class="form-control text-uppercase bg-light" 
-                            name="kode_kirim" value="<?= htmlspecialchars($data['id_barang']) ?>" readonly>
+                            name="no_po" value="<?= htmlspecialchars($data['id_barang']) ?>" readonly>
                     </div>
                     
                     <!-- Usia Sopir - editable number input -->

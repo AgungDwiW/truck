@@ -25,7 +25,7 @@ $ccp       = $_POST['ccp'] ?? '';
 $utama     = $_POST['utama'] ?? '';
 $nopol     = $_POST['nopol'] ?? '';
 $lokasi    = $_POST['lokasi'] ?? '';
-$kode_kirim = $_POST['kode_kirim'] ?? '';
+$no_po = $_POST['no_po'] ?? '';
 $driver    = $_POST['driver'] ?? '';
 $supplier  = $_POST['supplier'] ?? '';
 
@@ -176,7 +176,7 @@ if ($sukses == 1 && !empty($temuan)) {
         <input type="hidden" name="idref" value="<?= htmlspecialchars($idref) ?>">
         <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
         <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
-        <input type="hidden" name="kode_kirim" value="<?= htmlspecialchars($kode_kirim) ?>">
+        <input type="hidden" name="no_po" value="<?= htmlspecialchars($no_po) ?>">
         <input type="hidden" name="driver" value="<?= htmlspecialchars($driver) ?>">
         <input type="hidden" name="supplier" value="<?= htmlspecialchars($supplier) ?>">
         
@@ -191,7 +191,7 @@ if ($sukses == 1 && !empty($temuan)) {
         <input type="hidden" name="ceklist" value="<?= htmlspecialchars($ccp) ?>">
         <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
         <input type="hidden" name="lokasi" value="<?= htmlspecialchars($lokasi) ?>">
-        <input type="hidden" name="kode_kirim" value="<?= htmlspecialchars($kode_kirim) ?>">
+        <input type="hidden" name="no_po" value="<?= htmlspecialchars($no_po) ?>">
         <input type="hidden" name="tambah_foto" value="1">
         <input type="hidden" name="driver" value="<?= htmlspecialchars($driver) ?>">
         <input type="hidden" name="supplier" value="<?= htmlspecialchars($supplier) ?>">
