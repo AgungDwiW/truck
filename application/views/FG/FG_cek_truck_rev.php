@@ -10,18 +10,67 @@ include "application/config/connection.php";
 include "application/config/connectionSL.php";
 
 // Debuger::show();
-$table = new Table("tbl_picking_shipment_otm_upload", "smartlogistic", $conSL);
-$dataShipment = $table->get()->where("shipment_id= '{$_GET['id_shipment']}' and  truck_id='{$_GET['nopol']}'")->fetchOne();
+RefreshToken();
+// $table = new Table("tbl_picking_shipment_otm_upload", "smartlogistic", $conSL);
+// $dataShipment = $table->get()->where("shipment_id= '{$_GET['id_shipment']}' and  truck_id='{$_GET['nopol']}'")->fetchOne();
+$dataShipment = ApiCall("POST", API_SERVER. "Customer/GetTransporters", json_encode(
+        [    
+        "orderIds"=> [$_GET['id_shipment']],
+        "siteIds"=> null,
+        "orderType" => "CO",
+        "pdtStart"=> null,
+        "pdtEnd"=> null,
+        "customerIds"=> null,
+        "customerShipTos"=> null,
+        "transporterIds"=> null,
+        "modifiedBy"=> null,
+        "createdBy"=> null,
+        "skip"=> 0,
+        "take"=> 1
+        ]
+    ));
+$dataShipment = json_decode($dataShipment);
 Debuger::dump($dataShipment);
+$dataSupplier = [];
+
 if(count($dataShipment)>0){
-    $supplier_id = $dataShipment['destination_location_id'] ;
-    $supplier_name = $dataShipment['destination_location_name'] ;
-    $transporter_id = $dataShipment['service_provider_id'] ;
-    $transporter_name = $dataShipment['transporter_name'] ;
+    $dataShipment   = $dataShipment[0];
+    if (isset($dataShipment['customer'])){
+        $supplier_id    = $dataShipment['customer']['customerId'] ;
+        $supplier_name  = $dataShipment['customer']['customerName'] ;
+    }
+    else{
+        $dataSupplier = ApiCall("POST", API_SERVER. "Customer/GetCustomers", json_encode(
+            [
+            "customerId"=> "",
+            "partnerFunctionId"=> "SH",
+            "skip"=> 0,
+            "take"=>1000
+            ]
+        ));
+        $dataSupplier = json_decode($dataSupplier,1);
+        Debuger::dump($dataSupplier);
+    }
+    if (isset($dataShipment['transposter'])){
+
+        // $transporter_id = $dataShipment['service_provider_id'] ;
+        // $transporter_name = $dataShipment['transporter_name'] ;
+    }
+    else{
+         $dataTransporter = ApiCall("POST", API_SERVER. "Customer/GetTransporters", json_encode(
+            [
+            "customerId"=> "",
+            "partnerFunctionId"=> "SH",
+            "skip"=> 0,
+            "take"=>1000
+            ]
+        ));
+        $dataTransporter = json_decode($dataTransporter,1);
+    }
 }
 else{
     // // API call (kept for compatibility, not used directly in UI)
-    RefreshToken();
+  
     $dataTransporter = ApiCall("POST", API_SERVER. "Customer/GetTransporters", json_encode(
         [
         "customerId"=> " ",
@@ -243,7 +292,7 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
             <!-- Supplier Dropdown -->
             <div class="form-group">
                 <label class="form-label">Nama Supplier</label>
-                <?php if(count($dataShipment)>0): ?>
+                <?php if(count($dataSupplier)==0): ?>
                     <input type='hidden' name='supplier' value='<?=$supplier_id?>'>
                     <input type='text' class="form-control text-uppercase select2"   readonly value='<?=$supplier_name?>'>
                 <?php else: ?>
@@ -266,7 +315,7 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
             <!-- Transporter Dropdown -->
             <div class="form-group">
                 <label class="form-label">Nama Transporter</label>
-                <?php if(count($dataShipment)>0): ?>
+                <?php if(count($dataTransporter)==0): ?>
                     <input type='hidden' name='transporter' value='<?=$transporter_id?>'>
                     <input type='text' class="form-control text-uppercase select2"   readonly value='<?=$transporter_name?>'>
                 <?php else: ?>
