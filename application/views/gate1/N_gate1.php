@@ -61,9 +61,10 @@ if ($muat == 'FG') {
         $tipe_truck = $row['jenis_truck'];
     }
 
-    $supplier = explode("_",$supplier);
-    $supplier_name = $supplier[1];
-    $supplier = $supplier[0];
+    $supplier_all = explode("_",$supplier);
+    $supplier = $supplier_all[0];
+    unset($supplier_all[0]);
+    $supplier_name = implode("_", $supplier_all);
     
     $query_insert = "
         REPLACE INTO tbl_checklist 
