@@ -100,17 +100,17 @@ if (!mysqli_query($con, $updateHeader)) {
 $header = new Table("tbl_checklist");
 $headerData = $header->get()->where("no = {$checklistId}")->fetchOne();
 
-if ($headerData['muatan']=='FG'){
-    $dataShipment = ApiCall("GET", API_SERVER. "Orders?siteIds={$plant}&OrderTypes=CO&OrderIds={$_GET['id_shipment']}",'');
-    $dataShipment = json_decode($dataShipment,1);
-    $dataOTM = [
-        'shipment_id' => "S".$dataShipment['orderId'],
-        'pk'          => "VITCO." . $dataShipment['orderId'],
-        'order_release_id' => date("dmy").$dataShipment['orderId'],
-        'service_provider_id' => $dataShipment['orderId'],
-        'shipment_id' => $dataShipment['orderId'],
-    ]
-}
+// if ($headerData['muatan']=='FG'){
+//     $dataShipment = ApiCall("GET", API_SERVER. "Orders?siteIds={$plant}&OrderTypes=CO&OrderIds={$_GET['id_shipment']}",'');
+//     $dataShipment = json_decode($dataShipment,1);
+//     $dataOTM = [
+//         'shipment_id' => "S".$dataShipment['orderId'],
+//         'pk'          => "VITCO." . $dataShipment['orderId'],
+//         'order_release_id' => date("dmy").$dataShipment['orderId'],
+//         'service_provider_id' => $dataShipment['orderId'],
+//         'shipment_id' => $dataShipment['orderId'],
+//     ]
+// }
 
 // ----------------------------------------------------------------------------
 // 4. Process each checkpoint detail
