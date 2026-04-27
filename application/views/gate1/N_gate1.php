@@ -60,6 +60,10 @@ if ($muat == 'FG') {
     if ($row = mysqli_fetch_assoc($cari_tipe_truck)) {
         $tipe_truck = $row['jenis_truck'];
     }
+
+    $supplier = explode("_",$supplier);
+    $supplier_name = $supplier[1];
+    $supplier = $supplier[0];
     
     $query_insert = "
         REPLACE INTO tbl_checklist 
@@ -67,7 +71,8 @@ if ($muat == 'FG') {
             idref              = '$idref',
             petugas_pemeriksa  = '$username',
             nopol              = '$nopol',
-            nama_supplier      = '$supplier',
+            nama_supplier      = '$supplier_name',
+            kode_supplier      = '$supplier',
             nama_transporter   = '$transporter',
             jenis_kendaraan    = '$tipe_truck',
             plant_id           = '$plant_id',
