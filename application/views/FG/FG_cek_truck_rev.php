@@ -10,85 +10,45 @@ include "application/config/connection.php";
 include "application/config/connectionSL.php";
 
 // Debuger::show();
-RefreshToken();
+// Debuger::dump($_SESSION);
+// RefreshToken();
 // $table = new Table("tbl_picking_shipment_otm_upload", "smartlogistic", $conSL);
 // $dataShipment = $table->get()->where("shipment_id= '{$_GET['id_shipment']}' and  truck_id='{$_GET['nopol']}'")->fetchOne();
-$dataShipment = ApiCall("POST", API_SERVER. "Customer/GetTransporters", json_encode(
-        [    
-        "orderIds"=> [$_GET['id_shipment']],
-        "siteIds"=> null,
-        "orderType" => "CO",
-        "pdtStart"=> null,
-        "pdtEnd"=> null,
-        "customerIds"=> null,
-        "customerShipTos"=> null,
-        "transporterIds"=> null,
-        "modifiedBy"=> null,
-        "createdBy"=> null,
-        "skip"=> 0,
-        "take"=> 1
-        ]
-    ));
-$dataShipment = json_decode($dataShipment);
+$plant = User::$plantid;
+$dataShipment = ApiCall("GET", API_SERVER. "Orders?siteIds={$plant}&OrderTypes=CO&OrderIds={$_GET['id_shipment']}",'');
+$dataShipment = json_decode($dataShipment,1);
 Debuger::dump($dataShipment);
 $dataSupplier = [];
-
-if(count($dataShipment)>0){
+$dataTransporter = [];
+if($dataShipment and count($dataShipment)>0){
     $dataShipment   = $dataShipment[0];
     if (isset($dataShipment['customer'])){
         $supplier_id    = $dataShipment['customer']['customerId'] ;
         $supplier_name  = $dataShipment['customer']['customerName'] ;
     }
     else{
-        $dataSupplier = ApiCall("POST", API_SERVER. "Customer/GetCustomers", json_encode(
-            [
-            "customerId"=> "",
-            "partnerFunctionId"=> "SH",
-            "skip"=> 0,
-            "take"=>1000
-            ]
-        ));
+        $dataSupplier = ApiCall("GET", API_SERVER. "Customers","");
         $dataSupplier = json_decode($dataSupplier,1);
         Debuger::dump($dataSupplier);
     }
-    if (isset($dataShipment['transposter'])){
+    if (isset($dataShipment['transporterId'])){
 
-        // $transporter_id = $dataShipment['service_provider_id'] ;
-        // $transporter_name = $dataShipment['transporter_name'] ;
+        $transporter_id = $dataShipment['transporterId'] ;
+        $transporter_name = $dataShipment['transporterName'] ;
     }
     else{
-         $dataTransporter = ApiCall("POST", API_SERVER. "Customer/GetTransporters", json_encode(
-            [
-            "customerId"=> "",
-            "partnerFunctionId"=> "SH",
-            "skip"=> 0,
-            "take"=>1000
-            ]
-        ));
+         $dataTransporter = ApiCall("GET", API_SERVER. "Transporters?isActive=true","");
         $dataTransporter = json_decode($dataTransporter,1);
+         Debuger::dump($dataTransporter);
     }
 }
 else{
     // // API call (kept for compatibility, not used directly in UI)
   
-    $dataTransporter = ApiCall("POST", API_SERVER. "Customer/GetTransporters", json_encode(
-        [
-        "customerId"=> " ",
-        "partnerFunctionId"=> "SH",
-        "skip"=> 0,
-        "take"=>1000
-        ]
-    ));
+    $dataTransporter = ApiCall("GET", API_SERVER. "Transporters?isActive=true","");
     $dataTransporter = json_decode($dataTransporter,1);
     Debuger::dump($dataTransporter);
-    $dataSupplier = ApiCall("POST", API_SERVER. "Customer/GetCustomers", json_encode(
-        [
-        "customerId"=> " ",
-        "partnerFunctionId"=> "SH",
-        "skip"=> 0,
-        "take"=>1000
-        ]
-    ));
+    $dataSupplier = ApiCall("GET", API_SERVER. "Customers","");
     $dataSupplier = json_decode($dataSupplier,1);
     Debuger::dump($dataSupplier);
 }
@@ -291,19 +251,19 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
         <form method="post" action="<?= route("N_gate1") ?>">
             <!-- Supplier Dropdown -->
             <div class="form-group">
-                <label class="form-label">Nama Supplier</label>
+                <label class="form-label">Customer</label>
                 <?php if(count($dataSupplier)==0): ?>
                     <input type='hidden' name='supplier' value='<?=$supplier_id?>'>
-                    <input type='text' class="form-control text-uppercase select2"   readonly value='<?=$supplier_name?>'>
+                    <input type='text' class="form-control text-uppercase select2"   readonly value='<?=$supplier_id?> - <?=$supplier_name?>'>
                 <?php else: ?>
                     <select class="form-control text-uppercase" id='supplier_select' required name='supplier'>
                         <?php 
                             $outputed = [];
                             foreach($dataSupplier as $row): 
-                            if(isset($outputed[$row['customerIdSap']])) continue;
-                            $outputed[$row['customerIdSap']] = 1;
+                            if(isset($outputed[$row['sapCustomerId']])) continue;
+                            $outputed[$row['sapCustomerId']] = 1;
                             ?>
-                            <option value='<?=$row['customerIdSap']?>'><?= $row['customerIdSap'] ?> - <?=$row['customerName']?> </option>
+                            <option value='<?=$row['sapCustomerId']?>'><?= $row['sapCustomerId'] ?> - <?=$row['customerName']?> </option>
                         <?php endforeach; ?>
                     </select>
                     <script>

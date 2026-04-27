@@ -1,46 +1,50 @@
-<?php 
+<?php
+/*
+# Prject: VMI Primary 1.0
+# Auth  : DamarTeduh©2019
+# Create: Cyber 2 | 2019-07-31 11:30 AM
+# Ket   : Main Top Navigation
+# Rev   : Updated for clean URL routing
+*/
 
+// Initialize static helper
+StaticHelper::init();
 ?>
 
-<div class="navbar navbar-default navbar-fixed-top" id="custom-bootstrap-menu">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <div class="logo">
-                <img src="static/images/adop16.png"> <?php echo defined('APP_NAME') ? APP_NAME.'<sup>'.APP_VER.'</sup>' : 'TECH DB'; ?>
-            </div>
-        </div>
+<style type="text/css">
+.navbar-brand>img {
+   max-height: 100%;
+   margin: 0 auto;
+   -o-object-fit: contain;
+   object-fit: contain; 
+   display: inline;
+}
+</style>
 
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="navbar-text" style="color:yellow"><?php echo User::$plant; ?>
-                <li><a href="../mos"> ADOP</a></li>
-                
-                <li><a href="main" class="main"> Main Menu</a></li>
-            </ul> 
-            <ul class="nav navbar-nav navbar-right">
-                <li class="<?php if(isset($_GET['ac']) AND $_GET['ac']=='inbox') echo 'active';?>">
-                    <a href="capex?ac=inbox">
-                        <?php if(isset($inboxMsg['qty'])) echo '<span class="badgeadop">'.$inboxMsg['qty'].'</span>'; ?> 
-                        <i class="fa fa-envelope-o"></i> Inbox
-                    </a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                        <i class="fa fa-user"></i> <?php echo isset($_SESSION[APP_NAME]["name"]) ? $_SESSION[APP_NAME]["name"] : 'User'; ?> <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:fg_popup_form('fgChgPass','frmInner','bgChgPass', 80);">Ganti Password</a></li>
-                        <li class="divider"></li>
-                        <li><a href="auth?ac=signout">Sign out</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
+<div class="navbar navbar-default navbar-fixed-top"  id="custom-bootstrap-menu">
+	<div class="container-fluid">
+		<div class="navbar-header">
+		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		  <a class="navbar-brand"><?= static_img('images/adop32.png') ?> <?php echo APP_NAME.'<sup>'.APP_VER.'</sup>'; ?> </a>
+		</div>
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		<ul class="nav navbar-nav">
+			<li class="nav-item">
+                    <a class="nav-link" href="<?= url('main/index') ?>">Home<span class="sr-only">(current)</span></a>
+            </li>
+			
+		</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user"></i> <?php echo User::$username; ?> <span class="caret"></span></a>
+
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
 </div>

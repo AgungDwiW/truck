@@ -1,4 +1,6 @@
 <?php
+# Load config
+include_once "application/config/config.php";
 include "application/models/auth/User.php";
 include_once "application/library/autoload.php";
 

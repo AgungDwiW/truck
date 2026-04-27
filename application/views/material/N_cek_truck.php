@@ -19,20 +19,16 @@
 include  "application/config/connection.php";
 
 // API call (kept for compatibility, not used directly in UI)
-$data = ApiCall("POST", API_SERVER . "PurchaseOrder/QuickSearch/", json_encode(
-    [
-        
-        "searchKey"                 => $_POST['no_po'],
-        "siteId"                    => User::$plantid,
-        "includeUnitConversion"     => true,
-        "skip"                      => 0,
-        "take"                      => 1
+$plant_id =User::$plantid;
+$url =  API_SERVER ."PurchaseOrders?IncludeUnitConversion=true&PoNumbers={$_POST['no_po']}";
+$data = ApiCall("GET", $url,"");
 
-    ]
-));
-
-
+// Debuger::show();
+// Debuger::dump($data);
 $data = json_decode($data,1);
+
+// Debuger::dump($data);
+// exit();
 if (isset($data['status']) && $data['status'] == 404){
         echo "<script>
             window.alert('PO Tidak Ditemukan...!!!');
