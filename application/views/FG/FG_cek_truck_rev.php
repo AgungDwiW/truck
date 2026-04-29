@@ -22,25 +22,76 @@ $dataSupplier = [];
 $dataTransporter = [];
 if($dataShipment and count($dataShipment)>0){
     $dataShipment   = $dataShipment[0];
-    if (isset($dataShipment['customer'])){
-        $supplier_id    = $dataShipment['customer']['customerId'] ;
-        $supplier_name  = $dataShipment['customer']['customerName'] ;
-    }
-    else{
-        $dataSupplier = ApiCall("GET", API_SERVER. "Customers","");
-        $dataSupplier = json_decode($dataSupplier,1);
-        Debuger::dump($dataSupplier);
-    }
-    if (isset($dataShipment['transporterId'])){
+    //-------------------------------------------------------------------------
+    //                              GETTING DATA
+    //-------------------------------------------------------------------------
+        if (isset($dataShipment['customer'])){
+            $supplier_id    = $dataShipment['customer']['customerId'] ;
+            $supplier_name  = $dataShipment['customer']['customerName'] ;
+        }
+        else{
+            $supplier_id  ='';
+            $supplier_name  ='';
+            $dataSupplier = ApiCall("GET", API_SERVER. "Customers","");
+            $dataSupplier = json_decode($dataSupplier,1);
+            Debuger::dump($dataSupplier);
+        }
+        if (isset($dataShipment['transporterId'])){
 
-        $transporter_id = $dataShipment['transporterId'] ;
-        $transporter_name = $dataShipment['transporterName'] ;
-    }
-    else{
-         $dataTransporter = ApiCall("GET", API_SERVER. "Transporters?isActive=true","");
-        $dataTransporter = json_decode($dataTransporter,1);
-         Debuger::dump($dataTransporter);
-    }
+            $transporter_id = $dataShipment['transporterId'] ;
+            $transporter_name = $dataShipment['transporterName'] ;
+        }
+        else{
+            $transporter_id  ='';
+            $transporter_name  ='';
+            $dataTransporter = ApiCall("GET", API_SERVER. "Transporters?isActive=true","");
+            $dataTransporter = json_decode($dataTransporter,1);
+            Debuger::dump($dataTransporter);
+        }
+
+    //-------------------------------------------------------------------------
+    //                              Insert DN & OTM
+    //-------------------------------------------------------------------------
+    $plant = User::$plantid;
+    $DN             = ApiCall("POST", API_SERVER. "DeliveryNotes/ConvertOrders",'["'.$_GET['id_shipment'].'"]');
+    $DN             = json_decode($DN,1);
+    $DN_number      = $DN[0]['deliveryNumber'];
+    Debuger::dump($DN_number);
+    $dataOTM = [
+        'shipment_id'               => "S".$_GET['id_shipment'],
+        'pk'                        => $_GET['id_shipment'],
+        'order_release_id'          => $_GET['id_shipment'],
+        'so_sto_no'                 => $_GET['id_shipment'],
+        'dn_number_upload'          => $DN_number,
+        'service_provider_id'       => $transporter_id,
+        'transporter_name'          => $transporter_name,
+        'source_location_id'        => User::$plantid,
+        'source_location_name'      => User::$plant_name,
+        'destination_location_id'   => $supplier_id,
+        'destination_location_name' => $supplier_name,
+        "pickup_start_date"         => date("Y-m-d"),
+        "pickup_end_date"           => date("Y-m-d"),
+        "movement_type"             => "FACTORY TO DISTRIBUTOR",
+        "pick_up_window"            => "1",
+        "delivery_type"             => "DISTRIBUTOR PICKUP",
+        "domain_name"               => "VIT",
+        "user_id_upload"            => User::$username,
+        "indicator"                 => ' ',
+        "expiration_date"           => date('Y-m-d', strtotime('+2 years')),
+        "latest_event_date"         => date('Y-m-d'),
+        "latest_event_description"  => "create from truck",
+        "mode"                      => ' ',
+        "truck_id"                  => ' ',
+        "driver_name"               => ' ',
+        "driver_mobile_no"          => ' ',
+        "container_no"              => ' ',
+        "seal_number"               => ' ',
+        "total_item_package_count"  => ' ',
+        "first_equipment_group_id"  => ' ',
+    ];
+    Debuger::dump($dataOTM);
+    $otm = new Table("tbl_picking_shipment_otm_upload", "smartlogistic", $conSL);
+    $otm->replace($dataOTM)->execute();
 }
 else{
     // // API call (kept for compatibility, not used directly in UI)

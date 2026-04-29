@@ -100,52 +100,7 @@ if ($muat == 'FG') {
             id_barang          = '$id_barang'
     ";
 
-    $plant = User::$plantid;
-    $dataShipment   = ApiCall("GET", API_SERVER. "Orders?siteIds={$plant}&OrderTypes=CO&OrderIds={$id_barang}",'');
-    $dataShipment   = json_decode($dataShipment,1);
-    if(count($dataShipment>0)){
-        Debuger::dump($dataShipment);
-        $DN             = ApiCall("POST", API_SERVER. "DeliveryNotes/ConvertOrders",'["'.$id_barang.'"]');
-        $DN             = json_decode($DN,1);
-        $DN_number      = $DN[0]['deliveryNumber'];
-        Debuger::dump($DN_number);
-        $dataOTM = [
-            'shipment_id'               => "S".$id_barang,
-            'pk'                        => $id_barang,
-            'order_release_id'          => $id_barang,
-            'so_sto_no'                 => $id_barang,
-            'dn_number_upload'          => $DN_number,
-            'service_provider_id'       => $transporter,
-            'transporter_name'          => $transporter_name,
-            'source_location_id'        => User::$plantid,
-            'source_location_name'      => User::$plant_name,
-            'destination_location_id'   => $supplier,
-            'destination_location_name' => $supplier_name,
-            "pickup_start_date"         => date("Y-m-d"),
-            "pickup_end_date"           => date("Y-m-d"),
-            "movement_type"             => "FACTORY TO DISTRIBUTOR",
-            "pick_up_window"            => "1",
-            "delivery_type"             => "DISTRIBUTOR PICKUP",
-            "domain_name"               => "VIT",
-            "user_id_upload"            => User::$username,
-            "indicator"                 => ' ',
-            "expiration_date"           => date('Y-m-d', strtotime('+2 years')),
-            "latest_event_date"         => date('Y-m-d'),
-            "latest_event_description"  => "create from truck",
-            "mode"                      => ' ',
-            "truck_id"                  => ' ',
-            "driver_name"               => ' ',
-            "driver_mobile_no"          => ' ',
-            "container_no"              => ' ',
-            "seal_number"               => ' ',
-            "total_item_package_count"  => ' ',
-            "first_equipment_group_id"  => ' ',
-        ];
-        Debuger::dump($dataOTM);
-        $otm = new Table("tbl_picking_shipment_otm_upload", "smartlogistic", $conSL);
-        $otm->replace($dataOTM)->execute();
-    }
-
+    
     mysqli_query($con, $query_insert);
     $id_checklist = mysqli_insert_id($con);
 }
