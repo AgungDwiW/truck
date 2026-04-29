@@ -10,10 +10,6 @@
 //Start the Session
 session_start(); 
 
-/* Fitlering POST and GET*/
-foreach ($_GET as $key => $value) $_GET[$key] = preg_replace('/[^a-zA-Z0-9_ -]/s',' ',$value);
-// foreach ($_POST as $key => $value) $_POST[$key] = preg_replace('/[^a-zA-Z0-9_ -\/]/s',' ',$value);
-
 # Load config
 include_once "application/config/config.php";
 include_once "application/library/autoload.php";
@@ -21,9 +17,18 @@ include_once "application/models/auth/User.php";
 
 
 if (isset($_GET['refresh_token'])){
+    // Debuger::show();
+    
+    $_GET['refresh_token'] = urldecode($_GET['refresh_token']);
+    Debuger::dump( urldecode($_GET['refresh_token']));
     User::loginWithToken($_GET['refresh_token']);
+    // exit();
 }
 // printpre($_SESSION,1);
+
+/* Fitlering POST and GET*/
+foreach ($_GET as $key => $value) $_GET[$key] = preg_replace('/[^a-zA-Z0-9_ -]/s',' ',$value);
+// foreach ($_POST as $key => $value) $_POST[$key] = preg_replace('/[^a-zA-Z0-9_ -\/]/s',' ',$value);
 
 if(!User::checkLogin()){
 // //     // printpre("login failed",1);

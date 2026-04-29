@@ -17,6 +17,7 @@
 include "application/config/connection.php";
 include "application/config/connectionSL.php";
 // Helper function to save base64 image to file
+// Debuger::show();
 function saveBase64Image($base64Data, $checklistId, $paramId) {
     if (empty($base64Data)) {
         return null;
@@ -96,34 +97,6 @@ $updateHeader .= " WHERE no = $checklistId";
 Debuger::dump($updateHeader);
 if (!mysqli_query($con, $updateHeader)) {
     die("Failed to update header: " . mysqli_error($con));
-}
-
-$header = new Table("tbl_checklist");
-$headerData = $header->get()->where("no = {$checklistId}")->fetchOne();
-
-if ($headerData['muatan']=='FG'){
-    $dataShipment = ApiCall("GET", API_SERVER. "Orders?siteIds={$plant}&OrderTypes=CO&OrderIds={$_GET['id_shipment']}",'');
-    $dataShipment = json_decode($dataShipment,1);
-    $dataOTM = [
-        'shipment_id' => "S".$dataShipment['orderId'],
-        'pk'          => "VITCO." . $dataShipment['orderId'],
-        'order_release_id' => date("dmy").$dataShipment['orderId'],
-        'service_provider_id' => $headerData['kode_transporter'],
-        'transporter_name' => $headerData['nama_transporter'],
-        'source_location_id' => User::$plantid,
-        'source_location_name' => User::$plant_name,
-        'destination_location_id' => $headerData['nama_supplier'],
-        'destination_location_name' => $headerData['kode_supplier'],
-        "pickup_start_date" => date("Y-m-d"),
-        "pickup_end_date" => date("Y-m-d"),
-        "movement_type" => "FACTORY TO DISTRIBUTOR",
-        "pick_up_window" => "1",
-        "delivery_type" => "DISTRIBUTOR PICKUP",
-        "domain_name" => "VIT",
-        "user_id_upload" => User::$username,
-    ];
-    $otm = new Table("tbl_picking_shipment_otm_upload", "smartlogistic", $conSL);
-    $otm->replace($dataOTM)->execute();
 }
 
 // ----------------------------------------------------------------------------

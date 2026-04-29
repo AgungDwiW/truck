@@ -281,7 +281,7 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
                 <?php else: ?>
                     <select class="form-control text-uppercase" required name='transporter' id='transporter_select'>
                         <?php foreach($dataTransporter as $row): ?>
-                            <option value='<?=$row['transporterId']?>'><?= $row['transporterId'] ?> - <?=$row['transporterName']?> </option>
+                            <option value='<?=$row['transporterId']?>_<?=$row['transporterName']?>'><?= $row['transporterId'] ?> - <?=$row['transporterName']?> </option>
                         <?php endforeach; ?>
                     </select>
                     <script>

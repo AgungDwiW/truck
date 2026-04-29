@@ -51,12 +51,9 @@ function RefreshToken()
         $response = $call->ExecuteApi('POST', $url, json_encode($refreshDto), null, true, false);
         $responseDto = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $response[1]), true);
         $statusCode = get_http_response_code($response[0]);
-        // print_r($statusCode);
-        // print_r($responseDto);
         if ($statusCode == 200) {
             if (!isset($_SESSION))
                 session_start();
-            // print_r($responseDto);
             $_SESSION["cTkn"] = $responseDto['accessToken'];
             $_SESSION["cExpTkn"] = date('Y-m-d H:i:s', strtotime(($responseDto['expiresIn']) . ' minute'));
             $_SESSION["cRefTkn"] = $responseDto['refreshToken'];
