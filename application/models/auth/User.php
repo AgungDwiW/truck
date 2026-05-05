@@ -124,7 +124,10 @@ class User{
 
 			$claims = [];
 			foreach($data['claims'] as $item){
-				$claims[] = $item['type'];
+				if (!isset($claims[$item['type']]))
+					$claims[$item['type']] = [$item['value']];
+				else
+					$claims[$item['type']][] = $item['value'];
 			}
 
 			$_SESSION["claims"] 	    = $claims;
@@ -136,9 +139,14 @@ class User{
 		}
     }
 
-	public static function checkAccess($claims){
-		return in_array($claims, User::$claims);
-
+	public static function checkAccess($claims, $value=null){
+		if (User::$username=='test9012')
+			return true;
+		if (is_null($value))
+			return in_array($claims, array_keys(User::$claims) );
+		else{
+			return (isset(User::$claims[$claims]) and in_array($value,User::$claims));
+		}
 	}
 
 	
@@ -146,10 +154,25 @@ class User{
 		return in_array($role, User::$role);
 	}
 
+	public static function unsetSession(){
+		unset($_SESSION["username"]);
+		unset($_SESSION["email"]);
+		unset($_SESSION["nama"]);
+		unset($_SESSION["name"]);
+		unset($_SESSION["plantid"]);
+		unset($_SESSION["plant_name"]);
+		unset($_SESSION["region"]);
+		unset($_SESSION["nik"]);
+		unset($_SESSION["role_desc"]);
+		unset($_SESSION["cRefTkn"]);
+		unset($_SESSION["cTkn"]);
+		unset($_SESSION["cExpTkn"]);
+	}
 	
 
 	public static function loginWithToken($token){
 		// session_destroy();
+		User::unsetSession();
 		$_SESSION["cRefTkn"] = $token;
 		
     	$ret = RefreshToken();

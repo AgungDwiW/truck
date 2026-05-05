@@ -20,7 +20,7 @@ include  "application/config/connection.php";
 
 // API call (kept for compatibility, not used directly in UI)
 $plant_id =User::$plantid;
-$url =  API_SERVER ."PurchaseOrders?IncludeUnitConversion=true&PoNumbers={$_POST['no_po']}";
+$url =  API_SERVER ."DeliveryNotes?DeliveryNumbers={$_POST['no_dn']}&take=1&skip=0";
 $data = ApiCall("GET", $url,"");
 
 // Debuger::show();
@@ -29,24 +29,24 @@ $data = json_decode($data,1);
 
 // Debuger::dump($data);
 // exit();
-if (isset($data['status']) && $data['status'] == 404){
-        echo "<script>
-            window.alert('PO Tidak Ditemukan...!!!');
-            window.location = 'cek_nopol';
-          </script>";
-    exit;
-}
-else{
-    $data = $data[0];
-    if ($data["siteId"] != User::$plantid){
-        $plant = User::$plantid;
-         echo "<script>
-            window.alert('PO Tidak Sesuai dengan user (PO : {$data["siteId"]}) vs (User : {$plant})');
-            window.location = 'cek_nopol';
-          </script>";
-        exit;
-    }
-}
+// if ((isset($data['status']) && $data['status'] == 404) || count($data) == 0){
+//         echo "<script>
+//             window.alert('DN Tidak Ditemukan...!!!');
+//             window.location = 'cek_nopol';
+//           </script>";
+//     exit;
+// }
+// else{
+//     $data = $data[0];
+//     // if ( !User::checkAccess("COMAN-SITEPURCH-READ",$data["siteId"] ) || User::$plantid!=$data["siteId"]){
+//     //     $plant = User::$plantid;
+//     //      echo "<script>
+//     //         window.alert('PO Tidak Sesuai dengan user (PO : {$data["siteId"]}) vs (User : {$plant})');
+//     //         window.location = 'cek_nopol';
+//     //       </script>";
+//     //     exit;
+//     // }
+// }
 
 
 $muat       = $_POST['muat'] ?? '';
@@ -57,33 +57,6 @@ $jam  = date("H:i:s");
 $idref = time();
 $seq   = 1;
 $username = User::$username;
-
-$no_po       = $_POST['no_po'];
-$supplier     = $data["purchaseOrderVendor"]["vendorName"];
-$supplier_id  = $data["purchaseOrderVendor"]['sapVendorId'];
-$plant_name   = $data["siteId"];
-$plant_id     = $data["siteId"];
-$nopol        = $_POST["nopol"];
-
-// ----------------------------------------------------------------------------
-// 6. Insert a new inspection record if delivery exists
-// ----------------------------------------------------------------------------
-$query = "
-    INSERT INTO tbl_checklist 
-    SET seq                = '$seq',
-        idref              = '$idref',
-        petugas_pemeriksa  = '$username',
-        nopol              = '$nopol',
-        nama_transporter   = '$supplier',
-        kode_transporter   = '$supplier_id',
-        plant_id           = '$plant_id',
-        plant_name         = '$plant_name',
-        tgl_pemeriksaan    = '$date',
-        jam_pemeriksaan    = '$jam',
-        lokasi_pemeriksaan = '$plant_name',
-        muatan             = '$muat',
-        no_po         = '{$_POST['no_po']}'
-";
 
 mysqli_query($con, $query);
 $id_checklist = mysqli_insert_id($con);
@@ -140,9 +113,9 @@ while ($row = mysqli_fetch_assoc($tujuan_result)) {
             </div>
             
             <div class="col">
-                <label>No PO</label>
-                <input type="text" class="form-control text-uppercase" id="no_po" name="no_po" 
-                       value="<?= htmlspecialchars($_POST['no_po']) ?>" readonly>
+                <label>No DN</label>
+                <input type="text" class="form-control text-uppercase" id="no_dn" name="no_dn" 
+                       value="<?= htmlspecialchars($_POST['no_dn']) ?>" readonly>
             </div>
             
             <div class="col">
@@ -183,7 +156,7 @@ while ($row = mysqli_fetch_assoc($tujuan_result)) {
         <input type="hidden" id="seq" name="seq" value="<?= $seq ?>">
         <input type="hidden" id="idref" name="idref" value="<?= $idref ?>">
         <input type="hidden" name="nopol" value="<?= htmlspecialchars($nopol) ?>">
-        <input type="hidden" name="no_po" value="<?= htmlspecialchars($no_po) ?>">
+        <input type="hidden" name="no_dn" value="<?= htmlspecialchars($no_dn) ?>">
         
         <hr>
         

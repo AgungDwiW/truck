@@ -34,7 +34,7 @@
         <h2>
             <strong>
                 <label class="center-block" style="color: yellow; text-align: center;">
-                    INPUT PO NO
+                    INPUT DN
                 </label>
             </strong>
         </h2>

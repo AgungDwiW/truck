@@ -17,13 +17,17 @@ include_once "application/models/auth/User.php";
 
 
 if (isset($_GET['refresh_token'])){
-    // Debuger::show();
-    
-    $_GET['refresh_token'] = urldecode($_GET['refresh_token']);
-    Debuger::dump( urldecode($_GET['refresh_token']));
+    $_GET['refresh_token'] = rawurldecode($_GET['refresh_token']);
+    // printpre($_GET['refresh_token'],1);
     User::loginWithToken($_GET['refresh_token']);
     // exit();
 }
+
+if(!User::checkLogin()){
+    echo"<script type='text/javascript'>alert('Session sudah habis, perubahan data pada sistem yang dilakukan sebelumnnya belum tersimpan. Mohon log in kembali dan lakukan perubahan kembali.');window.location.href='login.php'</script>";
+    exit;
+}
+
 // printpre($_SESSION,1);
 
 /* Fitlering POST and GET*/

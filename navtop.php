@@ -4,11 +4,8 @@
 # Auth  : DamarTeduh©2019
 # Create: Cyber 2 | 2019-07-31 11:30 AM
 # Ket   : Main Top Navigation
-# Rev   : Updated for clean URL routing
+# Rev   : 
 */
-
-// Initialize static helper
-StaticHelper::init();
 ?>
 
 <style type="text/css">
@@ -30,18 +27,19 @@ StaticHelper::init();
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		  </button>
-		  <a class="navbar-brand"><?= static_img('images/adop32.png') ?> <?php echo APP_NAME.'<sup>'.APP_VER.'</sup>'; ?> </a>
+		  <a class="navbar-brand"><img src="static/images/adop32.png"> <?php echo APP_NAME.'<sup>'.APP_VER.'</sup>'; ?> </a>
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		<ul class="nav navbar-nav">
 			<li class="nav-item">
-                    <a class="nav-link" href="<?= url('main/index') ?>">Home<span class="sr-only">(current)</span></a>
+                    <a class="nav-link"  href="<?= url('main/index') ?>">Home<span class="sr-only">(current)</span></a>
             </li>
 			
 		</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user"></i> <?php echo User::$username; ?> <span class="caret"></span></a>
-
+				  	<ul class="dropdown-menu">
+						<li><a href="<?=BASE_URL?>logout.php">Sign out</a></li>
 					</ul>
 				</li>
 			</ul>

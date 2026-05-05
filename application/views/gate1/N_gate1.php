@@ -60,16 +60,16 @@ if ($muat == 'FG') {
     if ($row = mysqli_fetch_assoc($cari_tipe_truck)) {
         $tipe_truck = $row['jenis_truck'];
     }
-
-    $supplier_all       = explode("_",$supplier);
+    // Debuger::dump($_POST,1);
+    $supplier_all       = explode(" - ",$supplier);
     $supplier           = $supplier_all[0];
     unset($supplier_all[0]);
-    $supplier_name      = implode("_", $supplier_all);
+    $supplier_name      = implode(" - ", $supplier_all);
     
-    $transporter_all    = explode("_",$transporter);
+    $transporter_all    = explode(" - ",$transporter);
     $transporter        = $transporter_all[0];
     unset($transporter_all[0]);
-    $transporter_name   = implode("_", $transporter_all);
+    $transporter_name   = implode(" - ", $transporter_all);
     
 
     $query_insert = "
@@ -100,7 +100,7 @@ if ($muat == 'FG') {
             id_barang          = '$id_barang'
     ";
 
-    
+    // Debuger::dump($query_insert,1);
     mysqli_query($con, $query_insert);
     $id_checklist = mysqli_insert_id($con);
 }

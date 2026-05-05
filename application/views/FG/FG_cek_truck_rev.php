@@ -15,11 +15,27 @@ include "application/config/connectionSL.php";
 // $table = new Table("tbl_picking_shipment_otm_upload", "smartlogistic", $conSL);
 // $dataShipment = $table->get()->where("shipment_id= '{$_GET['id_shipment']}' and  truck_id='{$_GET['nopol']}'")->fetchOne();
 $plant = User::$plantid;
-$dataShipment = ApiCall("GET", API_SERVER. "Orders?siteIds={$plant}&OrderTypes=CO&OrderIds={$_GET['id_shipment']}",'');
+// $dataShipment = ApiCall("GET", API_SERVER. "Orders?OrderTypes=CO&OrderIds={$_GET['id_shipment']}",[]);
+$dataShipment = ApiCall("GET", API_SERVER. "Orders?OrderIds={$_GET['id_shipment']}",[]);
 $dataShipment = json_decode($dataShipment,1);
-Debuger::dump($dataShipment);
+// Debuger::dump($dataShipment,1);
+if(isset($dataShipment[0]) and isset($dataShipment[0]['siteId']) and $dataShipment[0]['siteId']!=User::$plantid){
+    $plant = User::$plantid;
+     echo "<script>
+            window.alert('Plant order ({$dataShipment[0]['siteId']}) tidak sesuai dengan plant user ({$plant})!!!');
+            window.location = 'cek_nopol';
+          </script>";
+    exit();
+}
+
 $dataSupplier = [];
 $dataTransporter = [];
+// Debuger::show();
+$supplier_id = '';
+$supplier_name = '';
+$transporter_id = '';
+$transporter_name = '';
+$DN_number = '';
 if($dataShipment and count($dataShipment)>0){
     $dataShipment   = $dataShipment[0];
     //-------------------------------------------------------------------------
@@ -36,10 +52,15 @@ if($dataShipment and count($dataShipment)>0){
             $dataSupplier = json_decode($dataSupplier,1);
             Debuger::dump($dataSupplier);
         }
-        if (isset($dataShipment['transporterId'])){
+        if (isset($dataShipment['transporterId']) && $dataShipment['transporterId']){
 
             $transporter_id = $dataShipment['transporterId'] ;
-            $transporter_name = $dataShipment['transporterName'] ;
+            $_dataTransporter = ApiCall("GET", API_SERVER. "Transporters?isActive=true&TransporterIds={$transporter_id}","");
+            $_dataTransporter = json_decode($_dataTransporter,1);
+            if (isset($_dataTransporter[0]))
+                $transporter_name = $_dataTransporter[0]['transporterName'] ;
+            else 
+                $transporter_name = 'undefined';
         }
         else{
             $transporter_id  ='';
@@ -56,6 +77,7 @@ if($dataShipment and count($dataShipment)>0){
     $DN             = ApiCall("POST", API_SERVER. "DeliveryNotes/ConvertOrders",'["'.$_GET['id_shipment'].'"]');
     $DN             = json_decode($DN,1);
     $DN_number      = $DN[0]['deliveryNumber'];
+    // Debuger::show();
     Debuger::dump($DN_number);
     $dataOTM = [
         'shipment_id'               => "S".$_GET['id_shipment'],
@@ -103,6 +125,7 @@ else{
     $dataSupplier = json_decode($dataSupplier,1);
     Debuger::dump($dataSupplier);
 }
+
 
 $muat        = $_GET['muat'] ?? '';
 $nopol       = str_replace(' ', '', $_GET['nopol'] ?? '');
@@ -301,11 +324,15 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
     <div class="form-container">
         <form method="post" action="<?= route("N_gate1") ?>">
             <!-- Supplier Dropdown -->
+             <div class="form-group">
+                <label class="form-label">DN</label>
+                <input type='text'  class="form-control select2"   readonly value='<?=$DN_number?>'>
+                
+            </div>
             <div class="form-group">
                 <label class="form-label">Customer</label>
-                <?php if(count($dataSupplier)==0): ?>
-                    <input type='hidden' name='supplier' value='<?=$supplier_id?>'>
-                    <input type='text' class="form-control text-uppercase select2"   readonly value='<?=$supplier_id?> - <?=$supplier_name?>'>
+                <?php if(is_null($dataSupplier) or count($dataSupplier)==0): ?>
+                    <input type='text' name='supplier'  class="form-control text-uppercase select2"   readonly value='<?=$supplier_id?> - <?=$supplier_name?>'>
                 <?php else: ?>
                     <select class="form-control text-uppercase" id='supplier_select' required name='supplier'>
                         <?php 
@@ -314,7 +341,7 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
                             if(isset($outputed[$row['sapCustomerId']])) continue;
                             $outputed[$row['sapCustomerId']] = 1;
                             ?>
-                            <option value='<?=$row['sapCustomerId']?>'><?= $row['sapCustomerId'] ?> - <?=$row['customerName']?> </option>
+                            <option value='<?= $row['sapCustomerId'] ?> - <?=$row['customerName']?>>'><?= $row['sapCustomerId'] ?> - <?=$row['customerName']?> </option>
                         <?php endforeach; ?>
                     </select>
                     <script>
@@ -326,13 +353,12 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
             <!-- Transporter Dropdown -->
             <div class="form-group">
                 <label class="form-label">Nama Transporter</label>
-                <?php if(count($dataTransporter)==0): ?>
-                    <input type='hidden' name='transporter' value='<?=$transporter_id?>'>
-                    <input type='text' class="form-control text-uppercase select2"   readonly value='<?=$transporter_name?>'>
+                <?php if(is_null($dataTransporter) or count($dataTransporter)==0): ?>
+                    <input type='text' class="form-control text-uppercase select2"  name='transporter' readonly value='<?=$transporter_id?> - <?=$transporter_name?>'>
                 <?php else: ?>
                     <select class="form-control text-uppercase" required name='transporter' id='transporter_select'>
                         <?php foreach($dataTransporter as $row): ?>
-                            <option value='<?=$row['transporterId']?>_<?=$row['transporterName']?>'><?= $row['transporterId'] ?> - <?=$row['transporterName']?> </option>
+                            <option value='<?=$row['transporterId'] ?> - <?=$row['transporterName']?>'><?= $row['transporterId'] ?> - <?=$row['transporterName']?> </option>
                         <?php endforeach; ?>
                     </select>
                     <script>

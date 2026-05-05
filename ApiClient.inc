@@ -171,7 +171,15 @@ class ApiClient
             $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
             $header = substr($response, 0, $headerSize);
             $body = substr($response, $headerSize);
+            if (curl_errno($curl)) {
+                $error = curl_error($curl);
+                echo "<script>alert('cURL Error: " . addslashes($error) . "');</script>";
+            }
 
+            if (!$response) {
+                echo "<script>alert('Api Connection Failure');</script>";
+                die();
+            }
             curl_close($curl);
 
             // print_r($header);

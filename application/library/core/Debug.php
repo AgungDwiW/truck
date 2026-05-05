@@ -43,7 +43,7 @@ class Debuger
         // Define which error levels should NOT kill the script
         $nonFatalLevels = [
             E_WARNING, E_NOTICE, E_CORE_WARNING, E_COMPILE_WARNING, 
-            E_USER_WARNING, E_USER_NOTICE, E_STRICT, E_DEPRECATED, E_USER_DEPRECATED
+            E_USER_WARNING, E_USER_NOTICE,  E_DEPRECATED, E_USER_DEPRECATED
         ];
 
         // If it's a warning or notice, don't handle it. 
