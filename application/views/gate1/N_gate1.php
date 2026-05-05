@@ -44,73 +44,65 @@ $username = User::$username;
 // ----------------------------------------------------------------------------
 // 1. If muat is FG, determine truck type and insert inspection record
 // ----------------------------------------------------------------------------
-if ($muat == 'FG') {
-    $query_truck = "
-        SELECT jenis_truck 
-        FROM tbm_tempat_muat 
-        WHERE id_tempat_muat = '$plant_id' 
-          AND nama_supplier = '$supplier' 
-          AND nama_transporter = '$transporter' 
-        GROUP BY nama_transporter 
-        LIMIT 1
-    ";
-    
-    $cari_tipe_truck = mysqli_query($con, $query_truck);
-    
-    if ($row = mysqli_fetch_assoc($cari_tipe_truck)) {
-        $tipe_truck = $row['jenis_truck'];
-    }
-    // Debuger::dump($_POST,1);
-    $supplier_all       = explode(" - ",$supplier);
-    $supplier           = $supplier_all[0];
-    unset($supplier_all[0]);
-    $supplier_name      = implode(" - ", $supplier_all);
-    
-    $transporter_all    = explode(" - ",$transporter);
-    $transporter        = $transporter_all[0];
-    unset($transporter_all[0]);
-    $transporter_name   = implode(" - ", $transporter_all);
-    
+$query_truck = "
+    SELECT jenis_truck 
+    FROM tbm_tempat_muat 
+    WHERE id_tempat_muat = '$plant_id' 
+        AND nama_supplier = '$supplier' 
+        AND nama_transporter = '$transporter' 
+    GROUP BY nama_transporter 
+    LIMIT 1
+";
 
-    $query_insert = "
-        REPLACE INTO tbl_checklist 
-        SET seq                = '$seq',
-            idref              = '$idref',
-            petugas_pemeriksa  = '$username',
-            nopol              = '$nopol',
-            nama_supplier      = '$supplier_name',
-            kode_supplier      = '$supplier',
-            nama_transporter   = '$transporter_name',
-            kode_transporter   = '$transporter',
-            jenis_kendaraan    = '$tipe_truck',
-            plant_id           = '$plant_id',
-            plant_name         = '$lokasi',
-            nama_sopir         = '$driver',
-            tgl_pemeriksaan    = '$date',
-            jam_pemeriksaan    = '$jam',
-            lokasi_pemeriksaan = '$lokasi',
-            muatan             = '$muat',
-            usia               = '$usia',
-            jenis_sim          = '$tipe_sim',
-            expired_date_sim   = '$expired_sim',
-            expired_date_ddt   = '$expired_ddt',
-            status_sim         = '$status_sim',
-            status_ddt         = '$status_ddt',
-            status_usia        = '$status_usia',
-            id_barang          = '$id_barang'
-    ";
+$cari_tipe_truck = mysqli_query($con, $query_truck);
 
-    // Debuger::dump($query_insert,1);
-    mysqli_query($con, $query_insert);
-    $id_checklist = mysqli_insert_id($con);
+if ($row = mysqli_fetch_assoc($cari_tipe_truck)) {
+    $tipe_truck = $row['jenis_truck'];
 }
-else{
-    if (!isset($_POST['id_checklist'])){
-        echo "<span style='color:red'> something is wrong</span>";
-        exit();
-    }
-    $id_checklist = $_POST['id_checklist'];
-}
+// Debuger::dump($_POST,1);
+$supplier_all       = explode(" - ",$supplier);
+$supplier           = $supplier_all[0];
+unset($supplier_all[0]);
+$supplier_name      = implode(" - ", $supplier_all);
+
+$transporter_all    = explode(" - ",$transporter);
+$transporter        = $transporter_all[0];
+unset($transporter_all[0]);
+$transporter_name   = implode(" - ", $transporter_all);
+
+
+$query_insert = "
+    REPLACE INTO tbl_checklist 
+    SET seq                = '$seq',
+        idref              = '$idref',
+        petugas_pemeriksa  = '$username',
+        nopol              = '$nopol',
+        nama_supplier      = '$supplier_name',
+        kode_supplier      = '$supplier',
+        nama_transporter   = '$transporter_name',
+        kode_transporter   = '$transporter',
+        jenis_kendaraan    = '$tipe_truck',
+        plant_id           = '$plant_id',
+        plant_name         = '$lokasi',
+        nama_sopir         = '$driver',
+        tgl_pemeriksaan    = '$date',
+        jam_pemeriksaan    = '$jam',
+        lokasi_pemeriksaan = '$lokasi',
+        muatan             = '$muat',
+        usia               = '$usia',
+        jenis_sim          = '$tipe_sim',
+        expired_date_sim   = '$expired_sim',
+        expired_date_ddt   = '$expired_ddt',
+        status_sim         = '$status_sim',
+        status_ddt         = '$status_ddt',
+        status_usia        = '$status_usia',
+        id_barang          = '$id_barang'
+";
+
+// Debuger::dump($query_insert,1);
+mysqli_query($con, $query_insert);
+$id_checklist = mysqli_insert_id($con);
+
 
 // ----------------------------------------------------------------------------
 // 4. Fetch all checkpoints (utama) for display

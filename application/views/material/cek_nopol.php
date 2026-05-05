@@ -41,7 +41,7 @@
 
         <input
             type="text"
-            name="no_po"
+            name="no_dn"
             class="center-block text-uppercase"
             style="width: 480px; height: 80px; font-size: 50px; background: white; color: black; text-align: center;"
             required
