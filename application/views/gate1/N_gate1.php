@@ -72,7 +72,7 @@ $transporter_name   = implode(" - ", $transporter_all);
 
 
 $query_insert = "
-    REPLACE INTO tbl_checklist 
+    REPLACE INTO dbtruck.tbl_checklist 
     SET seq                = '$seq',
         idref              = '$idref',
         petugas_pemeriksa  = '$username',
@@ -99,7 +99,7 @@ $query_insert = "
         id_barang          = '$id_barang'
 ";
 
-// Debuger::dump($query_insert,1);
+// Debuger::dump($query_insert,1); 
 mysqli_query($con, $query_insert);
 $id_checklist = mysqli_insert_id($con);
 
@@ -149,6 +149,8 @@ function setParamValueGreen(id, btn) {
     
     // Change the row background color to Green
     $('#row_' + id).css('background-color', '#28a745');
+    // Remove validation highlight if present
+    $('#row_' + id).css('box-shadow', '0 2px 4px rgba(0,0,0,0.1)');
     
     checkOverallStatus();
 }
@@ -189,6 +191,8 @@ function openModal(btn, idparam) {
 // Real-time Overall Status checker
 function checkOverallStatus() {
     var allOk = true;
+    // Note: This only checks items that have been evaluated. 
+    // The form submission handles the strict checking for missed items.
     $('input[id$="_value"]').each(function() {
         if($(this).val() == '0') {
             allOk = false;
@@ -249,7 +253,10 @@ $(document).ready(function() {
         var container = $('#row_' + currentParamId).find('.button-container');
         container.find('.btn-check-green').css('border', '2px solid transparent');
         container.find('.btn-check-red').css('border', '2px solid #ffffff');
-        $('#row_' + currentParamId).css('background-color', '#dc3545');
+        $('#row_' + currentParamId).css('background-color', '#dc3545'); // Red background
+        
+        // Remove validation highlight if it was there
+        $('#row_' + currentParamId).css('box-shadow', '0 2px 4px rgba(0,0,0,0.1)');
         
         // 5. Update the final inspection status
         checkOverallStatus();
@@ -259,6 +266,35 @@ $(document).ready(function() {
             submitBtn.prop('disabled', false).text('Simpan');
             $('#uploadModal').modal('hide');
         }, 300);
+    });
+
+    // Intercept Main Form Submission to validate all checkpoints
+    $('#mainInspectionForm').on('submit', function(e) {
+        var allChecked = true;
+        var missingCount = 0;
+
+        // Loop through all hidden value inputs
+        $('input[id$="_value"]').each(function() {
+            if ($(this).val() === "") {
+                allChecked = false;
+                missingCount++;
+                // Visually highlight the row that was missed with a yellow outline/glow
+                $(this).closest('.row').css('box-shadow', '0 0 10px 3px #ffc107'); 
+            } else {
+                // Remove highlight if it has a value
+                $(this).closest('.row').css('box-shadow', '0 2px 4px rgba(0,0,0,0.1)');
+            }
+        });
+
+        if (!allChecked) {
+            e.preventDefault(); // Stop the form from submitting
+            alert("Gagal Menyimpan! Terdapat " + missingCount + " kelengkapan yang belum diperiksa. Silakan pilih OK (Hijau) atau Reject (Merah) pada bagian yang disorot.");
+            
+            // Scroll to the first unchecked item
+            $('html, body').animate({
+                scrollTop: $('input[id$="_value"][value=""]').first().closest('.row').offset().top - 100
+            }, 500);
+        }
     });
 });
 </script>
@@ -325,17 +361,20 @@ $(document).ready(function() {
 
     <hr class="my-4">
     
-    <form method="post" action="<?=route('simpan_gate1')?>">
+    <form id="mainInspectionForm" method="post" action="<?=route('simpan_gate1')?>">
         <?php
         $no = 1;
         $hasil = 'Lanjut Pemeriksaan Gate 2';
         $hasil_color = 'bg-success';
+        // Note: Make sure $border_green and $border_red are defined in your environment if they aren't here
+        $border_green = '1px solid #ccc'; 
+        $border_red = '1px solid #ccc';
 
         foreach ($checkpoints as $row):
             $noo = $no - 1;
             $row_bg  = "#bcbcbc"
         ?>
-        <div id="row_<?=$row['id']?>" class="row" style="background-color: <?= $row_bg ?>; color: white; border-radius: 6px; padding: 10px 0; margin: 0 0 12px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.3s ease;">
+        <div id="row_<?=$row['id']?>" class="row" style="background-color: <?= $row_bg ?>; color: white; border-radius: 6px; padding: 10px 0; margin: 0 0 12px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.3s ease; transition: box-shadow 0.3s ease;">
             <div class="col-xs-8" style="font-size: 16px; font-weight: 500; line-height: 1.8; padding-left: 15px; white-space: normal; word-wrap: break-word;">
                 <?= htmlspecialchars($row['param_name']) ?>
             </div>
@@ -355,7 +394,8 @@ $(document).ready(function() {
                     <?= static_img('css/img/red.png', ['width' => '26', 'height' => '26']) ?>
                 </button>
 
-                <input type="hidden" name="param_<?=$row['id']?>_value"  id="param_<?=$row['id']?>_value"  value="<?= $cek_utama ?>">
+                <!-- Value changed to empty so the JS validator knows it hasn't been checked -->
+                <input type="hidden" name="param_<?=$row['id']?>_value"  id="param_<?=$row['id']?>_value"  value="">
                 <input type="hidden" name="param_<?=$row['id']?>_photo"  id="param_<?=$row['id']?>_photo"  value="">
                 <input type="hidden" name="param_<?=$row['id']?>_temuan" id="param_<?=$row['id']?>_temuan" value="">
                 
@@ -397,7 +437,8 @@ $(document).ready(function() {
         <input type="hidden" name="no_po" value="<?= htmlspecialchars($no_po) ?>">
         <input type="hidden" name="driver" value="<?= htmlspecialchars($driver) ?>">
         <input type="hidden" name="supplier" value="<?= htmlspecialchars($supplier) ?>">
-        <input type='hidden' name='id' value='<?=$id_checklist?>'
+        <input type='hidden' name='id' value='<?=$id_checklist?>'>
+        
         <div class="d-grid gap-2 mt-4" style='width:100%'>
             <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm" style='width:100%'>
                 Simpan Data
