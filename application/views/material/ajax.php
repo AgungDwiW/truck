@@ -22,7 +22,25 @@ if ($type === 'supplier') {
     $url = API_SERVER . "Vendor/QuickSearch";
     $response = ApiCall("POST", $url, $payload);
     
-    echo $response;
+    // Decode the response to filter out duplicates based on vendorNumber
+    $data = json_decode($response, true);
+    if (is_array($data)) {
+        $uniqueData = [];
+        $seenIds = [];
+        
+        foreach ($data as $item) {
+            $id = $item['vendorNumber'] ?? null;
+            // Only add to the final array if the ID exists and hasn't been seen yet
+            if ($id !== null && !isset($seenIds[$id])) {
+                $seenIds[$id] = true;
+                $uniqueData[] = $item;
+            }
+        }
+        echo json_encode($uniqueData);
+    } else {
+        // Fallback in case the API returns an error message instead of an array
+        echo $response; 
+    }
     exit;
 }
 
@@ -43,9 +61,25 @@ elseif ($type === 'transporter') {
     // Execute the GET request
     $response = ApiCall("GET", $url, "");
     
-    // Since the API handles the filtering and pagination, 
-    // we can echo the JSON response directly back to Select2
-    echo $response;
+    // Decode the response to filter out duplicates based on transporterId
+    $data = json_decode($response, true);
+    if (is_array($data)) {
+        $uniqueData = [];
+        $seenIds = [];
+        
+        foreach ($data as $item) {
+            $id = $item['transporterId'] ?? null;
+            // Only add to the final array if the ID exists and hasn't been seen yet
+            if ($id !== null && !isset($seenIds[$id])) {
+                $seenIds[$id] = true;
+                $uniqueData[] = $item;
+            }
+        }
+        echo json_encode($uniqueData);
+    } else {
+        // Fallback in case the API returns an error message instead of an array
+        echo $response;
+    }
     exit;
 }
 
