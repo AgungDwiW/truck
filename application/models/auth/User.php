@@ -117,8 +117,8 @@ class User{
 			$_SESSION["nama"] 			= $data['fullName'];
 			$_SESSION["name"] 			= $data['fullName'];
 			$_SESSION["plantid"] 		= $data['siteId'];
-			$_SESSION["plant_name"] 	= $data['site']['siteName'];
-			$_SESSION["region"] 		= $data['site']['siteRegion'];
+			$_SESSION["plant_name"] 	= isset($data['site'], $data['site']['siteName']) ?$data['site']['siteName']: "PLANT UNDEFINED";
+			$_SESSION["region"] 		= isset($data['site'], $data['site']['siteRegion']) ?$data['site']['siteName']: "REGION UNDEFINED";
 			$_SESSION["nik"] 			= $data['employeeId'];
 			$_SESSION["role_desc"] 		= $data["roles"][0];
 
