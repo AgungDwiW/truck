@@ -61,6 +61,11 @@ if($dataShipment and count($dataShipment)>0){
     $plant = User::$plantid;
     $DN             = ApiCall("POST", API_SERVER. "DeliveryNotes/ConvertOrders",'["'.$_GET['id_shipment'].'"]');
     $DN             = json_decode($DN,1);
+    if (!isset($DN[0], $DN[0]['deliveryNumber'])){
+        echo "<script>alert('DN tidak ditemukan')</script>";
+        redirect_back();
+        exit();
+    }
     $DN_number      = $DN[0]['deliveryNumber'];
     
     $dataOTM = [
