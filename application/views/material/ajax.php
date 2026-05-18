@@ -12,11 +12,11 @@ $take      = (int)($_POST['take'] ?? 30);
 
 // --- 1. HANDLE SUPPLIER SEARCH ---
 if ($type === 'supplier') {
-    $payload = json_encode([
+    $payload = [
         "VendorNameKey" => $searchKey,
         "Skip"      => $skip,
         "Take"      => $take
-    ]);
+    ];
     
     $url = API_SERVER . "Vendors?". http_build_query($payload);
     $response = ApiCall("GET", $url, null);
