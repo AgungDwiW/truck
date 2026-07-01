@@ -43,7 +43,7 @@ if ($plant_id == '90A8') {
         <h2>
             <strong>
                 <label class="center-block" style="color: yellow; text-align: center;">
-                    INPUT ID SHIPMENT
+                    INPUT CO NUMBER
                 </label>
             </strong>
         </h2>

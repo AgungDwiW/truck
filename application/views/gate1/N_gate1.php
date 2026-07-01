@@ -10,6 +10,7 @@
 // INCLUDES & CONFIGURATION
 // ============================================================================
 include "application/config/connection.php";
+include "application/config/connectionSL.php";
 
 // ============================================================================
 // INITIALIZE VARIABLES
@@ -17,7 +18,7 @@ include "application/config/connection.php";
 $idref       = $_POST['idref'] ?? '';
 $nopol       = $_POST['nopol'] ?? '';
 $lokasi      = User::$plant_name;
-$no_po  = $_POST['no_po'] ?? '';
+$no_po       = $_POST['no_po'] ?? '';
 $muat        = $_POST['muat'] ?? '';
 $driver      = $_POST['driver'] ?? '';
 $supplier    = $_POST['supplier'] ?? '';
@@ -44,6 +45,12 @@ $username = User::$username;
 // ----------------------------------------------------------------------------
 // 1. If muat is FG, determine truck type and insert inspection record
 // ----------------------------------------------------------------------------
+
+$transporter_all    = explode(" - ",$transporter);
+$transporter        = $transporter_all[0];
+unset($transporter_all[0]);
+$transporter_name   = implode(" - ", $transporter_all);
+
 $query_truck = "
     SELECT jenis_truck 
     FROM tbm_tempat_muat 
@@ -65,10 +72,6 @@ $supplier           = $supplier_all[0];
 unset($supplier_all[0]);
 $supplier_name      = implode(" - ", $supplier_all);
 
-$transporter_all    = explode(" - ",$transporter);
-$transporter        = $transporter_all[0];
-unset($transporter_all[0]);
-$transporter_name   = implode(" - ", $transporter_all);
 
 
 $query_insert = "
@@ -104,6 +107,14 @@ mysqli_query($con, $query_insert);
 $id_checklist = mysqli_insert_id($con);
 
 
+// ----------------------------------------------------------------------------
+// 3.5. UPDATE OTM
+// ----------------------------------------------------------------------------
+    if ($_POST['muat'] == 'FG'){
+        $otm = new Table("tbl_picking_shipment_otm_upload", "smartlogistic", $conSL);
+        $otm->update(["service_provider_id" => $transporter, "transporter_name" => $transporter_name, 'truck_id' => $nopol, 'driver_name' => $driver])
+            ->where("shipment_id = 'S{$_POST['id_barang']}'")->execute();
+    }
 // ----------------------------------------------------------------------------
 // 4. Fetch all checkpoints (utama) for display
 // ----------------------------------------------------------------------------

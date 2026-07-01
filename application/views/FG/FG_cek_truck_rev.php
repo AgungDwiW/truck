@@ -8,19 +8,22 @@
 
 include "application/config/connection.php";
 include "application/config/connectionSL.php";
-
+$shipment = ["OrderIds" => $_GET['id_shipment']];
+$url = http_build_query($shipment);
 $plant = User::$plantid;
-$dataShipment = ApiCall("GET", API_SERVER. "Orders?OrderIds={$_GET['id_shipment']}",[]);
+$dataShipment = ApiCall("GET", API_SERVER. "Orders?" . $url ,[]);
 $dataShipment = json_decode($dataShipment,1);
 
 if(isset($dataShipment[0]) and isset($dataShipment[0]['siteId']) and $dataShipment[0]['siteId']!=User::$plantid){
     $plant = User::$plantid;
      echo "<script>
             window.alert('Plant order ({$dataShipment[0]['siteId']}) tidak sesuai dengan plant user ({$plant})!!!');
-            window.location = 'cek_nopol';
+            window.history.back();
           </script>";
     exit();
 }
+// Debuger::show();
+// Debuger::dump($dataShipment,1);
 
 $supplier_id = '';
 $supplier_name = '';
@@ -59,17 +62,28 @@ if($dataShipment and count($dataShipment)>0){
     //                              Insert DN & OTM
     //-------------------------------------------------------------------------
     $plant = User::$plantid;
-    $DN             = ApiCall("POST", API_SERVER. "DeliveryNotes/ConvertOrders",'["'.$_GET['id_shipment'].'"]');
+    $url = API_SERVER. "DeliveryNotes/ConvertOrders";
+    $data           = [$_GET['id_shipment']];
+    $DN             = ApiCall("POST", $url,json_encode($data));
     $DN             = json_decode($DN,1);
-    if (!isset($DN[0], $DN[0]['deliveryNumber'])){
-        echo "<script>alert('DN tidak ditemukan')</script>";
+    // Debuger::dump([$url,$data, $DN],1);
+    // exit();
+    if (isset($DN['title'])){
+        $DN['title'] = str_replace("'", '', $DN['title']);
+        $DN['detail'] = str_replace("'", '', $DN['detail']);
+        echo "<script>alert('Error : {$DN['title']} | Detail : {$DN['detail']}'); window.history.back();</script>";
         redirect_back();
+        exit();
+    }
+    if (!isset($DN[0], $DN[0]['deliveryNumber'])){
+        echo "<script>alert('DN tidak ditemukan'); window.history.back();</script>";
+        // redirect_back();
         exit();
     }
     $DN_number      = $DN[0]['deliveryNumber'];
     
     $dataOTM = [
-        'shipment_id'               => "S".$_GET['id_shipment'],
+        'shipment_id'               => $_GET['id_shipment'],
         'pk'                        => $_GET['id_shipment'],
         'order_release_id'          => $_GET['id_shipment'],
         'so_sto_no'                 => $_GET['id_shipment'],
@@ -92,7 +106,7 @@ if($dataShipment and count($dataShipment)>0){
         "latest_event_date"         => date('Y-m-d'),
         "latest_event_description"  => "create from truck",
         "mode"                      => ' ',
-        "truck_id"                  => ' ',
+        "truck_id"                  => $_GET['nopol'],
         "driver_name"               => ' ',
         "driver_mobile_no"          => ' ',
         "container_no"              => ' ',

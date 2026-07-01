@@ -7,15 +7,16 @@ include_once "application/library/autoload.php";
 // Initialize static helper
 StaticHelper::init();
 
-if (User::checkLogin())
+if (User::checkLogin()){
+
 	header("location:main/index");
+}
 // $debug = 1;
 // printpre($_SESSION,1);
 # Event Login 
 if(isset($_POST["username"]) AND isset($_POST["password"])) {
 	$USER = new User();
   	if($USER->login( $_POST['username'], $_POST['password'])){
-		if (!$debug)
 			header("location:main/index");
 	}
 	echo "<script type='text/javascript'>document.getElementById('log').innerHTML='ALERT! Login failed...'</script>";

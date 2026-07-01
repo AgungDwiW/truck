@@ -24,7 +24,11 @@ if (isset($_GET['refresh_token'])){
 }
 
 if(!User::checkLogin()){
-    echo"<script type='text/javascript'>alert('Session sudah habis, perubahan data pada sistem yang dilakukan sebelumnnya belum tersimpan. Mohon log in kembali dan lakukan perubahan kembali.');window.location.href='login.php'</script>";
+    echo BASE_URL."login.php";
+    
+    echo"<script type='text/javascript'>alert('Session sudah habis, perubahan data pada sistem yang dilakukan sebelumnnya belum tersimpan. Mohon log in kembali dan lakukan perubahan kembali.');
+    window.location.href='".BASE_URL."login.php'</script>";
+    
     exit;
 }
 
