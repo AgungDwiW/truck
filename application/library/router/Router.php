@@ -54,21 +54,40 @@ class Router
      * @param mixed $handler Controller action (e.g., 'user@edit') or callable
      * @param string|null $name Route name for reverse URL generation
      */
+    /**
+     * Add a route to the router
+     */
     public static function add($pattern, $handler, $name = null)
     {
-        // Prepend current group prefix
+        // 1. Safely prepend group prefix to pattern (handles empty patterns like '')
         if (self::$currentPrefix !== '') {
-            $pattern = rtrim(self::$currentPrefix, '/') . '/' . ltrim($pattern, '/');
+            $cleanPattern = ltrim($pattern, '/');
+            $pattern = $cleanPattern !== '' 
+                ? rtrim(self::$currentPrefix, '/') . '/' . $cleanPattern 
+                : rtrim(self::$currentPrefix, '/');
         }
         
-        // Convert pattern to regex
+        // 2. Prepend group prefix to handler if it's a simple string
+        if (is_string($handler) && self::$currentPrefix !== '') {
+            if (strpos($handler, '/') === false && strpos($handler, '@') === false) {
+                $handler = rtrim(self::$currentPrefix, '/') . '/' . $handler;
+            }
+        }
+        
+        // 3. Use handler as name if name is not specified
+        if ($name === null && is_string($handler)) {
+            $name = $handler;
+        }
+        
         $regex = self::patternToRegex($pattern);
         
         $route = [
             'pattern' => $pattern,
             'regex' => $regex,
             'handler' => $handler,
-            'params' => self::extractParamNames($pattern)
+            'params' => self::extractParamNames($pattern),
+            'name' => $name,
+            'method' => 'ANY' // <-- Add this
         ];
         
         self::$routes[] = $route;
@@ -80,23 +99,40 @@ class Router
         return $route;
     }
 
-    public static function addGet($pattern, $name = null)
+    public static function addGet($pattern, $handler = null, $name = null)
     {
-        
-        // Prepend current group prefix
+        // 1. Safely prepend group prefix to pattern
         if (self::$currentPrefix !== '') {
-            $pattern = rtrim(self::$currentPrefix, '/') . '/' . ltrim($pattern, '/');
+            $cleanPattern = ltrim($pattern, '/');
+            $pattern = $cleanPattern !== '' 
+                ? rtrim(self::$currentPrefix, '/') . '/' . $cleanPattern 
+                : rtrim(self::$currentPrefix, '/');
         }
         
-        // Convert pattern to regex
+        // 3. Use handler as name if name is not specified
+        if ($name === null && is_string($handler)) {
+            $name = $handler;
+        }
+        // 2. Prepend group prefix to handler if it's a simple string
+        if (is_string($handler) && self::$currentPrefix !== '') {
+            if (strpos($handler, '/') === false && strpos($handler, '@') === false) {
+                $handler = rtrim(self::$currentPrefix, '/') . '/' . $handler;
+            }
+        }
+        
+        
         $regex = self::patternToRegex($pattern);
+        
+        // If a handler is provided, use it. Otherwise, default to parseGet.
+        $actualHandler = $handler ? $handler : ["Router", "parseGet"];
         
         $route = [
             'pattern' => $pattern,
             'regex' => $regex,
-            'handler' => ["Router", "parseGet"],
+            'handler' => $actualHandler,
             'params' => self::extractParamNames($pattern),
-            'name'  =>$name 
+            'name'  => $name,
+            'method' => 'GET' // <-- Add this
         ];
         
         self::$routes[] = $route;
@@ -108,22 +144,42 @@ class Router
         return $route;
     }
 
-    public static function addPost($pattern, $name = null)
+    public static function addPost($pattern, $handler = null, $name = null)
     {
-        // Prepend current group prefix
+        // 1. Safely prepend group prefix to pattern
         if (self::$currentPrefix !== '') {
-            $pattern = rtrim(self::$currentPrefix, '/') . '/' . ltrim($pattern, '/');
+            $cleanPattern = ltrim($pattern, '/');
+            $pattern = $cleanPattern !== '' 
+                ? rtrim(self::$currentPrefix, '/') . '/' . $cleanPattern 
+                : rtrim(self::$currentPrefix, '/');
+        }
+        // 3. Use handler as name if name is not specified
+        if ($name === null && is_string($handler)) {
+            $name = $handler;
         }
         
-        // Convert pattern to regex
+        
+        // 2. Prepend group prefix to handler if it's a simple string
+        if (is_string($handler) && self::$currentPrefix !== '') {
+            if (strpos($handler, '/') === false && strpos($handler, '@') === false) {
+                $handler = rtrim(self::$currentPrefix, '/') . '/' . $handler;
+            }
+        }
+        
+        
+        
         $regex = self::patternToRegex($pattern);
+        
+        // If a handler is provided, use it. Otherwise, default to parsePost.
+        $actualHandler = $handler ? $handler : ["Router", "parsePost"];
         
         $route = [
             'pattern' => $pattern,
             'regex' => $regex,
-            'handler' => ["Router", "parsePost"],
+            'handler' => $actualHandler,
             'params' => self::extractParamNames($pattern),
-            'name'  =>$name
+            'name'  => $name,
+            'method' => 'POST' // <-- Add this
         ];
         
         self::$routes[] = $route;
@@ -170,10 +226,11 @@ class Router
     public static function match($url)
     {
         // Remove leading/trailing slashes
-        $url = trim($url, '/');
+        // $url = trim($url, '/');
         
         foreach (self::$routes as $route) {
-            if (preg_match($route['regex'], $url, $matches)) {
+            // Debuger::dump([$route['regex'], $url, preg_match($route['regex'], $url, $matches)],1);
+            if (preg_match($route['regex'], $url, $matches) || preg_match($route['regex'], $url."/", $matches)) {
                 // Extract parameter values
                 $params = [];
                 foreach ($route['params'] as $paramName) {
@@ -209,11 +266,12 @@ class Router
         
         $route = self::$namedRoutes[$name];
         $url = $route['pattern'];
-        
+        // Debuger::dump([$url, $params]);
         // Replace parameters in the pattern
         foreach ($params as $key => $value) {
             $url = str_replace('{' . $key . '}', $value, $url);
         }
+        // Debuger::dump($url);
         
         // Check for any remaining required parameters
         if (preg_match('/\{([^}]+)\}/', $url, $matches)) {
@@ -335,7 +393,11 @@ class Router
         // Remove query string from URL for routing purposes
         $url_segments = explode('?', $url);
         $path = $url_segments[0];
+        // Debuger::dump($path,1);
+        
         $matchedRoute = Router::match($path);
+        // Debuger::dump(Router::getNamedRoutes(),1);
+        // exit();
         if ($matchedRoute !== null) {
             // Route matched, extract controller and action from handler
             $handler = $matchedRoute['handler'];
@@ -359,24 +421,39 @@ class Router
                 foreach ($route_params as $key => $value) {
                     $_GET[$key] = $value;
                 }
+                if ($view_path =='')
+                    $view_path = 'index';
                 
                 // Get our controller file
                 $controller_path = APP_DIR . 'controllers/' . $controller . '.php';
                 $view_full_path = APP_DIR . 'views/' . $controller . '/' . $view_path . '.php';
 
                 // Set content variable for master.php template
+                // Debuger::dump([$controller, $view_path, $controller_path, $view_full_path],1);
+                // exit();
+                // Set content variable for master.php template
                 $content = $view_full_path;
+                
+                // Check which method was used to register the route
+                $routeMethod = $matchedRoute['route']['method'] ?? 'ANY';
 
-
-                // Debug: Uncomment to see routing info
-                // printpre(['controller' => $controller, 'view_path' => $view_path, 'action' => $action, 'controller_path' => $controller_path, 'view_full_path' => $view_full_path], 1);
-
-                if (file_exists($controller_path) && file_exists($view_full_path)) {
-                    include($controller_path);
+                if ($routeMethod === 'GET') {
+                    // Send directly to parseGet instead of including the controller
+                    self::parseGet($content, array_values($route_params));
+                    exit();
+                } elseif ($routeMethod === 'POST') {
+                    // Send directly to parsePost instead of including the controller
+                    self::parsePost($content, array_values($route_params));
                     exit();
                 } else {
-                    require_once(APP_DIR . 'assets/error.php');
-                    exit();
+                    // Fallback to standard controller include for generic add() routes
+                    if (file_exists($controller_path) && file_exists($view_full_path)) {
+                        include($controller_path);
+                        exit();
+                    } else {
+                        require_once(APP_DIR . 'assets/error.php');
+                        exit();
+                    }
                 }
             } elseif (is_callable($handler)) {
                 // Callable handler - execute it and exit
@@ -407,11 +484,14 @@ class Router
                         $view_path = 'index';
                     }
                 }
+                if ($view_path == '')
+                    $view_path = 'index';
                 // --- END NEW FALLBACK LOGIC ---
 
                 $controller_path = APP_DIR . 'controllers/' . $controller . '.php';
                 $view_full_path = APP_DIR . 'views/' . $controller . '/' . $view_path . '.php';
-                
+                // Debuger::dump([$controller, $view_path, $controller_path, $view_full_path],1);
+                // exit();
                 // Set content variable for master.php template
                 $content = $view_full_path;
                 call_user_func_array($handler,[$content,  array_values($route_params)]);

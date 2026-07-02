@@ -48,17 +48,17 @@ final class CSRF
     }
 
     // Removed ?string nullable type hint for PHP 7.0 compatibility
-    public static function validate(string $key, $token): bool
+    public static function validate(string $key, $token=''): bool
     {
         self::initSession();
-
+        // Debuger::dump($_SESSION[self::SESSION_KEY][$key][$token],1);
         if (
             empty($token) ||
             empty($_SESSION[self::SESSION_KEY][$key][$token])
         ) {
             return false;
         }
-
+        
         $expires = $_SESSION[self::SESSION_KEY][$key][$token];
 
         unset($_SESSION[self::SESSION_KEY][$key][$token]);

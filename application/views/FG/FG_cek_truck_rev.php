@@ -357,7 +357,7 @@ $(document).ready(function() {
                 delay: 250,
                 data: function (params) {
                     return {
-                        type: 'supplier', 
+                        type: 'customer', 
                         searchKey: params.term || "",
                         siteId: "<?= User::$plantid ?>",
                         skip: 0,

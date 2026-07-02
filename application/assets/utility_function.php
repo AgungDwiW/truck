@@ -106,6 +106,12 @@ function getPreValue($sessionName,$defaultValue){
 	$_SESSION[$sessionName]= isset($_POST['cmdKirim'])?$_POST[$sessionName]:$_SESSION[$sessionName];
 	return $_SESSION[$sessionName];
 }
+function getPreValueGet($sessionName,$defaultValue){
+	$_SESSION[$sessionName]= isset($_SESSION[$sessionName])?$_SESSION[$sessionName]:$defaultValue;
+	$_SESSION[$sessionName]= isset($_GET[$sessionName])?$_GET[$sessionName]:$_SESSION[$sessionName];
+	return $_SESSION[$sessionName];
+}
+
 
 function pageHeader($judul, $otherMenu){
 	$kode = '<div class="damarheader"><form method="POST">'.$judul.' | ';

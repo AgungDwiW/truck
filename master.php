@@ -47,7 +47,7 @@ StaticHelper::init();
   <body>
     <?php 
         if(isset($navtop)) require($navtop);
-        echo '<div class="container-fluid" style="margin-top:100px">';
+        echo '<div class="container-fluid" style="margin-top:50px">';
         include($content);
         echo '</div>';
         if(isset($footer)) require($footer); 

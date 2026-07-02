@@ -3,7 +3,7 @@
 $base_path = dirname(__FILE__);
 $base_path2 = dirname(__FILE__, 3);
 include  "application/config/connection.php";
-$db_default = 'smartlogistic';
+$db_default = 'dbtruck';
 
 class Table {
 

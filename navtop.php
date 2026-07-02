@@ -34,6 +34,9 @@
 			<li class="nav-item">
                     <a class="nav-link"  href="<?= url('main/index') ?>">Home<span class="sr-only">(current)</span></a>
             </li>
+			<li class="nav-item">
+                    <a class="nav-link"  href="<?= url('report/') ?>">Report<span class="sr-only">(current)</span></a>
+            </li>
 			
 		</ul>
 			<ul class="nav navbar-nav navbar-right">

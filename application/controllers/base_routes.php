@@ -5,4 +5,4 @@
  */
 
 // Home page route - redirects to landing page
-Router::addGet('', 'home');
+Router::addGet('', 'main');

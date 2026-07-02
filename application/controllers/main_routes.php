@@ -3,7 +3,6 @@
  * Routes for main controller
  * All routes in this file will be prefixed with '/main' automatically
  */
-
 Router::group('main', function() {
     // Home page (already handled by base route)
     // Router::addGet('', 'main@index', 'main_index');
@@ -11,6 +10,7 @@ Router::group('main', function() {
     // ============================================
     // Flat action routes (for compatibility with existing links)
     // ============================================
+    Router::addGet('',  'index');
     Router::addGet('index',  'index');
     Router::addGet('cek_user_safety',  'cek_user_safety');
     Router::addGet('pilih_gate',  'pilih_gate');
