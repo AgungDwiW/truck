@@ -292,8 +292,8 @@ $(document).ready(function() {
             },
             processResults: function (data) {
                 var mappedResults = $.map(data, function (item) {
-                    var id = item.vendorId || item.sapCustomerId;
-                    var name = item.vendorName || item.customerName;
+                    var id = item.vendorId || item.partnerNumber;
+                    var name = item.vendorName || item.firstName;
                     return {
                         id: id + ' - ' + name, 
                         text: id + ' - ' + name 

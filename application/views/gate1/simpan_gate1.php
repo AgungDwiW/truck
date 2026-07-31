@@ -91,7 +91,8 @@ if (!empty($nopol))   $updateHeader .= ", nopol = '$nopol'";
 if (!empty($petugas)) $updateHeader .= ", petugas_pemeriksa = '$petugas'";
 if (!empty($lokasi))  $updateHeader .= ", lokasi_pemeriksaan = '$lokasi'";
 if (!empty($no_po))  $updateHeader .= ", no_po = '$no_po'";
-if (!empty($supplier))$updateHeader .= ", nama_supplier = '$supplier'";
+
+// if (!empty($supplier))$updateHeader .= ", nama_supplier = '$supplier'";
 
 $updateHeader .= " WHERE no = $checklistId";
 Debuger::dump($updateHeader);

@@ -44,6 +44,7 @@ if(!User::checkLogin()){
 
     exit;
 }
+// Debuger::show();
 Router::handleRouting();
 // Set our defaults
 

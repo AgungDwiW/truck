@@ -1,6 +1,5 @@
 <?php
 include_once "application/config/connection.php";
-include_once "application/config/connection140.php";
 
 $muat       = $_GET['muat'];
 $username   = User::$username;

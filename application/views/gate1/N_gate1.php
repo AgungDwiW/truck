@@ -11,7 +11,7 @@
 // ============================================================================
 include "application/config/connection.php";
 include "application/config/connectionSL.php";
-
+// Debuger::show();
 // ============================================================================
 // INITIALIZE VARIABLES
 // ============================================================================
@@ -20,7 +20,7 @@ $nopol       = $_POST['nopol'] ?? '';
 $lokasi      = User::$plant_name;
 $no_po       = $_POST['no_po'] ?? '';
 $muat        = $_POST['muat'] ?? '';
-$driver      = $_POST['driver'] ?? '';
+$driver      = $_POST['driver_name'] ?? '';
 $supplier    = $_POST['supplier'] ?? '';
 $transporter = $_POST['transporter'] ?? '';
 $usia        = $_POST['usia'] ?? 0;
@@ -49,7 +49,7 @@ $username = User::$username;
 $transporter_all    = explode(" - ",$transporter);
 $transporter        = $transporter_all[0];
 unset($transporter_all[0]);
-$transporter_name   = implode(" - ", $transporter_all);
+$transporter_name   = $transporter_all[1];
 
 $query_truck = "
     SELECT jenis_truck 
@@ -112,8 +112,31 @@ $id_checklist = mysqli_insert_id($con);
 // ----------------------------------------------------------------------------
     if ($_POST['muat'] == 'FG'){
         $otm = new Table("tbl_picking_shipment_otm_upload", "smartlogistic", $conSL);
-        $otm->update(["service_provider_id" => $transporter, "transporter_name" => $transporter_name, 'truck_id' => $nopol, 'driver_name' => $driver])
-            ->where("shipment_id = 'S{$_POST['id_barang']}'")->execute();
+        $otm->update(
+            [
+                "service_provider_id" => $transporter, 
+                "transporter_name" => $transporter_name, 
+                'truck_id' => $nopol, 
+                'driver_name' => $driver,
+                'destination_location_id'   => $supplier,
+                'destination_location_name' => $supplier_name,
+                
+            ])
+            ->where("shipment_id = '{$_POST['id_barang']}'")->execute();
+
+        
+        $shipment = ["OrderIds" => $_POST['id_barang']];
+        $url = http_build_query($shipment);
+        $plant = User::$plantid;
+        $dataShipment = ApiCall("GET", API_SERVER. "Orders?" . $url ,[]);
+        $dataShipment = json_decode($dataShipment,1);
+        if (isset($dataShipment[0]['vanDriverName'])){
+            $dataShipment[0]['vanDriverName']   = $driver;
+            $dataShipment[0]['licensePlate']    = $nopol;
+            $result = ApiCall("POST", API_SERVER. "Orders", json_encode($dataShipment));
+        }
+        Debuger::dump(["json" => $dataShipment, 'return' =>$result]);
+
     }
 // ----------------------------------------------------------------------------
 // 4. Fetch all checkpoints (utama) for display

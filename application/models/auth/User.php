@@ -92,7 +92,7 @@ class User{
 
 	
     public static function login($username, $password){
-		$username = preg_replace('/[^a-zA-Z0-9.]/', '', $username);
+		// $username = preg_replace('/[^a-zA-Z0-9.]/', '', $username);
 		$response = GetAccessToken($username, $password, 420);
 		printpre($response);
 		if (isset($response['success']))

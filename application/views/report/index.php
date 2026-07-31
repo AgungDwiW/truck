@@ -103,7 +103,7 @@ $data   = $table->get()->where("
                                 <td><?=$row['petugas_pemeriksa']?></td>
                                 <td><?=$row['tgbaca']?></td>
                                 <td><?=$row['nopol']?></td>
-                                <td><?=$row['no_po']?></td>
+                                <td><?=$row['id_barang']?></td>
                                 <td><?=$row['muatan']?></td>
                                 <td><?=$row['kode_supplier']?> - <?=$row['nama_supplier']?></td>
                                 <td><?=$row['kode_transporter']?> - <?=$row['nama_transporter']?></td>
@@ -123,10 +123,10 @@ $data   = $table->get()->where("
         $.post("<?=route("report_api",['action'=>"delete"])?>", 
             {
                 id:id,
-                csrf: '<?=$a?>'
+                csrf: '<?=CSRF::generate("report_del")?>'
 
             }, function(result){
-                // location.reload()
+                location.reload()
             }
         )
     }

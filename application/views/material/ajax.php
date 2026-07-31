@@ -83,13 +83,13 @@ elseif ($type === 'transporter') {
 }
 else if ($type =='customer' ){
      $payload = [
-        "CustomerNameKey" => $searchKey,
+        "FirstNameKey" => $searchKey,
         'IsActive'           => 'true',
         "Skip"      => $skip,
         "Take"      => $take
     ];
     
-    $url = API_SERVER . "Customers?". http_build_query($payload);
+    $url = API_SERVER . "Partners?". http_build_query($payload);
     $response = ApiCall("GET", $url, null);
     // Debuger::dump($response,1);
     // Decode the response to filter out duplicates based on vendorNumber
@@ -99,7 +99,7 @@ else if ($type =='customer' ){
         $seenIds = [];
         
         foreach ($data as $item) {
-            $id = $item['customerId'] ?? null;
+            $id = $item['partnerNumber'] ?? null;
             // Only add to the final array if the ID exists and hasn't been seen yet
             if ($id !== null && !isset($seenIds[$id])) {
                 $seenIds[$id] = true;

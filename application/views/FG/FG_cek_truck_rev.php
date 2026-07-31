@@ -8,12 +8,14 @@
 
 include "application/config/connection.php";
 include "application/config/connectionSL.php";
+include "application/models/wms/DeliveryNotes.php";
+// Debuger::show();
 $shipment = ["OrderIds" => $_GET['id_shipment']];
 $url = http_build_query($shipment);
 $plant = User::$plantid;
 $dataShipment = ApiCall("GET", API_SERVER. "Orders?" . $url ,[]);
 $dataShipment = json_decode($dataShipment,1);
-
+Debuger::dump($dataShipment);
 if(isset($dataShipment[0]) and isset($dataShipment[0]['siteId']) and $dataShipment[0]['siteId']!=User::$plantid){
     $plant = User::$plantid;
      echo "<script>
@@ -30,19 +32,23 @@ $supplier_name = '';
 $transporter_id = '';
 $transporter_name = '';
 $DN_number = '';
-
+$trueCustomer = 'NOCUSTOMER';
+$fullCustomer = '';
 if($dataShipment and count($dataShipment)>0){
     $dataShipment   = $dataShipment[0];
     
     //-------------------------------------------------------------------------
     //                              GETTING DATA
     //-------------------------------------------------------------------------
-    
+   
     // Check if Customer/Supplier is already tied
-    if (isset($dataShipment['customer'])){
-        $supplier_id    = $dataShipment['customer']['customerId'];
-        $supplier_name  = $dataShipment['customer']['customerName'];
+    if (isset($dataShipment['partner'])){
+        $trueCustomer   = $dataShipment['partner']['partnerNumber'];
+        $fullCustomer   = "{$dataShipment['partner']['partnerNumber']} - {$dataShipment['partner']['firstName']}";
+        $supplier_id    = $dataShipment['partner']['partnerNumber'] . "";
+        $supplier_name  = $dataShipment['partner']['firstName'];
     }
+    // Debuger::dump($trueCustomer,1);
     
     // Check if Transporter is already tied
     if (isset($dataShipment['transporterId']) && $dataShipment['transporterId']){
@@ -61,25 +67,36 @@ if($dataShipment and count($dataShipment)>0){
     //-------------------------------------------------------------------------
     //                              Insert DN & OTM
     //-------------------------------------------------------------------------
-    $plant = User::$plantid;
-    $url = API_SERVER. "DeliveryNotes/ConvertOrders";
-    $data           = [$_GET['id_shipment']];
-    $DN             = ApiCall("POST", $url,json_encode($data));
-    $DN             = json_decode($DN,1);
-    // Debuger::dump([$url,$data, $DN],1);
-    // exit();
-    if (isset($DN['title'])){
-        $DN['title'] = str_replace("'", '', $DN['title']);
-        $DN['detail'] = str_replace("'", '', $DN['detail']);
-        echo "<script>alert('Error : {$DN['title']} | Detail : {$DN['detail']}'); window.history.back();</script>";
-        redirect_back();
-        exit();
+    $DN = DeliveryNotes::getFromSO($_GET['id_shipment']);
+    if (empty($DN)){
+        $plant = User::$plantid;
+        $url = API_SERVER. "DeliveryOrders/ConvertOrders";
+        $data           = [$_GET['id_shipment']];
+        $DN             = ApiCall("POST", $url,json_encode($data));
+        $DN             = json_decode($DN,1);
+        Debuger::dump([$url,$data, $DN]);
+        // exit();
+        if (isset($DN['title'])){
+            $DN['title'] = str_replace("'", '', $DN['title']);
+            $DN['detail'] = str_replace("'", '', $DN['detail']);
+            echo "<script>
+                    alert('Error : {$DN['title']} | Detail : {$DN['detail']}');
+                    // window.history.back(); 
+                </script>";
+            // redirect_back();
+            exit();
+        }
+        if (!isset($DN[0], $DN[0]['deliveryNumber'])){
+            echo "<script>
+                    alert('DN tidak ditemukan'); 
+                    // window.history.back();
+                </script>";
+            // redirect_back();
+            exit();
+        }
     }
-    if (!isset($DN[0], $DN[0]['deliveryNumber'])){
-        echo "<script>alert('DN tidak ditemukan'); window.history.back();</script>";
-        // redirect_back();
-        exit();
-    }
+
+ 
     $DN_number      = $DN[0]['deliveryNumber'];
     
     $dataOTM = [
@@ -257,7 +274,7 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
 
 <div class="container">
     <div class="form-container">
-        <form method="post" action="<?= route("N_gate1") ?>">
+        <form method="post" action="<?= route("N_gate1") ?>" id='gateForm'>
             
             <div class="form-group">
                 <label class="form-label">DN</label>
@@ -267,14 +284,16 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
             <!-- Supplier Field -->
             <div class="form-group">
                 <label class="form-label">Customer / Supplier</label>
-                <?php if(!empty($supplier_id)): ?>
-                    <!-- If tied, make it readonly -->
-                    <input type='text' name='supplier' class="form-control text-uppercase" readonly value='<?= htmlspecialchars($supplier_id . " - " . $supplier_name) ?>'>
-                <?php else: ?>
                     <!-- If not tied, show search dropdown -->
+                <?php if($trueCustomer != "NOCUSTOMER"): 
+                    
+                    ?>
+                    <!-- If tied, make it readonly -->
+                    <input type='text' class="form-control text-uppercase" name='supplier' readonly value='<?= $fullCustomer?>'>
+                <?php else: ?>
                     <select class="form-control text-uppercase" id='supplier_select' required name='supplier'>
                     </select>
-                <?php endif;?>
+                <?php endif; ?>
             </div>
 
             <!-- Transporter Field -->
@@ -290,6 +309,13 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
                 <?php endif;?>
             </div>
 
+             <!-- Transporter Field -->
+            <div class="form-group">
+                <label class="form-label">Nama Driver</label>
+                <input type='text' class="form-control text-uppercase" name='driver_name'>
+                
+            </div>
+
             <!-- Row: No Polisi + ID Shipment -->
             <div class="form-row">
                 <div class="form-group">
@@ -298,7 +324,7 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
                 </div>
                 <div class="form-group">
                     <label class="form-label">ID Shipment</label>
-                    <input type="text" class="form-control text-uppercase" value="<?= htmlspecialchars($id_shipment) ?>" readonly>
+                    <input type="text" class="form-control text-uppercase" name='id_shipment' value="<?= htmlspecialchars($id_shipment) ?>" readonly>
                 </div>
             </div>
 
@@ -343,6 +369,7 @@ $MUATAN_TYPE = ($muat == 'FG') ? "FG" : "Material";
 </div>
 
 <script>
+trueCustomer = "<?= $trueCustomer ?>";
 $(document).ready(function() {
     
     // 1. Initialize Supplier Select2 (Only runs if the element exists)
@@ -366,8 +393,8 @@ $(document).ready(function() {
                 },
                 processResults: function (data) {
                     var mappedResults = $.map(data, function (item) {
-                        var id = item.vendorId || item.sapCustomerId;
-                        var name = item.vendorName || item.customerName;
+                        var id = item.vendorId || item.partnerNumber;
+                        var name = item.vendorName || item.firstName;
                         return { id: id + ' - ' + name, text: id + ' - ' + name };
                     });
                     return { results: mappedResults };
@@ -408,5 +435,20 @@ $(document).ready(function() {
             }
         });
     }
+
+    $('#gateForm').on('submit', function (e) {
+        if (trueCustomer !='NOCUSTOMER'){
+            var selectedCustomer = $('#supplier_select').val();
+            selectedCustomer = selectedCustomer.split(" ");
+            selectedCustomer = selectedCustomer[0];
+            if (selectedCustomer != trueCustomer) {
+                e.preventDefault();
+                alert('Selected customer does not match the expected customer : '+trueCustomer+' vs '+selectedCustomer);
+                window.location.href = "<?= route('main') ?>";
+            }
+        }
+    });
+        
+
 });
 </script>

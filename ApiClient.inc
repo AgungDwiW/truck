@@ -12,13 +12,11 @@ define('API_ERR_LOG', $_SERVER['DOCUMENT_ROOT'] . "/zz-ApiErr" . date('Y-m-d') .
 
 function GetAccessToken($username, $password)
 {
-    $url = AUTH_API_BASEURL . '/Login';
+    $url = AUTH_API_BASEURL . 'Login';
     try {
         $loginDto = array(
             "userName" => $username,
             "password" => $password,
-            "twoFactorCode" => null,
-            "twoFactorRecoveryCode" => null
         );
 
         $call = new ApiClient();
@@ -118,37 +116,57 @@ class ApiClient
 
             if ($tokenExpired && !$refreshTkn)
                 RefreshToken();
+
             if (!isset($_SESSION))
                 session_start();
+
             if (empty($token) && isset($_SESSION["cTkn"]))
                 $token = $_SESSION["cTkn"];
 
             $curl = curl_init();
-            switch ($method) {
+
+            switch (strtoupper($method)) {
+
                 case "POST":
                     curl_setopt($curl, CURLOPT_POST, 1);
+
                     if ($data)
                         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
                     break;
+
                 case "PUT":
                     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+
                     if ($data)
                         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
                     break;
-                default:
+
+                case "DELETE":
+                    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+
+                    if ($data)
+                        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+                    break;
+
+                default: // GET
                     if ($data && is_array($data))
                         $url = sprintf("%s?%s", $url, http_build_query($data));
+
+                    break;
             }
 
-
-            
-
-            
-            // OPTIONS:
+            // HEADERS
             if (!empty($token))
-                $header = array('Content-Type: application/json', 'Authorization: Bearer ' . $token);
+                $header = array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . $token
+                );
             else
                 $header = array('Content-Type: application/json');
+
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
@@ -157,8 +175,9 @@ class ApiClient
             curl_setopt($curl, CURLOPT_HEADER, 1);
             curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
-            // EXECUTE:
+            // EXECUTE
             $response = curl_exec($curl);
+
             if (curl_errno($curl)) {
                 echo 'cURL Error: ' . curl_error($curl);
             }
@@ -167,22 +186,34 @@ class ApiClient
                 die("Api Connection Failure");
             }
 
-            // extract body
+            // EXTRACT HEADER & BODY
             $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-            $header = substr($response, 0, $headerSize);
+            $headerResp = substr($response, 0, $headerSize);
             $body = substr($response, $headerSize);
+            $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
             curl_close($curl);
 
-            // print_r($header);
+            // print_r($headerResp);
             // print_r($body);
 
             if ($bodyOnly)
                 return $body;
-            return [$header, $body];
+
+            return [$headerResp, $body, $statusCode];
+
         } catch (Throwable $th) {
-            file_put_contents(API_ERR_LOG, date('H:i:s') . " Api Call: " . $th->getMessage() . "; " . $url . "; " . $data . "\r\n", FILE_APPEND | LOCK_EX);
-            return array("Success" => false, "Message" => $th->getMessage());
+
+            file_put_contents(
+                API_ERR_LOG,
+                date('H:i:s') . " Api Call: " . $th->getMessage() . "; " . $url . "; " . json_encode($data) . "\r\n",
+                FILE_APPEND | LOCK_EX
+            );
+
+            return array(
+                "Success" => false,
+                "Message" => $th->getMessage()
+            );
         }
     }
 }

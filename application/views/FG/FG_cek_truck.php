@@ -10,7 +10,18 @@ $username    = User::$username;
 $plant_name  = User::$plant_name;
 $plant_id    = User::$plantid;
 
-$nama_sopir = 'Trial Driver';
+$shipment = ["OrderIds" => $_GET['id_shipment']];
+$url = http_build_query($shipment);
+$plant = User::$plantid;
+$dataShipment = ApiCall("GET", API_SERVER. "Orders?" . $url ,[]);
+$dataShipment = json_decode($dataShipment,1);
+if (isset($dataShipment[0]['vanDriverName'])){
+    $dataShipment[0]['vanDriverName']   = $_POST['driver_name'];
+    $dataShipment[0]['licensePlate']    = $_POST['nopol'];
+    $dataShipment = ApiCall("POST", API_SERVER. "Orders",$dataShipment);
+}
+
+$nama_sopir = $_POST['driver_name'];
 $seq_visitor = 'seq_trial';
 $id_barang  = 'Muat Trial';
 

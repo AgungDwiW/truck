@@ -226,7 +226,7 @@ class Router
     public static function match($url)
     {
         // Remove leading/trailing slashes
-        // $url = trim($url, '/');
+        $url = trim($url, '/');
         
         foreach (self::$routes as $route) {
             // Debuger::dump([$route['regex'], $url, preg_match($route['regex'], $url, $matches)],1);
@@ -490,7 +490,7 @@ class Router
 
                 $controller_path = APP_DIR . 'controllers/' . $controller . '.php';
                 $view_full_path = APP_DIR . 'views/' . $controller . '/' . $view_path . '.php';
-                // Debuger::dump([$controller, $view_path, $controller_path, $view_full_path],1);
+                Debuger::dump([$controller, $view_path, $controller_path, $view_full_path],1);
                 // exit();
                 // Set content variable for master.php template
                 $content = $view_full_path;
