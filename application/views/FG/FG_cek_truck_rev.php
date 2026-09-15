@@ -10,13 +10,20 @@ include "application/config/connection.php";
 include "application/config/connectionSL.php";
 include "application/models/wms/DeliveryNotes.php";
 include "application/models/wms/Orders.php";
-// Debuger::show();
+
 $shipment = ["OrderIds" => $_GET['id_shipment']];
 $url = http_build_query($shipment);
 $plant = User::$plantid;
-// $dataShipment = ApiCall("GET", API_SERVER. "Orders?" . $url ,[]);
-// $dataShipment = json_decode($dataShipment,1);
-$dataShipment = Orders::get($shipment, Orders::$url);
+$dataShipment = Orders::getOrder($shipment, Orders::$url);
+if(!Orders::checkValidDate($_GET['id_shipment'])){
+    $plant = User::$plantid;
+     echo "<script>
+            window.alert('({$dataShipment[0]['plannedDeliveryDate']}) tidak dalam minggu ini!!!');
+            window.history.back();
+          </script>";
+    exit();
+}
+$dataShipment = [$dataShipment];
 Debuger::dump($dataShipment);
 if(isset($dataShipment[0]) and isset($dataShipment[0]['siteId']) and $dataShipment[0]['siteId']!=User::$plantid){
     $plant = User::$plantid;
