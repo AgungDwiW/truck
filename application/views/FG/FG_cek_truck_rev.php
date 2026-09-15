@@ -9,12 +9,14 @@
 include "application/config/connection.php";
 include "application/config/connectionSL.php";
 include "application/models/wms/DeliveryNotes.php";
+include "application/models/wms/Orders.php";
 // Debuger::show();
 $shipment = ["OrderIds" => $_GET['id_shipment']];
 $url = http_build_query($shipment);
 $plant = User::$plantid;
-$dataShipment = ApiCall("GET", API_SERVER. "Orders?" . $url ,[]);
-$dataShipment = json_decode($dataShipment,1);
+// $dataShipment = ApiCall("GET", API_SERVER. "Orders?" . $url ,[]);
+// $dataShipment = json_decode($dataShipment,1);
+$dataShipment = Orders::get($shipment, Orders::$url);
 Debuger::dump($dataShipment);
 if(isset($dataShipment[0]) and isset($dataShipment[0]['siteId']) and $dataShipment[0]['siteId']!=User::$plantid){
     $plant = User::$plantid;
@@ -36,7 +38,13 @@ $trueCustomer = 'NOCUSTOMER';
 $fullCustomer = '';
 if($dataShipment and count($dataShipment)>0){
     $dataShipment   = $dataShipment[0];
-    
+    if ($dataShipment['orderStatus']['orderStatusId']=='060'){
+        echo "<script>
+            window.alert('Alert: No CO status {$dataShipment['description']} !');
+            window.history.back();
+          </script>";
+        exit();
+    }
     //-------------------------------------------------------------------------
     //                              GETTING DATA
     //-------------------------------------------------------------------------
@@ -45,7 +53,7 @@ if($dataShipment and count($dataShipment)>0){
     if (isset($dataShipment['partner'])){
         $trueCustomer   = $dataShipment['partner']['partnerNumber'];
         $fullCustomer   = "{$dataShipment['partner']['partnerNumber']} - {$dataShipment['partner']['firstName']}";
-        $supplier_id    = $dataShipment['partner']['partnerNumber'] . "";
+        $supplier_id    = $dataShipment['partner']['partnerNumber']."";
         $supplier_name  = $dataShipment['partner']['firstName'];
     }
     // Debuger::dump($trueCustomer,1);
@@ -74,11 +82,15 @@ if($dataShipment and count($dataShipment)>0){
         $data           = [$_GET['id_shipment']];
         $DN             = ApiCall("POST", $url,json_encode($data));
         $DN             = json_decode($DN,1);
-        Debuger::dump([$url,$data, $DN]);
+        // Debuger::dump([$url,$data, $DN],1);
         // exit();
         if (isset($DN['title'])){
             $DN['title'] = str_replace("'", '', $DN['title']);
-            $DN['detail'] = str_replace("'", '', $DN['detail']);
+            if (isset($DN['detail']))
+                $DN['detail'] = str_replace("'", '', $DN['detail']);
+            else{
+                $DN['detail'] = "No Detail";
+            }
             echo "<script>
                     alert('Error : {$DN['title']} | Detail : {$DN['detail']}');
                     // window.history.back(); 
