@@ -115,29 +115,42 @@ class ApiModel{
 
 
 
-    public static function logError($responseData, $paramData) {
-        // Format dates: mm-yy and dd-mm-yy
-        $monthYear = date('m-y');
-        $dayMonthYear = date('d-m-y');
-        
-        // Define directory and file paths using __DIR__ (current file's directory)
-        $logDir = __DIR__ . "/log/{$monthYear}";
-        $logFile = $logDir . "/{$dayMonthYear}.log";
-
-        // Create the directory recursively if it doesn't exist
-        if (!is_dir($logDir)) {
-            mkdir($logDir, 0755, true);
-        }
-
-        // Prepare the log entry with a timestamp and the data
+    public static function logPostRequest($url, $params, $response, $statusCode) {
+        $month = date('Y-m');
+        $date = date('Y-m-d');
         $timestamp = date('Y-m-d H:i:s');
-        $logMessage = "[{$timestamp}] ERROR in :" . PHP_EOL;
-        $logMessage .= "Params sent: " . json_encode($paramData) . PHP_EOL;
-        $logMessage .= "Error response: " . json_encode($responseData) . PHP_EOL;
-        $logMessage .= str_repeat("-", 60) . PHP_EOL;
+        
+        // Ensure we handle cases where User::$username might not be set yet
+        $username = isset(User::$username) ? User::$username : 'Unknown';
 
-        // Append to the log file (creates the file if it doesn't exist)
-        file_put_contents($logFile, $logMessage, FILE_APPEND);
+        // Prepare the structured log message
+        $logMessage = "[{$timestamp}] Initiated by User: {$username}" . PHP_EOL;
+        $logMessage .= "URL: {$url}" . PHP_EOL;
+        $logMessage .= "Params: " . (is_string($params) ? $params : json_encode($params)) . PHP_EOL;
+        $logMessage .= "Response: " . (is_string($response) ? $response : json_encode($response)) . PHP_EOL;
+        $logMessage .= "Status Code: {$statusCode}" . PHP_EOL;
+        $logMessage .= str_repeat("-", 80) . PHP_EOL;
+
+        // --- 1. Log to the primary API directory (Every request) ---
+        $apiLogDir = APP_DIR . "logs/API/{$month}";
+        $apiLogFile = $apiLogDir . "/{$date}.log";
+
+        if (!is_dir($apiLogDir)) {
+            mkdir($apiLogDir, 0755, true);
+        }
+        file_put_contents($apiLogFile, $logMessage, FILE_APPEND);
+
+        // --- 2. Log to API_FAIL directory (If request fails) ---
+        // Assuming a non-200 status code constitutes a failure
+        if ($statusCode != 200) {
+            $failLogDir = APP_DIR . "logs/API_FAIL/{$month}";
+            $failLogFile = $failLogDir . "/{$date}.log";
+
+            if (!is_dir($failLogDir)) {
+                mkdir($failLogDir, 0755, true);
+            }
+            file_put_contents($failLogFile, $logMessage, FILE_APPEND);
+        }
     }
     public static function get($params, $url = null, $bodyOnly = true){
         
@@ -166,16 +179,30 @@ class ApiModel{
         
         $data           = self::ApiCall("POST", $url, $params,  false);
         Debuger::dump(["param" => json_decode($params,1), "url" => $url, "response" => json_decode($data[1],1), "status"=> $data[2], "json payload" => $params]);
+        
         $status         = $data[2];
-        $data           = json_decode($data[1],1);
-        if ($status != 200)
-            static::logError($data, $params);
+        $responseDecoded = json_decode($data[1],1);
+        
+        // Log every POST request (handles both success and failure internally)
+        static::logPostRequest($url, $params, $responseDecoded, $status);
+
+        // Reassign back to $data to maintain your existing application flow
+        $data = $responseDecoded;
+
+        if ($status == 429){
+            $data = ['title'=>"Too many request, please wait several second before retrying", 'body'=>''];
+        }
+        if ($status == 401){
+            $data = ['title'=>"unauthorized", 'body'=>''];
+            User::unsetSession();
+            echo"<script type='text/javascript'>alert('Session sudah habis, perubahan data pada sistem yang dilakukan sebelumnnya belum tersimpan. Mohon log in kembali dan lakukan perubahan kembali.');window.location.href='login.php'</script>";
+            exit;
+        }
+        
         if ($bodyOnly)
             return $data;
         else 
             return ["data"=>$data, "status"=>$status];
-		
-
     }
 
 

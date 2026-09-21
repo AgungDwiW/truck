@@ -103,10 +103,11 @@ class User extends ApiModel{
     }
 
 	public static function setUserProfile(){
+		global $conSL;
 		
 		$json = ApiCall('GET', AUTH_SERVER.'manage/userinfo', null, null);
 		$data = json_decode($json, true);
-		Debuger::dump([AUTH_SERVER.'manage/userinfo',$data]);		
+		Debuger::dump([AUTH_SERVER.'manage/userinfo', $data]);
 	
 		if ($json && isset($data['userName']) && strlen($data['userName']) > 0) {
 				

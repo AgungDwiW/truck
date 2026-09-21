@@ -10,10 +10,7 @@ include "application/config/connection.php";
 include "application/config/connectionSL.php";
 include "application/models/wms/DeliveryNotes.php";
 include "application/models/wms/Orders.php";
-
-$shipment = ["OrderIds" => $_GET['id_shipment']];
-$url = http_build_query($shipment);
-$plant = User::$plantid;
+$shipment = $_GET['id_shipment'];
 $dataShipment = Orders::getOrder($shipment, Orders::$url);
 if(!Orders::checkValidDate($_GET['id_shipment'])){
     $plant = User::$plantid;
@@ -24,7 +21,7 @@ if(!Orders::checkValidDate($_GET['id_shipment'])){
     exit();
 }
 $dataShipment = [$dataShipment];
-Debuger::dump($dataShipment);
+// Debuger::dump($dataShipment,1);
 if(isset($dataShipment[0]) and isset($dataShipment[0]['siteId']) and $dataShipment[0]['siteId']!=User::$plantid){
     $plant = User::$plantid;
      echo "<script>
@@ -84,8 +81,8 @@ if($dataShipment and count($dataShipment)>0){
     //-------------------------------------------------------------------------
     $DN = DeliveryNotes::getFromSO($_GET['id_shipment']);
     if (empty($DN)){
-        $plant = User::$plantid;
-        $url = API_SERVER. "DeliveryOrders/ConvertOrders";
+        $plant          = User::$plantid;
+        $url            = API_SERVER. "DeliveryOrders/ConvertOrders";
         $data           = [$_GET['id_shipment']];
         $DN             = ApiCall("POST", $url,json_encode($data));
         $DN             = json_decode($DN,1);

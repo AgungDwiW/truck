@@ -12,8 +12,9 @@ session_start();
 
 # Load config
 include_once "application/config/config.php";
+
+include_once "ApiClient.inc";
 include_once "application/library/autoload.php";
-include_once "application/models/auth/User.php";
 
 
 if (isset($_GET['refresh_token'])){

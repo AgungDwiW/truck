@@ -11,6 +11,8 @@ include_once APP_DIR . "library/router/Router.php";
 include_once APP_DIR . "library/router/url_helper.php";
 include_once APP_DIR . "config/routes.php";
 
+include_once APP_DIR . "library/Auth/User.php";
+
 CSRF::initSession();
 Debuger::register();
 ?>

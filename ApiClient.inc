@@ -2,9 +2,10 @@
 # Create: DamarTeduh©2021,  HOME 20210310 09:21 AM
 // ini_set('memory_limit', '1024M');
 // define('AUTH_API_BASEURL', 'https://adop.co.id/api');
-define('AUTH_API_BASEURL', 'https://devex.adop.co.id/sandbox_api/');
+define('AUTH_API_BASEURL', 'https://coman-api.adop.co.id/api/');
 
-define('AUTH_SERVER', 'https://devex.adop.co.id/sandbox_api/');
+define('AUTH_SERVER', 'https://coman-api.adop.co.id/api/');
+define('RADAR_API_BASEURL', 'https://radar.adop.co.id/api');
 define('API_ERR_LOG', $_SERVER['DOCUMENT_ROOT'] . "/zz-ApiErr" . date('Y-m-d') . ".log");
 
 // date_default_timezone_set("Asia/Jakarta");
