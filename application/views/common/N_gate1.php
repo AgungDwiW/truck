@@ -263,8 +263,20 @@ body {
   color: #fff;
   border: 0;
 }
-.ng1-hijau { background: #28a745; }
-.ng1-merah { background: #dc3545; }
+/* Kotak "Hasil Pemeriksaan" readonly, dan Bootstrap 4 punya aturan
+   .form-control[readonly] { background-color: #e9ecef } (spesifisitas 0,2,0)
+   yang mengalahkan .ng1-hijau (0,1,0) -> kotak jadi abu-abu + teks putih
+   (kelihatan kosong). Selektor di bawah (0,3,0) yang menang. */
+.ng1-result .ng1-hasil.ng1-hijau {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+.ng1-result .ng1-hasil.ng1-merah {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
 .ng1-save {
   border-radius: 10px;
   padding: 12px 40px;
