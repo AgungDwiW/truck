@@ -1,0 +1,75 @@
+/*
+# Prject: BWG Project 1.0
+# Auth  : DamarTeduh©2019
+# Create: Plant Klaten | 2019-07-22 13:55
+# Ket   : 
+*/
+
+.breadcrumb {
+	background-color: transparent; 
+	vertical-align: middle;
+	padding: 0;
+}
+.breadcrumb__list{
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.3em 0;
+  margin: 0 0.8em;
+}
+.breadcrumb__main {
+	display: inline-flex;
+	font-size: 14px;
+	color: white;
+	margin-right: 1.5em;
+}
+.breadcrumb__main:after {
+	content: "|";
+	margin-left: 1em;
+}
+.breadcrumb__group{
+  display: inline-flex;
+  font-size: 13px;
+  align-items: center;
+  margin-right: 1.5em;
+}
+.breadcrumb__group a { 
+	text-decoration: none;
+	color: #ECF0F8; 
+}
+.breadcrumb__group a.active { 
+	color: yellow;
+	cursor: default;
+	pointer-events: none;
+}
+.breadcrumb__group:not(:last-child):after {
+	content: "→";
+	margin-left: 1.5em;
+	font-size: 14px;
+	cursor: none;
+}
+
+@media (min-width: 768px){
+
+  html{
+    font-size: 62.5%;
+  }
+}
+
+@media (max-width: 767px){
+
+  html{
+    font-size: 50%;
+  }
+}
+.page{
+  box-sizing: border-box;
+  padding: 1rem 0rem;
+  margin-left: auto;
+  margin-right: auto;    
+}
+.page__section{
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+  background-color: #512DA8;
+  color: #fff;
+  border-radius: 2px;
+}

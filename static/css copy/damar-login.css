@@ -1,0 +1,52 @@
+@font-face {
+			font-family: 'Stone Sans Regular';
+			font-style: normal;
+			font-weight: normal;
+			src: local('Stone Sans Regular'), url('fonts/OpenSans.woff') format('woff');
+		}
+		body { font-family:'Stone Sans Regular'; }
+		.header-holder small { color: #2b6cef; font-size: 17px; font-weight: normal; }
+		.content { 
+			margin-top: 80px; 
+			text-align: center; 
+		}
+		sup { font-size: 14px; }
+		div.form-control { 
+			display: inline-block; 
+			vertical-align: middle; 
+		}
+		input { border: none; padding: 7px; margin: 5px; }
+		input[type=text], input[type=password] { background-color: transparent; margin-right: 5px; border-bottom: 1px solid #74edeb; }
+		input[type=submit] { background-color: #3883e0;	color: white; width: 80px; }
+		input[type=submit]:hover { opacity: 0.5 }
+		hr { margin-top: 30px; border: 1px solid #D1E1E7; }
+		.notice { 
+			margin: auto;
+			width: 60vw; 
+			font-size: 11.5px;
+			color: #848788;
+		}
+		div#log { font-style: italic; color: red; margin: 10px; }
+		/* Responsive */
+		.responsive-column { display: none; }
+		@media screen and (max-width:680px) {
+		   	body { font-family:'Stone Sans Regular'; font-weight:normal; }
+		   	::placeholder {	color: white; }
+		   	input[type=text], input[type=password] { color: white; }
+		   	div.form-control { 
+		   		/*border: 1px solid gray; 
+			border-radius: 5px;*/
+			/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#87e0fd+0,53cbf1+40,05abe0+100;Blue+3D+%23+16 */
+			background: rgb(135,224,253); /* Old browsers */
+			background: -moz-linear-gradient(45deg,  rgba(135,224,253,1) 0%, rgba(83,203,241,1) 40%, rgba(5,171,224,1) 100%); /* FF3.6-15 */
+			background: -webkit-linear-gradient(45deg,  rgba(135,224,253,1) 0%,rgba(83,203,241,1) 40%,rgba(5,171,224,1) 100%); /* Chrome10-25,Safari5.1-6 */
+			background: linear-gradient(45deg,  rgba(135,224,253,1) 0%,rgba(83,203,241,1) 40%,rgba(5,171,224,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#87e0fd', endColorstr='#05abe0',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+		   	}
+		   	div.header-holder h1 small { display: block; width: 100%; font-size: 12px; }
+		  	.notice, .logo {display: none;}
+			.footer-holder {text-align: center;}
+		  	.footer-holder form {padding: 10px; display: block; margin-top: 40px}
+		  	.footer-holder form input { display: block; width: 220px; margin: 10px; }
+		  	.footer-holder form input[type=submit] { display: block; width: 235px; }
+		}

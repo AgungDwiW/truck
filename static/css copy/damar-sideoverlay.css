@@ -1,0 +1,114 @@
+/*
+# Prject: BWG Project 1.0
+# Auth  : DamarTeduh©2019
+# Create: Home | 2019-10-08 02:48 AM
+# Ket   : Side navigasi
+*/
+
+/* Shifting menu */
+body { background: #EBEBEF }
+.overlay {
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  /*background-color: rgb(0,0,0);*/
+  background-color: #252838;
+  overflow-x: hidden;
+  transition: 0.5s;
+  box-shadow: 5px 2px 5px #B1C6CD;
+}
+.overlay-content {
+  position: relative;
+  width: 250px;
+  margin-top: 30px;
+}
+#frame { 
+	transition: 0.5s;
+	margin-left: 250px;
+}
+.overlay button {
+  padding: 8px;
+  text-decoration: none;
+/*  font-size: 36px;*/
+  color: #367df7;
+  display: block;
+  transition: 0.3s;
+}
+.overlay button:hover, .overlay button:focus { color: #f1f1f1; }
+.overlay {
+  position: absolute;
+  top: 5px;
+/*  right: 20px;*/
+/*  font-size: 30px;*/
+  text-decoration: none;
+}
+/*.overlay .closebtn:hover { color: white; }*/
+div.side-nav-head {
+	height: 50px;
+	vertical-align: middle;
+	border-bottom: 1px solid whitesmoke;
+	background-color: whitesmoke;
+	font-size: 1em;
+}
+div.side-nav-head a.closebtn {
+	float: right;
+	padding: 10px;
+	text-decoration: none;
+}
+div.side-nav-head label {
+	color: #990c4d;
+	display: block;
+	padding: 10px;
+	margin-left: 6px;
+}
+.overlay-content a {
+	  padding: 6px 8px 6px 16px;
+	  text-decoration: none;
+	  color: #818181;
+	  display: block;
+	}
+ul, #myUL {
+	list-style-type: none;
+	color: #818181;
+	margin: 0;
+	padding: 0;
+}
+.overlay-content li { 
+	font-size: 0.9em;
+	padding: 6px 0px 6px 16px; 
+}
+.overlay-content li.sub-menu {	padding: 0 20px; }
+.caret-custome {
+	cursor: pointer; 
+	user-select: none;
+	color: #818181;
+}
+.caret-custome::after {
+	content: "\25B6";
+	color: yellow;
+	display: inline-block;
+	margin-right: 6px;
+	padding-left: 6px;
+	font-size: 10px;
+}
+.caret-custome-down::after {
+	transform: rotate(90deg); 
+	padding-right: 6px;
+}
+.nested { display: none; }
+.nested .sub-menu a::before { content: "-"; padding-right: 10px; }
+.active { display: block; }
+.overlay-content a:hover { opacity: 0.3; }
+.overlay-content a i, .overlay-content li i { padding-right: 10px }
+
+@media screen and (max-height: 450px) {
+  .overlay button {font-size: 20px}
+  .overlay .closebtn {
+/*  font-size: 40px;*/
+  top: 15px;
+  right: 35px;
+  }
+}

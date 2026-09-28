@@ -1,0 +1,34 @@
+/* Hide the default context menu */
+body {
+    user-select: none;
+}
+
+/* Custom Context Menu */
+.customMenu {
+    display: none;
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 1000;
+}
+
+.customMenu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.customMenu ul li {
+    padding: 8px 12px;
+    cursor: pointer;
+    color:black;
+}
+.customMenu ul li :hover {
+    text-decoration: none;
+}
+
+.customMenu ul li:hover {
+    background: #f0f0f0;
+}

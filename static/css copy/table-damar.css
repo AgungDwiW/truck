@@ -1,0 +1,15 @@
+.MERAH {background-color:#fe3025; color: white;}
+.HIJAU {background-color:#11dd00;}
+.KUNING {background-color:yellow;}
+
+table.table { font-size: 11px; }
+table.table th {
+	position: sticky;
+	top: 60; /* Don't forget this, required for the stickiness */
+	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+table.table thead tr { 
+	background-color: #1F273F; 
+	color: white;
+}
+td {text-align: right;}

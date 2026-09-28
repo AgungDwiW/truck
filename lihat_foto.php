@@ -18,8 +18,8 @@ $idref=$_POST['idref'];
 </br>
 
 <?php
-// Koneksi database (application/config/db_dbtruck_local.php)
-require __DIR__ . '/application/config/db_dbtruck_local.php';
+// Koneksi database (application/config/db_dbtruck.php)
+require __DIR__ . '/application/config/db_dbtruck.php';
 
 $query = mysqli_query($con,"SELECT * from tb_foto where idref='$idref' ");
 $data1 = mysqli_fetch_array($query);    

@@ -8,8 +8,8 @@
   </head>
   <body>
     <?php
-        // Koneksi database (application/config/db_dbtruck_local.php)
-        require __DIR__ . '/application/config/db_dbtruck_local.php';
+        // Koneksi database (application/config/db_dbtruck.php)
+        require __DIR__ . '/application/config/db_dbtruck.php';
     ?>
 
  <!--    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">

@@ -1,0 +1,139 @@
+/* 
+# Prject: BWG Project 1.0
+# Auth  : DamarTeduh©2019
+# Create: Hotel Taman Dayu | 2019-07-22 19:41
+# Ket   : Custome Style
+*/
+
+/* ------------------- Custome Form --------------------- */
+ul#form-control { 
+    font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
+    list-style: none;
+    margin: 0;
+    text-align: left;
+}
+ul#form-control li { margin: 5px 0; }
+ul#form-control li span { 
+    display: inline-block;
+    width: 100px;
+}
+ul#form-control li input, ul#form-control li select, ul#form-control li textarea {
+    border: 1px solid #dce3e8;
+    width: 15em;
+    padding: 3px;
+}
+ul#form-control li input[type='file'] { border: none; background: transparent; }
+ul#form-control li input[readonly] { 
+    background-color: gray; 
+    color: white;
+}
+
+/* ------------------- Custome Footer --------------------- */
+.dt-footer {
+	font-size:10px;
+	color:#3c3b54;
+	position:fixed;
+	right:0;
+	bottom:0;
+	left:0;
+	padding:0.5rem;
+	background-color: #d5d5e5;
+	text-align:right;
+}
+
+/* ------------------- Custome Nav Top --------------------- */
+#custom-bootstrap-menu.navbar-default .navbar-brand {
+    color: white;
+}
+#custom-bootstrap-menu.navbar-default {
+    color: white;
+    font-size: 14px;
+    /*background-color: #32464c;*/
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#45484d+0,000000+100;Black+3D+%231 */
+	background: #45484d; /* Old browsers */
+	background: -moz-linear-gradient(left,  #45484d 0%, #000000 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(left,  #45484d 0%,#000000 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to right,  #45484d 0%,#000000 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=1 ); /* IE6-9 */
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+    color: white;
+    background-color: rgba(248, 248, 248, 0);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: white;
+    background-color: rgba(248, 248, 248, 0);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: white;
+    background-color: #292a2b;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle {
+    color: white;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus {
+    color: white;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
+    color: white;
+	background-color: white;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
+    color: white;
+    background-color: #040457;
+}
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:focus, 
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover {
+    color: white;
+}
+
+.dropdown-menu {
+    color: white;
+}
+.thumbnail:hover {
+    background-color: white;
+    opacity: .5;
+}
+div.thumbnail  a { text-decoration: none; }
+div.body-wrap-with-navbar { padding-top: 70px; }
+div.body-wrap-without-navbar { padding-top: 20px; }
+div.sub-menu { margin-bottom: 20px; }
+div.sub-menu a { margin: 10px; }
+
+/* ------------------- Custome Table#1 --------------------- */
+table.table-master {
+    font-size: 12px;
+    width: 100%;
+    font-family: "Segoe UI";
+}
+table.table-master tr td, tr th {
+    padding: 5px;
+    border-bottom: 1px solid #edeaea;
+}
+table.table-master tr th {
+    background-color: #656d7c;
+    color: white;
+}
+table.table-master tr:hover { background-color: #f7f8f9; }
+
+
+/* ------------------- General --------------------- */
+.edit::before {
+  font-family: FontAwesome;
+  content: "\f040";
+  color: #36A7FE;
+}
+.new::before {
+  font-family: FontAwesome;
+  content: "\f016";
+  padding-right: 5px;
+}
+button.edit {
+    background-color: transparent;
+    border: none;
+}

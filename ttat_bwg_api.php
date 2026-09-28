@@ -3,8 +3,8 @@
 // Atur zona waktu ke Waktu Indonesia Barat (GMT+7)
 date_default_timezone_set('Asia/Jakarta');
 
-// Konfigurasi database (application/config/db_dbtruck_gate73.php)
-require __DIR__ . '/application/config/db_dbtruck_gate73.php';
+// Konfigurasi database (application/config/db_dbtruck.php)
+require __DIR__ . '/application/config/db_dbtruck.php';
 
 // $sql = "SELECT *
 //         FROM tb_ceklist t

@@ -1,0 +1,115 @@
+#fg_formContainer
+{
+	height:350px;
+	width:450px;
+	background: #ffffff;
+	padding:0;
+	position:absolute;
+	z-index:999;
+	cursor:default;   
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	-khtml-border-radius: 2px;
+	border-radius: 2px;   
+	display: none;
+}
+#fg_container_header {
+	background:#d8d9dc;
+	float: right;
+	display: inline-block;
+	width:450px;
+	height: 50px;
+	padding: 15px;
+	margin-bottom: 40px;
+}
+#fg_form_InnerContainer { margin:25px; }
+#fg_backgroundpopup {
+	position: fixed; 
+	top:0; 
+	left:0; 
+	bottom:0; 
+	right:0;   
+	background:#121212;
+	opacity: .8;
+	-moz-opacity: .8;
+	filter: alpha(opacity=70);
+	z-index:1;
+	display:none;
+}
+
+ /* Form untuk upload */
+#fgFrm01, #fgFrm02, #fgFrm03, #fgFrm04, #fgFrm05, #fgFrmChgPwd, .fgFrm {
+    width: 450px;
+    position: fixed; /* Changed from absolute to fixed so it follows the scroll */
+    padding: 0;
+    z-index: 99999999;
+    cursor: default;
+    background: #f7f7f7;
+    border: 2px solid #d8d9dc;
+    display: none;
+    -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0,0.5);
+    -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+    
+    /* NEW: Height and scroll management */
+    max-height: 90vh; /* Prevents popup from exceeding page height */
+    flex-direction: column; /* Allows internal scrolling when combined with display:flex in JS */
+}
+
+#fgHeader {
+    /* Existing gradient CSS remains the same... */
+    display: inline-block;
+    width: 100%;
+    padding: 5px;
+    color: white;
+    background-color: #0055E8;
+    background: linear-gradient(45deg, rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%);
+    flex-shrink: 0; /* Prevents the header from shrinking when the inner form gets too tall */
+}
+
+#frmInner {    
+    margin: 15px 20px; 
+    overflow-y: auto; /* Adds a scrollbar only to the inside if it exceeds max-height */
+    flex-grow: 1; /* Fills remaining space */
+}
+#bgFrm01, #bgFrm02, #bgFrm03, #bgFrm04, #bgFrm05, #bgFrmChgPwd, .bgFrm {
+	position: fixed;
+  	background: gray;
+  	top:0;
+  	left:0;
+  	bottom:0;
+  	right:0;
+  	opacity: .8;
+  	-moz-opacity: .8;
+  	filter: alpha(opacity=70);
+  	z-index:1;
+  	display:none;
+}
+
+/*  */
+.dt-form-group {
+	display: inline-block;
+	width: 100%;
+	margin-bottom: 15px;
+}
+.dt-form-group select {
+	border: 1px solid #D8D9DC;
+	padding: 3px;
+	width: 200px;
+}
+.dt-form-group input[type="text"] {
+	border: 1px solid #D8D9DC;
+	padding: 3px;
+	width: 200px;
+}
+.dt-form-group textarea {
+	border: 1px solid #D8D9DC;
+	padding: 3px;
+	width: 200px;
+}
+.dt-form-group input[readonly] { 
+	cursor: default;
+	background-color: #D8D9DC; 
+}
+.dt-form-group label { width: 30%; vertical-align: top; }
+.dt-form-group [type="file"] { display: inline-block; }
