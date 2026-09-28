@@ -196,7 +196,7 @@ function get_jam(){
 $jam=date("H:i:s");           
 
 
-$idref=mktime();
+$idref=time();   // mktime() tanpa argumen = fatal di PHP 8 (ArgumentCountError)
 $seq=1;
 
 //$query="INSERT INTO tb_ceklist SET seq='$seq', idref='$idref', petugas_pemeriksa='$username' , nopol='$nopol', nama_transporter='$supplier' , kode_transporter='$supplier_id', plant_id='$plant_id', plant_name='$plant_name', nama_sopir='$driver', tgl_pemeriksaan='$date', jam_pemeriksaan='$jam', lokasi_pemeriksaan='$plant_name', muatan='$muat' ";

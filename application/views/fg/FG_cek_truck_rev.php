@@ -36,7 +36,7 @@ function get_jam(){
 $jam=date("H:i:s");           
 
 
-$idref=mktime();
+$idref=time();   // mktime() tanpa argumen = fatal di PHP 8 (ArgumentCountError)
 $seq=1;
 
 

@@ -34,7 +34,7 @@ function get_jam(){
             }
 
 
-$idref=mktime();
+$idref=time();   // mktime() tanpa argumen = fatal di PHP 8 (ArgumentCountError)
 $seq=1;
 $username=$_SESSION[APP_NAME]["username"];
 $query="INSERT INTO tb_ceklist SET seq='$seq', idref='$idref', petugas_pemeriksa='$username'";
