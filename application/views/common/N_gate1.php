@@ -120,7 +120,21 @@ if ($muat === 'FG') {
         status_ddt = '" . mysqli_real_escape_string($con, $status_ddt) . "',
         status_usia = '" . mysqli_real_escape_string($con, $status_usia) . "',
         id_barang = '" . mysqli_real_escape_string($con, $id_barang) . "'";
-    mysqli_query($con, $sql_insert);
+
+    /* Header cukup SEKALI per kiriman. Kalau baris idref ini sudah ada,
+       jangan INSERT lagi: di PHP 8 error mysqli melempar exception
+       ("Duplicate entry ... for key 'idref'") -> halaman jadi blank / 500. */
+    $sql_ada = "SELECT 1 FROM tb_ceklist WHERE idref='"
+             . mysqli_real_escape_string($con, $idref) . "' LIMIT 1";
+    $res_ada = mysqli_query($con, $sql_ada);
+    if (!$res_ada || mysqli_num_rows($res_ada) === 0) {
+        try {
+            mysqli_query($con, $sql_insert);
+        } catch (mysqli_sql_exception $e) {
+            /* dua request barengan: yang kalah cukup diam */
+            if (stripos($e->getMessage(), 'Duplicate entry') === false) { throw $e; }
+        }
+    }
 }
 
 /* 2.5 status tiap item (utama1..utama4) untuk idref ini */

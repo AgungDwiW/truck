@@ -165,7 +165,13 @@ $username=$_SESSION[APP_NAME]["username"];
 if ($count_nopol<>0) {
 $query="INSERT INTO tb_ceklist SET seq='$seq', idref='$idref', petugas_pemeriksa='$username' , nopol='$nopol', nama_transporter='$supplier' , kode_transporter='$supplier_id', plant_id='$plant_id', plant_name='$plant_name', nama_sopir='$driver', tgl_pemeriksaan='$date', jam_pemeriksaan='$jam', lokasi_pemeriksaan='$plant_name', muatan='$muat', kode_kirim='$kode_kirim' ";
 
-mysqli_query($con, $query);
+/* PHP 8: dua kali buka halaman dalam detik yang sama -> idref (time())
+   sama -> "Duplicate entry" -> blank/500. */
+try {
+    mysqli_query($con, $query);
+} catch (mysqli_sql_exception $e) {
+    if (stripos($e->getMessage(), 'Duplicate entry') === false) { throw $e; }
+}
 
 }
 

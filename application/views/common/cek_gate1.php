@@ -39,7 +39,13 @@ $seq=1;
 $username=$_SESSION[APP_NAME]["username"];
 $query="INSERT INTO tb_ceklist SET seq='$seq', idref='$idref', petugas_pemeriksa='$username'";
 
-mysqli_query($con, $query);
+/* PHP 8: error mysqli jadi exception. INSERT kedua dengan idref yang sama
+   ("Duplicate entry ... for key 'idref'") bikin halaman blank (HTTP 500). */
+try {
+    mysqli_query($con, $query);
+} catch (mysqli_sql_exception $e) {
+    if (stripos($e->getMessage(), 'Duplicate entry') === false) { throw $e; }
+}
 
 //print_r($_SESSION);
 //exit;
