@@ -1,64 +1,156 @@
 <div class="body-wrap-with-navbar">
 
 <?php
-$idref       = $_POST['idref'] ?? '';
-$nopol       = $_POST['nopol'] ?? '';
-$lokasi      = $_POST['lokasi'] ?? '';
-$kode_kirim  = @$_POST['kode_kirim'];
-$muat        = @$_POST['muat'];
-$driver      = @$_POST['driver'];
-$supplier    = @$_POST['supplier'];
-$transporter = @$_POST['transporter'] ?? '';
+/* ============================================================================
+# N_gate1 — Checklist Gate 1
+# Struktur file (biar gampang dirawat):
+#   1. INPUT  : semua $_POST dibaca di sini, di-cast mengikuti TIPE KOLOM db
+#   2. QUERY  : SEMUA akses database (abaikan bagian ini kalau cuma mau lihat UI)
+#   3. DATA   : nyusun data siap-render
+#   4. VIEW   : HTML/CSS saja, tidak ada query lagi
+# ============================================================================ */
 
-$usia        = @$_POST['usia'];
-$tipe_sim    = @$_POST['tipe_sim'];
-$expired_sim = @$_POST['expired_sim'];
-$expired_ddt = @$_POST['expired_ddt'];
-$status_sim  = @$_POST['status_sim'];
-$status_ddt  = @$_POST['status_ddt'];
-$status_usia = @$_POST['status_usia'];
-$id_barang   = @$_POST['id_barang'];
-$tipe_truck  = '';
+/* ----------------------------------------------------------------------------
+# 1. INPUT — tipe cast mengikuti kolom tb_ceklist (information_schema)
+# ----------------------------------------------------------------------------
+# kolom                tipe            input
+# seq                  int(10)         (int)
+# idref                varchar(50)     (string)
+# nopol                varchar(50)     (string)
+# nama_supplier        varchar(50)     (string)
+# nama_transporter     varchar(512)    (string)
+# nama_sopir           varchar(50)     (string)   <- dari POST 'driver'
+# jenis_kendaraan      varchar(50)     (string)   <- hasil lookup
+# plant_id             varchar(10)     (string)
+# plant_name           varchar(50)     (string)
+# tgl_pemeriksaan      varchar(50)     (string)
+# jam_pemeriksaan      varchar(50)     (string)
+# lokasi_pemeriksaan   varchar(50)     (string)
+# muatan               varchar(10)     (string)
+# usia                 int(11)         (int)
+# jenis_sim            varchar(50)     (string)
+# expired_date_sim     date            (string Y-m-d)
+# expired_date_ddt     date            (string Y-m-d)
+# status_sim/ddt/usia  varchar(50)     (string)
+# id_barang            varchar(50)     (string)
+# kode_kirim           int(11)         (string; dipakai sbg kode, bukan hitungan)
+# ---------------------------------------------------------------------------- */
+$idref       = (string) ($_POST['idref'] ?? '');
+$nopol       = (string) ($_POST['nopol'] ?? '');
+$lokasi      = (string) ($_POST['lokasi'] ?? '');
+$kode_kirim  = (string) (@$_POST['kode_kirim'] ?? '');
+$muat        = (string) (@$_POST['muat'] ?? '');
+$driver      = (string) (@$_POST['driver'] ?? '');
+$supplier    = (string) (@$_POST['supplier'] ?? '');
+$transporter = (string) (@$_POST['transporter'] ?? '');
 
-if ($usia == '')
-  $usia = 0;
+$usia        = (int)    (@$_POST['usia'] ?? 0);
+$tipe_sim    = (string) (@$_POST['tipe_sim'] ?? '');
+$expired_sim = (string) (@$_POST['expired_sim'] ?? '');
+$expired_ddt = (string) (@$_POST['expired_ddt'] ?? '');
+$status_sim  = (string) (@$_POST['status_sim'] ?? '');
+$status_ddt  = (string) (@$_POST['status_ddt'] ?? '');
+$status_usia = (string) (@$_POST['status_usia'] ?? '');
+$id_barang   = (string) (@$_POST['id_barang'] ?? '');
 
-if($expired_sim == '')
-  $expired_sim = '2999-12-30';
+$seq         = (int)    ($_POST['seq'] ?? 0);
+$jam         = (string) ($_POST['jam'] ?? '');
+$date        = (string) ($_POST['tgl'] ?? '');
+$plant_id    = (string) ($_POST['plant_id'] ?? '');
 
-if($expired_ddt == '')
-  $expired_ddt = '2999-12-30';
+$username    = $_SESSION[APP_NAME]["username"];
+$petugas     = $username;
 
-if ($muat=='FG') {
+if ($expired_sim === '') { $expired_sim = '2999-12-30'; }   /* date: default "jauh" */
+if ($expired_ddt === '') { $expired_ddt = '2999-12-30'; }
 
-$seq = $_POST['seq'] ?? '';
-$supplier = $_POST['supplier'] ?? '';
-$driver = @$_POST['driver'];
-$jam = $_POST['jam'] ?? '';
-$date = $_POST['tgl'] ?? '';
-$plant_id = $_POST['plant_id'] ?? '';
+/* ============================================================================
+# 2. QUERY
+# ============================================================================ */
 
-          $cari_tipe_truck = mysqli_query($con, "SELECT jenis_truck FROM tbm_tempat_muat where id_tempat_muat='$plant_id' and nama_supplier='$supplier' and nama_transporter='$transporter' group by nama_transporter limit 1   ");
+/* 2.1 tanda sementara: daftar checklist sedang dipakai */
+mysqli_query($con, "UPDATE tb_ceklist_utama SET status_temp=1");
 
-          foreach ($cari_tipe_truck as $row){
+/* 2.2 daftar item kelengkapan utama (no 0..4; no=0 baris kosong utk penomoran) */
+$sql_item = "SELECT no, ceklist_utama FROM tb_ceklist_utama WHERE no BETWEEN 0 AND 4 ORDER BY no";
+$res_item = mysqli_query($con, $sql_item);
+$db_item  = array();
+while ($r_item = mysqli_fetch_assoc($res_item)) { $db_item[] = $r_item; }
 
-            $tipe_truck=$row['jenis_truck'];
-
-          }
-
-$username=$_SESSION[APP_NAME]["username"];
-$query="INSERT INTO tb_ceklist SET seq='$seq', idref='$idref', petugas_pemeriksa='$username' , nopol='$nopol', nama_supplier='$supplier', nama_transporter='$transporter' , jenis_kendaraan='$tipe_truck', plant_id='$plant_id', plant_name='$lokasi', nama_sopir='$driver', tgl_pemeriksaan='$date', jam_pemeriksaan='$jam', lokasi_pemeriksaan='$lokasi', muatan='$muat', usia='$usia', jenis_sim='$tipe_sim', expired_date_sim='$expired_sim', expired_date_ddt='$expired_ddt', status_sim='$status_sim', status_ddt='$status_ddt', status_usia='$status_usia', id_barang='$id_barang'  ";
-mysqli_query($con, $query);
-
+/* 2.3 jenis kendaraan dari master tempat muat (hanya muatan FG) */
+$tipe_truck = '';
+if ($muat === 'FG') {
+    $sql_truck = "SELECT jenis_truck FROM tbm_tempat_muat
+                  WHERE id_tempat_muat='" . mysqli_real_escape_string($con, $plant_id) . "'
+                    AND nama_supplier='" . mysqli_real_escape_string($con, $supplier) . "'
+                    AND nama_transporter='" . mysqli_real_escape_string($con, $transporter) . "'
+                  GROUP BY nama_transporter LIMIT 1";
+    $res_truck = mysqli_query($con, $sql_truck);
+    if ($row_truck = mysqli_fetch_assoc($res_truck)) { $tipe_truck = (string) $row_truck['jenis_truck']; }
 }
 
-$petugas = $username ?? '';
+/* 2.4 simpan header pemeriksaan (sekali per kiriman, hanya muatan FG)
+#      int ditulis tanpa kutip, string di-escape -> formatnya sesuai tipe kolom */
+if ($muat === 'FG') {
+    $sql_insert = "INSERT INTO tb_ceklist SET
+        seq = $seq,
+        idref = '" . mysqli_real_escape_string($con, $idref) . "',
+        petugas_pemeriksa = '" . mysqli_real_escape_string($con, $username) . "',
+        nopol = '" . mysqli_real_escape_string($con, $nopol) . "',
+        nama_supplier = '" . mysqli_real_escape_string($con, $supplier) . "',
+        nama_transporter = '" . mysqli_real_escape_string($con, $transporter) . "',
+        jenis_kendaraan = '" . mysqli_real_escape_string($con, $tipe_truck) . "',
+        plant_id = '" . mysqli_real_escape_string($con, $plant_id) . "',
+        plant_name = '" . mysqli_real_escape_string($con, $lokasi) . "',
+        nama_sopir = '" . mysqli_real_escape_string($con, $driver) . "',
+        tgl_pemeriksaan = '" . mysqli_real_escape_string($con, $date) . "',
+        jam_pemeriksaan = '" . mysqli_real_escape_string($con, $jam) . "',
+        lokasi_pemeriksaan = '" . mysqli_real_escape_string($con, $lokasi) . "',
+        muatan = '" . mysqli_real_escape_string($con, $muat) . "',
+        usia = $usia,
+        jenis_sim = '" . mysqli_real_escape_string($con, $tipe_sim) . "',
+        expired_date_sim = '" . mysqli_real_escape_string($con, $expired_sim) . "',
+        expired_date_ddt = '" . mysqli_real_escape_string($con, $expired_ddt) . "',
+        status_sim = '" . mysqli_real_escape_string($con, $status_sim) . "',
+        status_ddt = '" . mysqli_real_escape_string($con, $status_ddt) . "',
+        status_usia = '" . mysqli_real_escape_string($con, $status_usia) . "',
+        id_barang = '" . mysqli_real_escape_string($con, $id_barang) . "'";
+    mysqli_query($con, $sql_insert);
+}
 
-/* ------------------------------------------------------------------
-# TAMPILAN: mengikuti gaya branch main-coman (kartu putih, header berwarna,
-# baris item dgn indikator OK / PERIKSA). Class utility-nya versi Bootstrap 4
-# (font-weight-bold, h5, dst) karena app ini masih Bootstrap 4.1.3.
----------------------------------------------------------------------*/
+/* 2.5 status tiap item (utama1..utama4) untuk idref ini */
+$db_utama = array();
+if ($idref !== '') {
+    $sql_utama = "SELECT utama1, utama2, utama3, utama4 FROM tb_ceklist
+                  WHERE idref='" . mysqli_real_escape_string($con, $idref) . "' LIMIT 1";
+    $res_utama = mysqli_query($con, $sql_utama);
+    if ($row_utama = mysqli_fetch_assoc($res_utama)) { $db_utama = $row_utama; }
+}
+
+/* ============================================================================
+# 3. DATA — siapkan untuk render
+# ============================================================================ */
+$hasil = 'Lanjut Pemeriksaan Gate 2';
+$rows  = array();
+
+foreach ($db_item as $item) {
+    $idx       = (int) $item['no'];                       /* 0..4 */
+    $cek_utama = 1;
+    if ($idx > 0 && array_key_exists('utama' . $idx, $db_utama)) {
+        $cek_utama = (int) $db_utama['utama' . $idx];      /* int(10) */
+    }
+    if ($cek_utama === 0) { $hasil = 'Di Tolak di Pos 1'; }
+
+    $rows[] = array(
+        'no'     => $idx,
+        'nama'   => (string) $item['ceklist_utama'],        /* varchar(50) */
+        'cek'    => ($cek_utama === 1) ? 'cekgreen.png' : 'red.png',
+        'status' => ($cek_utama === 1) ? 'OK' : 'PERIKSA',
+        'tampil' => ($idx > 0),                             /* no=0 disembunyikan */
+    );
+}
+
+$hasil_merah = ($hasil === 'Di Tolak di Pos 1');
 ?>
 
 <style type="text/css">
@@ -172,6 +264,9 @@ body {
 
 </style>
 
+<!-- ==========================================================================
+# 4. VIEW
+=========================================================================== -->
 <div class="container ng1-wrap">
 
   <div class="ng1-card">
@@ -181,61 +276,32 @@ body {
     </div>
 
     <div class="ng1-body">
-<?php
-mysqli_query($con,"UPDATE tb_ceklist_utama SET  status_temp=1");
-$result = mysqli_query($con,"SELECT *,CONCAT(name,no) as namee,CONCAT(ceklist_utama, no,no) as idgreen,CONCAT(ceklist_utama, no,no,no) as idred
-FROM tb_ceklist_utama WHERE no BETWEEN 0 AND 4;");
-
-$color='bg-dark';
-$no=1;
-$noo=2;
-$hid='hidden';
-$hasil='Lanjut Pemeriksaan Gate 2';
-$cek_utama=1;
-while($row = mysqli_fetch_assoc($result))
-{
-$noo=$no-1;
-if ($no>1) {$hid='';}
-if ($no>1) {
-$utama = mysqli_query($con,"SELECT utama".$noo." from tb_ceklist where idref='$idref';");
-while($row_utama = mysqli_fetch_assoc($utama)){
-$cek_utama=$row_utama["utama".$noo.""];
-}
-}
-
-if ($cek_utama==1) {$cek='cekgreen.png';}
-if ($cek_utama==0) {$cek='red.png'; $hasil='Di Tolak di Pos 1';}
-
-$state = ($cek_utama==1) ? 'ng1-ok' : 'ng1-bad';
-$label = ($cek_utama==1) ? 'OK' : 'PERIKSA';
-?>
-      <form method="post" action="common?action=N_foto_gate1" <?php echo $hid; ?>>
-        <div class="ng1-item <?php echo $state; ?>">
+<?php foreach ($rows as $r) { ?>
+      <?php if (!$r['tampil']) { continue; } ?>
+      <form method="post" action="common?action=N_foto_gate1" >
+        <div class="ng1-item <?php echo ($r['status'] === 'OK') ? 'ng1-ok' : 'ng1-bad'; ?>">
           <div class="ng1-left">
-            <span class="ng1-num"><?php echo $no-1; ?></span>
-            <span class="ng1-name"><?php echo htmlspecialchars((string)$row['ceklist_utama'], ENT_QUOTES); ?></span>
+            <span class="ng1-num"><?php echo $r['no']; ?></span>
+            <span class="ng1-name"><?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?></span>
           </div>
           <div class="ng1-right">
-            <input type="text" name="utama" value="<?php echo $no-1; ?>" hidden >
-            <input type="text" name="idref" value="<?php echo $idref; ?>" hidden >
-            <input type="text" name="nopol" value="<?php echo $nopol; ?>" hidden >
-            <input type="text" name="lokasi" value="<?php echo $lokasi; ?>" hidden >
-            <input type="text" name="ceklist" value="<?php echo htmlspecialchars((string)$row['ceklist_utama'], ENT_QUOTES); ?>" hidden >
-            <input type="text" name="kode_kirim" value="<?php echo $kode_kirim; ?>" hidden >
-            <input type="text" name="driver" value="<?php echo $driver; ?>" hidden >
-            <input type="text" name="supplier" value="<?php echo $supplier; ?>" hidden >
+            <input type="text" name="utama" value="<?php echo $r['no']; ?>" hidden >
+            <input type="text" name="idref" value="<?php echo htmlspecialchars($idref, ENT_QUOTES); ?>" hidden >
+            <input type="text" name="nopol" value="<?php echo htmlspecialchars($nopol, ENT_QUOTES); ?>" hidden >
+            <input type="text" name="lokasi" value="<?php echo htmlspecialchars($lokasi, ENT_QUOTES); ?>" hidden >
+            <input type="text" name="ceklist" value="<?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>" hidden >
+            <input type="text" name="kode_kirim" value="<?php echo htmlspecialchars($kode_kirim, ENT_QUOTES); ?>" hidden >
+            <input type="text" name="driver" value="<?php echo htmlspecialchars($driver, ENT_QUOTES); ?>" hidden >
+            <input type="text" name="supplier" value="<?php echo htmlspecialchars($supplier, ENT_QUOTES); ?>" hidden >
 
-            <span class="ng1-badge"><?php echo $label; ?></span>
-            <button type="submit" class="ng1-btn" title="Periksa: <?php echo htmlspecialchars((string)$row['ceklist_utama'], ENT_QUOTES); ?>">
-              <img src="static/css/img/<?php echo $cek; ?>" width="34" height="34" alt="">
+            <span class="ng1-badge"><?php echo $r['status']; ?></span>
+            <button type="submit" class="ng1-btn" title="Periksa: <?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>">
+              <img src="static/css/img/<?php echo $r['cek']; ?>" width="34" height="34" alt="">
             </button>
           </div>
         </div>
       </form>
-<?php
-$no++;
-}
-?>
+<?php } ?>
     </div>
   </div>
 
@@ -248,8 +314,8 @@ $no++;
 
         <div class="form-group">
           <label for="hasil">Hasil Pemeriksaan</label>
-          <input type="text" class="form-control ng1-hasil <?php echo ($hasil=='Di Tolak di Pos 1') ? 'ng1-merah' : 'ng1-hijau'; ?>"
-                 id="hasil" name="hasil" value="<?php echo htmlspecialchars((string)$hasil, ENT_QUOTES); ?>" readonly>
+          <input type="text" class="form-control ng1-hasil <?php echo $hasil_merah ? 'ng1-merah' : 'ng1-hijau'; ?>"
+                 id="hasil" name="hasil" value="<?php echo htmlspecialchars($hasil, ENT_QUOTES); ?>" readonly>
         </div>
 
         <div class="form-group">
@@ -262,13 +328,13 @@ $no++;
           <input type="text" class="form-control" id="tindakan" name="tindakan" required >
         </div>
 
-        <input type="text" name="idref" value="<?php echo $idref; ?>" hidden>
-        <input type="text" name="nopol" value="<?php echo $nopol; ?>" hidden>
-        <input type="text" name="petugas" value="<?php echo $petugas; ?>" hidden>
-        <input type="text" name="lokasi" value="<?php echo $lokasi; ?>" hidden>
-        <input type="text" name="kode_kirim" value="<?php echo $kode_kirim; ?>" hidden>
-        <input type="text" name="driver" value="<?php echo $driver; ?>" hidden >
-        <input type="text" name="supplier" value="<?php echo $supplier; ?>" hidden >
+        <input type="text" name="idref" value="<?php echo htmlspecialchars($idref, ENT_QUOTES); ?>" hidden>
+        <input type="text" name="nopol" value="<?php echo htmlspecialchars($nopol, ENT_QUOTES); ?>" hidden>
+        <input type="text" name="petugas" value="<?php echo htmlspecialchars($petugas, ENT_QUOTES); ?>" hidden>
+        <input type="text" name="lokasi" value="<?php echo htmlspecialchars($lokasi, ENT_QUOTES); ?>" hidden>
+        <input type="text" name="kode_kirim" value="<?php echo htmlspecialchars($kode_kirim, ENT_QUOTES); ?>" hidden>
+        <input type="text" name="driver" value="<?php echo htmlspecialchars($driver, ENT_QUOTES); ?>" hidden >
+        <input type="text" name="supplier" value="<?php echo htmlspecialchars($supplier, ENT_QUOTES); ?>" hidden >
 
         <div class="text-center mt-4">
           <button type="submit" id="btnSimpan" class="btn btn-primary ng1-save">
