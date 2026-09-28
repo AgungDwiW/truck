@@ -98,7 +98,6 @@ label{ font-size: 11pt; color: white; }
   transform: translateX(36px);
   transition: opacity .3s ease, transform .3s ease;
 }
-.flow-step.is-entering{ display: block; }
 .flow-step.is-active{ display: block; opacity: 1; transform: translateX(0); }
 .flow-step.is-leaving{
   display: block;
@@ -180,6 +179,20 @@ label{ font-size: 11pt; color: white; }
 
   function stepEl(name) { return document.getElementById('flow-step-' + name); }
 
+  /* Bersihkan sisa kelas transisi. Bug lama: kelas "is-entering" tidak pernah
+     dilepas, jadi langkah yang sudah ditinggalkan tetap display:block (opacity 0)
+     -> kotak lama masih makan ruang, kelihatan hitam, langkah berikutnya kedorong. */
+  function clearStates(keepActive) {
+    for (var i = 0; i < STEPS.length; i++) {
+      var s = stepEl(STEPS[i]);
+      if (!s) { continue; }
+      s.classList.remove('is-leaving');
+      if (s !== keepActive) { s.classList.remove('is-active'); }
+      s.style.display = '';
+      s.style.top = '';
+    }
+  }
+
   function applyMuat() {
     var form1 = document.getElementById('flowGate1');
     var m1    = document.getElementById('flowGate1Muat');
@@ -207,16 +220,27 @@ label{ font-size: 11pt; color: white; }
       }
     }
 
+    clearTimeout(leaveTimer);
+    clearStates(next);
+
     if (current && current !== next) {
-      current.classList.remove('is-active');
+      /* kunci posisi lama dulu supaya kotak yang memudar tidak meloncat vertikal */
+      current.style.top = current.offsetTop + 'px';
       current.classList.add('is-leaving');
-      clearTimeout(leaveTimer);
-      leaveTimer = setTimeout(function () { current.classList.remove('is-leaving'); }, 320);
-      next.classList.add('is-entering');
-      void next.offsetWidth; /* paksa reflow supaya transisi jalan */
+      leaveTimer = setTimeout(function () {
+        current.classList.remove('is-leaving');
+        current.style.display = '';
+        current.style.top = '';
+      }, 340);
     }
 
+    /* tampilkan dulu (masih opacity 0), commit, baru diaktifkan -> transisi jalan,
+       dan display:inline-nya langsung dilepas supaya tidak ada sisa "nyangkut" */
+    next.style.display = 'block';
+    void next.offsetWidth;
     next.classList.add('is-active');
+    next.style.display = '';
+
     state.step = name;
     applyMuat();
   }
@@ -247,9 +271,10 @@ label{ font-size: 11pt; color: white; }
 
   var first = stepEl(state.step);
   if (first) {
-    first.classList.add('is-entering');
+    first.style.display = 'block';
     void first.offsetWidth;
     first.classList.add('is-active');
+    first.style.display = '';
   }
   applyMuat();
 
