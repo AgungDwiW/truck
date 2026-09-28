@@ -44,6 +44,15 @@ if(!isset($_SESSION[APP_NAME]["username"])) header('location:login.php');
     $path = APP_DIR . 'controllers/' . $controller . '.php';
     $content = APP_DIR . 'views/' . $controller . '/' . $action . '.php';
 
+// Resolve grouped views (fg / material / common) lewat route map bila path
+// default tidak ada. URL lama (main?action=...) tetap jalan.
+    if(!file_exists($content) AND file_exists(APP_DIR . 'config/routes.php')){
+        $route_map = require(APP_DIR . 'config/routes.php');
+        if(isset($route_map[$action])){
+            $content = APP_DIR . 'views/' . $route_map[$action] . '/' . $action . '.php';
+        }
+    }
+
     if(file_exists($path) AND file_exists($content) AND !isset($org_segments[3])){
         include($path);
     } else {

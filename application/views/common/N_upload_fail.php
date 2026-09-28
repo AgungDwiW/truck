@@ -19,7 +19,7 @@ if ($temuan<>'') {
 
 			if(in_array($ekstensi, $ekstensi_diperbolehkan) === true){
 				if($ukuran < 1200000 and $ukuran <> 0){			
-					move_uploaded_file($file_tmp, 'application/views/main/capture/'.$nama);
+					move_uploaded_file($file_tmp, 'application/views/common/capture/'.$nama);
 					$query = mysqli_query($con,"INSERT INTO upload SET nama_file='$nama'  ");
 					if($query){ $sukses=1; ?>
 

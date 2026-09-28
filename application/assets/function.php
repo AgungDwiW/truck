@@ -88,7 +88,7 @@ function utama(){
                 $.ajax({
 
                     type:"POST",
-                    url:"application/views/main/status_tambahan.php",
+                    url:"application/views/common/status_tambahan.php",
                     data:datas,
                     cache:false,
                     dataType:'json',

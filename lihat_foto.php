@@ -85,7 +85,7 @@ $no=1;
       <td style="color: black; text-align: center; font-size: 20px"><?php echo $data['item_utama'];?></td>
       <td style="color: black; text-align: center; font-size: 20px"><?php echo $data['description']; ?></td>
       <td style="color: black; text-align: center; font-size: 20px">
-      <img src="application/views/main/capture\<?php echo $data['foto_name']; ?>" width="320" height="280">
+      <img src="application/views/common/capture/<?php echo $data['foto_name']; ?>" width="320" height="280">
       </td>
 
 </tr>
