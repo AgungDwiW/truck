@@ -31,3 +31,21 @@ gagal cepat — bukan menggantung 60s lalu jadi 504 Gateway Timeout.
   tersedia sebagai komentar di atasnya).
 - `application/assets/TableASN.php` (`seedSupplier()`) masih `new mysqli()` dari variabel
   global — perlu dirapikan terpisah kalau mau 100% eksplisit.
+
+## Catatan prod: dbevisitor & truck di DB berbeda
+
+Di prod, tabel truck dan tabel evisitor ada di **database berbeda** (dan bisa
+beda server). Karena itu:
+
+- **Jangan** memakai nama ber-titik dalam satu query (`dbtruck.tb_ceklist`,
+  `evisitor.tbl_visit`, `smartlogistic.tbm_tenants`). Kalau DB-nya beda,
+  referensi itu gagal.
+- Setiap query diambil dari **koneksi yang punya skema default sesuai**:
+  `$con` / `$conSL` (truck & smartlogistic), `$con_3` (evisitor),
+  `$con_140` (aquan_central).
+- Pindah server/DB = cukup ubah nilai `db_open(...)` di file config terkait,
+  tanpa menyentuh view.
+- `common/db_waiting.php` sudah dipisah: header dari `$con` (truck),
+  pengecekan `tbl_visit` dari `$con_3` (evisitor).
+- Alamat form eVisitor bisa dioverride: definisikan konstanta `EVISITOR_URL`
+  (default `https://adop.danet/evisitor/tamu?ac=regtamu2`).

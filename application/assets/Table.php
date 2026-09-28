@@ -620,7 +620,7 @@ class Table{
 		// $debug =1;
 		$cnd = $this->condition;
 		$join = $this->join;
-		$str = "SELECT * from smartlogistic.tbm_tenants 
+		$str = "SELECT * from tbm_tenants 
 				where 
 					method 					= '{$this->mode}' AND 
 					db_name 				= '{$this->db_name}' AND 
@@ -634,7 +634,7 @@ class Table{
 		// printpre (mysqli_error($con_tenants));
 
 		if (mysqli_num_rows($result) == 0){
-			$str = "INSERT INTO smartlogistic.tbm_tenants (method,  db_name, `table`, `join`,  transaction_name, domain)
+			$str = "INSERT INTO tbm_tenants (method,  db_name, `table`, `join`,  transaction_name, domain)
 					VALUES (
 							'{$this->mode}',
 							'{$this->db_name}',

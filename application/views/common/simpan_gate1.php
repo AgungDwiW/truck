@@ -79,7 +79,7 @@ while ($row_region=mysqli_fetch_assoc($sql)) {
 
 //$str=" SELECT email FROM (SELECT email, active FROM `dbtruck`.tbm_email_to WHERE plant_id='$plant_id' or plant_id='9000') AS a where active=1 ";
 
-$str=" SELECT email FROM (SELECT * FROM (SELECT email, active, region FROM `dbtruck`.tbm_email_to WHERE plant_id=$plant_id or plant_id='9000') AS a WHERE region='$region' OR region=0) AS b WHERE active=1 ";
+$str=" SELECT email FROM (SELECT * FROM (SELECT email, active, region FROM tbm_email_to WHERE plant_id=$plant_id or plant_id='9000') AS a WHERE region='$region' OR region=0) AS b WHERE active=1 ";
 
 
         $result = mysqli_query($con, $str);
