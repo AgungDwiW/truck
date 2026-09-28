@@ -1,16 +1,6 @@
 <?php
-// Koneksi langsung ke database
-$host = "10.203.121.73";
-$user = "uapp_productcode";
-$pass = "ocr.productcode";
-$dbname = "db_product_release";
-
-$con73 = new mysqli($host, $user, $pass, $dbname);
-
-// Cek koneksi
-if ($con73->connect_error) {
-    die("Koneksi gagal: " . $con73->connect_error);
-}
+// Koneksi database (application/config/db_product_release.php)
+require APP_DIR . 'config/db_product_release.php';
 
 function cari_nopol($con73, $nopol) {
     $stmt = $con73->prepare("SELECT * FROM tbm_truck WHERE nopol = ?");

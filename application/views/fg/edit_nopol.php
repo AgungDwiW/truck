@@ -3,16 +3,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Koneksi database
-$host = "10.203.121.73";
-$user = "uapp_productcode";
-$pass = "ocr.productcode";
-$dbname = "db_product_release";
-
-$con = new mysqli($host, $user, $pass, $dbname);
-if ($con->connect_error) {
-    die("Koneksi gagal: " . $con->connect_error);
-}
+// Koneksi database (application/config/db_product_release.php)
+require APP_DIR . 'config/db_product_release.php';
 
 // Ambil username dari session
 $username = $_SESSION[APP_NAME]["username"] ?? '';
@@ -21,7 +13,7 @@ $username = $_SESSION[APP_NAME]["username"] ?? '';
 $plant_id = '';
 $plant_name = '';
 if ($username) {
-    $sql_username = mysqli_query($con, "SELECT * FROM tbm_user WHERE nama='$username'");
+    $sql_username = mysqli_query($con73, "SELECT * FROM tbm_user WHERE nama='$username'");
     if ($sql_username && mysqli_num_rows($sql_username) > 0) {
         $rowuser = mysqli_fetch_assoc($sql_username);
         $plant_name = $rowuser["plant_name"];
@@ -34,7 +26,7 @@ $nopol = $_GET['nopol'] ?? '';
 $data = [];
 
 if ($nopol) {
-    $stmt = $con->prepare("SELECT * FROM tbm_truck WHERE nopol = ?");
+    $stmt = $con73->prepare("SELECT * FROM tbm_truck WHERE nopol = ?");
     $stmt->bind_param("s", $nopol);
     $stmt->execute();
     $result = $stmt->get_result();

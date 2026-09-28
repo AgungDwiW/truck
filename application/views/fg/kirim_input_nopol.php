@@ -3,21 +3,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Koneksi langsung ke database
-$host = "10.203.121.73";
-$user = "uapp_productcode";
-$pass = "ocr.productcode";
-$dbname = "db_product_release";
-
-$con73 = new mysqli($host, $user, $pass, $dbname);
-
-// Cek koneksi
-if ($con73->connect_error) {
-    $_SESSION['pesan'] = "❌ Koneksi database gagal: " . $con73->connect_error;
-    $_SESSION['pesan_tipe'] = "danger";
-    header("Location: prd?action=input_nopol");
-    exit();
-}
+// Koneksi langsung ke database (application/config/db_product_release.php)
+require APP_DIR . 'config/db_product_release.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipe_truck        = htmlspecialchars($_POST['tipe_truck']);

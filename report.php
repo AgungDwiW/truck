@@ -8,14 +8,8 @@
   </head>
   <body>
     <?php
-        $db_host = '127.0.0.1';
-        $db_user = 'afandiach';
-        $db_pswd = '4d0pd4n60';
-        $db_name = 'dbtruck';
-
-        $con = @mysqli_connect($db_host, $db_user, $db_pswd, $db_name) or
-            die("<div style='padding: 20px;border:dotted 1px gray;color: #f44336;'><b>ALERT!</b> Server Connection Lost...</div>" . mysql_error());
-
+        // Koneksi database (application/config/db_dbtruck_local.php)
+        require __DIR__ . '/application/config/db_dbtruck_local.php';
     ?>
 
  <!--    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">

@@ -3,20 +3,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Koneksi ke database
-$host = "10.203.121.73";
-$user = "uapp_productcode";
-$pass = "ocr.productcode";
-$dbname = "db_product_release";
-
-$con = new mysqli($host, $user, $pass, $dbname);
-
-if ($con->connect_error) {
-    $_SESSION['pesan'] = "❌ Koneksi database gagal: " . $con->connect_error;
-    $_SESSION['pesan_tipe'] = "danger";
-    header("Location: main?action=start");
-    exit();
-}
+// Koneksi ke database (application/config/db_product_release.php)
+require APP_DIR . 'config/db_product_release.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nopol           = $_POST['nopol'];
@@ -26,14 +14,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $update_by       = htmlspecialchars($_POST['update_by']);
 
     // Update tanpa kolom plant_update_id & plant_update_desc
-    $stmt = $con->prepare("
+    $stmt = $con73->prepare("
         UPDATE tbm_truck 
         SET tipe_truck = ?, tahun_pembuatan = ?, kir_date = ?, update_by = ?
         WHERE nopol = ?
     ");
 
     if ($stmt === false) {
-        $_SESSION['pesan'] = "❌ Gagal menyiapkan query: " . $con->error;
+        $_SESSION['pesan'] = "❌ Gagal menyiapkan query: " . $con73->error;
         $_SESSION['pesan_tipe'] = "danger";
         header("Location: main?action=edit_nopol&nopol=" . urlencode($nopol));
         exit();
@@ -51,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $stmt->close();
-    $con->close();
+    $con73->close();
 
     header("Location: main?action=start");
     exit();

@@ -18,13 +18,8 @@ $idref=$_POST['idref'];
 </br>
 
 <?php
-$db_host = '127.0.0.1';
-$db_user = 'afandiach';
-$db_pswd = '4d0pd4n60';
-$db_name = 'dbtruck';
-
-$con = @mysqli_connect($db_host, $db_user, $db_pswd, $db_name) or
-    die("<div style='padding: 20px;border:dotted 1px gray;color: #f44336;'><b>ALERT!</b> Server Connection Lost...</div>" . mysql_error());
+// Koneksi database (application/config/db_dbtruck_local.php)
+require __DIR__ . '/application/config/db_dbtruck_local.php';
 
 $query = mysqli_query($con,"SELECT * from tb_foto where idref='$idref' ");
 $data1 = mysqli_fetch_array($query);    
