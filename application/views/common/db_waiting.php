@@ -77,15 +77,15 @@ $jml = count($rows);
    Sengaja hanya di halaman ini; file CSS bersama tidak diubah. */
 body { background-color: #ffffff !important; }
 .dw-wrap {
-  /* lebar penuh: pembungkus view ini ada di dalam .container-fluid Bootstrap
-     (padding 15px kiri/kanan), jadi ditarik negatif supaya tabel menyentuh
-     tepi layar - bukan kotak mengambang. */
+  /* lebar penuh tapi tidak menempel tepi layar: tarik negatif untuk membatalkan
+     padding .container-fluid (15px), lalu kasih jarak sendiri 20px. */
   width: auto;
   margin: 0 -15px;
+  padding: 0 20px;
 }
 .dw-card {
   background: #fff;
-  border-radius: 14px;
+  border-radius: 0;
   box-shadow: 0 4px 18px rgba(20, 30, 60, .08);
   overflow: hidden;
   border: 1px solid #e6eaf2;

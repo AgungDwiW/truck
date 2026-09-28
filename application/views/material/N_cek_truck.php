@@ -64,7 +64,7 @@ printpre(['n'=>'local',  'pengiriman' => $pengiriman_local, 'item' =>array_keys(
 
 printpre("aaaaaaaaaaaaaa");
 //================================== syncing pengiriman ========================
-if ($count_cloud!=$count_local){
+if ($count_cloud!=$count_local && !empty($pengiriman_cloud)){   /* cloud kosong -> jangan INSERT kolom kosong (dulu: SQL error -> blank/500) */
     $pengiriman_synced = 1;    
     $col = array_keys($pengiriman_cloud);
     $values = array_values($pengiriman_cloud);
@@ -107,7 +107,12 @@ foreach($item_cloud as $key => $row_cloud){
         // $val = rtrim($val, ",");
         $SQL = "REPLACE into tbl_item_pengiriman ({$col}) VALUES({$val_str})";
         printpre($SQL);
-        mysqli_query($conSL,$SQL);
+        try {
+            mysqli_query($conSL,$SQL);
+        } catch (mysqli_sql_exception $e) {
+            /* sinkron item gagal (mis. kolom beda antar DB) tidak boleh bikin halaman blank */
+            printpre($e->getMessage());
+        }
         printpre(mysqli_error($conSL));
         
     }
