@@ -73,7 +73,13 @@ $jml = count($rows);
 
 <style type="text/css">
 /* ---- db_waiting (dw-*) ---- */
-.dw-wrap { max-width: 1080px; margin: 0 auto; }
+.dw-wrap {
+  /* lebar penuh: pembungkus view ini ada di dalam .container-fluid Bootstrap
+     (padding 15px kiri/kanan), jadi ditarik negatif supaya tabel menyentuh
+     tepi layar - bukan kotak mengambang. */
+  width: auto;
+  margin: 0 -15px;
+}
 .dw-card {
   background: #fff;
   border-radius: 14px;
