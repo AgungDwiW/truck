@@ -112,7 +112,7 @@ if($utama==4){ mysqli_query($con,"UPDATE tb_ceklist SET utama4=0  where idref='$
 
 <div class="kotak_sq">
 
-	<form method="post" action="main?action=N_gate1">	
+	<form method="post" action="common?action=N_gate1">	
 		   <input type="text" name="idref" value="<?php echo $idref;?>" hidden></input>
 		   <input type="text" name="nopol" value="<?php echo $nopol;?>" hidden></input>
 		   <input type="text" name="lokasi" value="<?php echo $lokasi;?>" hidden></input>
@@ -129,7 +129,7 @@ if($utama==4){ mysqli_query($con,"UPDATE tb_ceklist SET utama4=0  where idref='$
 
 	</br>
 
-	<form method="post" action="main?action=N_foto_gate1">	
+	<form method="post" action="common?action=N_foto_gate1">	
 
 
 	<input type="text" name="utama" value="<?php echo $utama; ?>" hidden></input> 

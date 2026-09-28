@@ -34,7 +34,7 @@ if(isset($_POST["username"]) AND isset($_POST["password"])){
 		$_SESSION[APP_NAME]["username"]		=$nama;
 		$_SESSION[APP_NAME]["nik"]   		=$nik;
 		$_SESSION[APP_NAME]["plant_id"]		=$plant_id;
-		header("location:main");
+		header("location:common?action=index");
 	} else {
 		echo '<script type="text/javascript">';
 		echo 'alert("ALERT! Password and username is invalid...");';

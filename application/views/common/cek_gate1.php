@@ -46,7 +46,7 @@ mysqli_query($con, $query);
 ?>
 
 <div class='container'>
-<form method="post" action="main?action=gate1">
+<form method="post" action="common?action=gate1">
 
 <div class="row justify-content-md-center">
   <div class="col">

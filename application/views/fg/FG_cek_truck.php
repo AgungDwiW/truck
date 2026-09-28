@@ -28,7 +28,7 @@ $sql_nop=mysqli_query($con_3,"SELECT * from tbl_visit where no_pol='$nopol' orde
 $count_nopol=mysqli_num_rows($sql_nop); 
 if ($count_nopol==0) {echo "<script>window.alert('No Pol belum di input di e_Visitor...!!!');
 
-window.location='main?action=FG_cek_nopol';
+window.location='fg?action=FG_cek_nopol';
 
 </script>";}
 
@@ -58,7 +58,7 @@ $id_barang='Muat Trial';
       // $count_shipment=mysqli_num_rows($sql_shipment); 
       // if ($count_shipment==0) {echo "<script>window.alert('ID SHIPMENT Tidak Ditemukan...!!!');
 
-      // window.location='main?action=FG_cek_nopol';
+      // window.location='fg?action=FG_cek_nopol';
 
       // </script>";}
 
@@ -177,7 +177,7 @@ if ($umur>60) {$color_usia='red'; $color_text='black'; $status_usia='High Risk';
 
 // if ($umur<17) {echo "<script>window.alert('Tanggal Lahir Sopir di e_Visitor Salah...!!!');
 
-// window.location='main?action=FG_cek_nopol';
+// window.location='fg?action=FG_cek_nopol';
 
 // </script>";}
 
@@ -208,7 +208,7 @@ $seq=1;
 ?>
 
 <div class='container'>
-<form method="post" action="main?action=N_gate1">
+<form method="post" action="common?action=N_gate1">
 
 <div class="row justify-content-md-center">
 

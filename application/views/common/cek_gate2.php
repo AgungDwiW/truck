@@ -51,7 +51,7 @@ $sql_nop=mysqli_query($con_3,"SELECT * from tbl_visit where REPLACE(no_pol,' ','
 $count_nopol=mysqli_num_rows($sql_nop); 
 if ($count_nopol==0) {echo "<script>window.alert('No Pol belum di input di e_Visitor...!!!');
 
-window.location='main?action=index';
+window.location='common?action=index';
 
 </script>";}
 
@@ -187,7 +187,7 @@ if ($muat=='FG') {
 
 
 <div class="container">
-    <form method="post" action="main?action=lanjut_gate2">
+    <form method="post" action="common?action=lanjut_gate2">
 <div class="row">
 
   <div class="col">
@@ -324,7 +324,7 @@ if ($muat=='Material') {
 
 
 <div class="container">
-    <form method="post" action="main?action=lanjut_gate2">
+    <form method="post" action="common?action=lanjut_gate2">
 <div class="row">
 
 

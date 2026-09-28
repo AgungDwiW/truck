@@ -128,7 +128,7 @@ $count_nopol=mysqli_num_rows($sql_nopol);
 if ($count_nopol==0) {
     echo "<script>window.alert('Schedule Truck Tidak Ditemukan...!!!');
 
-window.location='main?action=cek_nopol';
+window.location='material?action=cek_nopol';
 
 </script>";}
 
@@ -174,7 +174,7 @@ mysqli_query($con, $query);
 ?>
 
 <div class='container'>
-<form method="post" action="main?action=N_gate1">
+<form method="post" action="common?action=N_gate1">
 
 <div class="row justify-content-md-center">
   <div class="col">

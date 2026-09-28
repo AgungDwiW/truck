@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt === false) {
         $_SESSION['pesan'] = "❌ Gagal menyiapkan query: " . $con73->error;
         $_SESSION['pesan_tipe'] = "danger";
-        header("Location: main?action=edit_nopol&nopol=" . urlencode($nopol));
+        header("Location: fg?action=edit_nopol&nopol=" . urlencode($nopol));
         exit();
     }
 
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
     $con73->close();
 
-    header("Location: main?action=start");
+    header("Location: common?action=start");
     exit();
 }
 ?>

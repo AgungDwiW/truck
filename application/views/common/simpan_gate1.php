@@ -187,7 +187,7 @@ if ($kode_kirim != ''){
 	$table->update($updateData)->where($condition)->execute();
 }
 
-header("location:main?action=index");
+header("location:common?action=index");
 // exit();
 
 

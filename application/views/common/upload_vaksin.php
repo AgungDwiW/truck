@@ -107,7 +107,7 @@ if ($orang=='driver') { ?>
 
 <div class="kotak_sq">
 
-	<form method="post" action="main?action=pilih_helper">	
+	<form method="post" action="common?action=pilih_helper">	
 		
 			 <input type="text" id="plant_name" name="plant_name" value="<?php echo $plant_name ;  ?>" hidden >
              <input type="text" id="plant_id" name="plant_id" value="<?php echo $plant_id ;  ?>" hidden >
@@ -133,7 +133,7 @@ if ($orang=='helper') { ?>
 
 <div class="kotak_sq">
 
-	<form method="post" action="main?action=start">	
+	<form method="post" action="common?action=start">	
 		
 			<button type="submit" class="btn btn-success tombol_pass">Lanjut</button>
 			</br>

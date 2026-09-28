@@ -168,6 +168,6 @@ mysqli_query($con,$query);
 mysqli_close($con); 
 mysqli_close($con2); 
 echo "<script>alert('Berhasil di Simpan');</script>";
-header("location:main?action=db_waiting");
+header("location:common?action=db_waiting");
 
 ?>

@@ -24,7 +24,7 @@ $seq   = 1;
 ?>
 
 <div class='container'>
-<form method="post" action="main?action=N_gate1" class="kir-form">
+<form method="post" action="common?action=N_gate1" class="kir-form">
 
   <h4 class="kir-title">Pemeriksaan Gate 1 &mdash; Finished Goods</h4>
 

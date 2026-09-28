@@ -80,7 +80,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
-    <a class="navbar-brand" href="main?action=index">
+    <a class="navbar-brand" href="common?action=index">
       <img src="plugins/icon.png" alt="Logo" style="height: 24px; display: inline-block; margin-top: -4px;">
       Home
     </a>
@@ -124,7 +124,7 @@ $link = ($plant_id == '90A8') ? 'FG_cek_truck' : 'FG_cek_truck_rev';
 
     <form id="formTruck" method="post" action="main?action=<?php echo $link; ?>">
         <div class="form-group">
-          <a href="main?action=input_nopol" class="btn btn-info btn-sm" style="margin-bottom: 10px;">
+          <a href="fg?action=input_nopol" class="btn btn-info btn-sm" style="margin-bottom: 10px;">
             + Tambah Nopol Baru
           </a>
           <br>
@@ -219,7 +219,7 @@ function gabungNopol() {
   if (prefix && number && suffix) {
     document.getElementById("nopol").value = fullNopol;
 
-    fetch("main?action=cari_truck&nopol=" + encodeURIComponent(fullNopol))
+    fetch("fg?action=cari_truck&nopol=" + encodeURIComponent(fullNopol))
       .then(res => res.text())
       .then(text => {
         const cleanText = text.replace(/^\uFEFF/, ''); // hapus karakter BOM jika ada
@@ -265,7 +265,7 @@ function gabungNopol() {
           }
 
           // Set link tombol Update KIR
-          document.getElementById("btnUpdateKir").href = "main?action=edit_nopol&nopol=" + encodeURIComponent(data.nopol);
+          document.getElementById("btnUpdateKir").href = "fg?action=edit_nopol&nopol=" + encodeURIComponent(data.nopol);
 
           // Tampilkan modal setelah semua data di-set
           $('#modalTruck').modal('show');

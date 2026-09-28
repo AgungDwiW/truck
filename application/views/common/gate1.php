@@ -93,7 +93,7 @@ mysqli_query($con,"UPDATE tb_ceklist_utama SET  status_temp=1");
 
 ?>    
       
-    <form method="post" action="main?action=foto_gate1">   
+    <form method="post" action="common?action=foto_gate1">   
     <div class="row text-center" style="background-color: black">
         <div class="col" style="color: white; font-size:20px; margin-left: 10px; margin-top: 0px" <?php echo $hid; ?> >
           <?php echo "$row[ceklist_utama]"; ?>
@@ -131,7 +131,7 @@ $seq_cek1=$row1["seq"];
       ?>    
   
 
-<form method="post" action="main?action=simpan_gate1">
+<form method="post" action="common?action=simpan_gate1">
 <div class="row">
 <div class="col-md-12">
 <div class="text-center bg-info text-dark font-weight-bold" >

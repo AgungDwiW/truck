@@ -4,7 +4,7 @@
 # Perpindahan langkah pakai JavaScript + transisi CSS, tanpa reload/redirect ke file lain.
 # View lama (index.php, start.php, pilih_gate.php) sekarang hanya 1 baris wrapper:
 #     <?php $flow_step='...'; require __DIR__ . '/flow.php';
-# URL lama tetap jalan: main?action=index | main?action=start | main?action=pilih_gate
+# URL lama tetap jalan: common?action=index | common?action=start | common?action=pilih_gate
 # dan nilai POST/GET lama (muat = FG | Material) tetap didukung.
 # Rev : 2026-09-28
 */
@@ -128,9 +128,9 @@ label{ font-size: 11pt; color: white; }
     <h1><label style="font-size: 20px">Driver & Helper sudah Register..???</label></h1>
 
     <div class="kotak_sq" style="margin-top: 5px;">
-      <a class="flow-btn tombol_hijau" href="main?action=start" data-flow="start">Sudah</a>
+      <a class="flow-btn tombol_hijau" href="common?action=start" data-flow="start">Sudah</a>
       <div class="flow-gap"></div>
-      <form method="post" action="main?action=pilih_driver">
+      <form method="post" action="common?action=pilih_driver">
         <input type="text" name="muat"       value="<?php echo htmlspecialchars($muat, ENT_QUOTES); ?>" hidden>
         <input type="text" name="plant_name" value="<?php echo htmlspecialchars($plant_name, ENT_QUOTES); ?>" hidden>
         <input type="text" name="plant_id"   value="<?php echo htmlspecialchars($plant_id, ENT_QUOTES); ?>" hidden>
@@ -142,10 +142,10 @@ label{ font-size: 11pt; color: white; }
   <!-- ============ LANGKAH 2: start — FG atau Material ============ -->
   <section class="flow-step" id="flow-step-start">
     <div class="kotak_sq">
-      <a class="flow-btn tombol_safety"  href="main?action=pilih_gate&amp;muat=FG"
+      <a class="flow-btn tombol_safety"  href="common?action=pilih_gate&amp;muat=FG"
          data-flow="pilih_gate" data-muat="FG">FG Truck</a>
       <div class="flow-gap"></div>
-      <a class="flow-btn tombol_quality" href="main?action=pilih_gate&amp;muat=Material"
+      <a class="flow-btn tombol_quality" href="common?action=pilih_gate&amp;muat=Material"
          data-flow="pilih_gate" data-muat="Material">Material Truck</a>
     </div>
   </section>
@@ -159,14 +159,14 @@ label{ font-size: 11pt; color: white; }
         <button type="submit" class="tombol_gate1">GATE 1</button>
       </form>
       <div class="flow-gap"></div>
-      <form method="post" id="flowGate2" action="main?action=db_waiting">
+      <form method="post" id="flowGate2" action="common?action=db_waiting">
         <input type="text" name="muat" id="flowGate2Muat"
                value="<?php echo htmlspecialchars($muat, ENT_QUOTES); ?>" hidden>
         <button type="submit" class="tombol_gate2">GATE 2</button>
       </form>
       <div class="flow-gap"></div>
       <div style="text-align: center;">
-        <a class="link" href="main?action=start" data-flow="start">BACK</a>
+        <a class="link" href="common?action=start" data-flow="start">BACK</a>
       </div>
     </div>
   </section>

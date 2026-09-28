@@ -27,15 +27,15 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		  </button>
-		  <a class="navbar-brand"><img src="static/images/adop32.png"> <?php echo APP_NAME.'<sup>'.APP_VER.'</sup>'; ?> </a>
+		  <a class="navbar-brand" href='common?action=index'><img src="static/images/adop32.png"> <?php echo APP_NAME.'<sup>'.APP_VER.'</sup>'; ?> </a>
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		<ul class="nav navbar-nav">
 			<li class="nav-item">
-                    <a class="nav-link" href="main?action=index">Home<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="common?action=index">Home<span class="sr-only">(current)</span></a>
             </li>
 			<li class="nav-item">
-                    <a class="nav-link" href="main?action=cek_kpi">Cek KPI<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="common?action=cek_kpi">Cek KPI<span class="sr-only">(current)</span></a>
             </li>
 
             <?php
@@ -44,7 +44,7 @@
             ?>
 
             <li class="nav-item">
-                    <a class="nav-link" href="main?action=reg_user">Register<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="common?action=reg_user">Register<span class="sr-only">(current)</span></a>
             </li>
 
             <?php } ?>
