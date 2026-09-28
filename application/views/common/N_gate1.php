@@ -223,26 +223,27 @@ body {
 .ng1-name { font-size: 16px; font-weight: 600; color: #212529; }
 .ng1-right { display: flex; align-items: center; gap: 10px; }
 
-.ng1-btn {
-  width: 50px;
-  height: 50px;
+/* satu kontrol checklist per item: tercentang = OK.
+   Klik saat tercentang -> minta foto/temuan (berarti mau di-uncheck). */
+.ng1-chk {
+  width: 54px;
+  height: 54px;
   border: 2px solid #cfd6e4;
-  border-radius: 50%;
+  border-radius: 14px;
   background: #fff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #6b7280;
-  font-size: 18px;
+  color: #fff;
+  font-size: 24px;
   box-shadow: 0 1px 4px rgba(20, 30, 60, .08);
-  transition: transform .12s ease, border-color .12s ease, color .12s ease;
+  transition: transform .12s ease, border-color .12s ease, background .12s ease;
 }
-.ng1-btn:hover { transform: translateY(-1px); }
-.ng1-btn-ok:hover  { border-color: #28a745; color: #28a745; }
-.ng1-btn-bad:hover { border-color: #dc3545; color: #dc3545; }
-.ng1-ok  .ng1-btn-ok  { border-color: #28a745; color: #28a745; background: #eaf8ee; }
-.ng1-bad .ng1-btn-bad { border-color: #dc3545; color: #dc3545; background: #fdeaec; }
+.ng1-chk:hover { transform: translateY(-1px); border-color: #0f6ea8; }
+.ng1-ok  .ng1-chk { background: #28a745; border-color: #28a745; }
+.ng1-bad .ng1-chk { background: #fff; border-color: #dc3545; }
+.ng1-bad .ng1-chk:hover { background: #fdeaec; }
 
 .ng1-badge {
   font-size: 11px;
@@ -269,6 +270,16 @@ body {
   padding: 12px 40px;
   font-weight: 700;
 }
+.ng1-cam video {
+  width: 100%;
+  max-height: 260px;
+  background: #111;
+  border-radius: 10px;
+  display: block;
+}
+.ng1-cam-actions { margin-top: 8px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ng1-cam-status { font-size: 12px; color: #6b7280; }
+.ng1-preview-note { font-size: 12px; color: #6b7280; margin-top: 4px; }
 .ng1-preview {
   margin-top: 10px;
   max-width: 100%;
@@ -348,18 +359,22 @@ body {
     <div class="ng1-body">
 <?php foreach ($rows as $r) { ?>
       <?php if (!$r['tampil']) { continue; } $u = $r['no']; ?>
-      <div class="ng1-item <?php echo ($r['status'] === 'OK') ? 'ng1-ok' : 'ng1-bad'; ?>" id="row-<?php echo $u; ?>"
+      <?php $ok = ($r['status'] === 'OK'); ?>
+      <div class="ng1-item <?php echo $ok ? 'ng1-ok' : 'ng1-bad'; ?>" id="row-<?php echo $u; ?>"
            data-utama="<?php echo $u; ?>"
+           data-status="<?php echo $ok ? 'OK' : 'PERIKSA'; ?>"
            data-ceklist="<?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>"
-           title="Klik untuk ambil foto / isi temuan">
+           title="<?php echo $ok ? 'Klik kalau ada temuan (ambil foto)' : 'Klik untuk tandai OK'; ?>">
         <div class="ng1-left">
           <span class="ng1-num"><?php echo $u; ?></span>
           <span class="ng1-name"><?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?></span>
         </div>
         <div class="ng1-right">
 
-          <!-- OK: form asli (fallback non-JS) -> common?action=N_foto_gate1 -->
-          <form method="post" action="common?action=N_foto_gate1" class="ng1-okform" data-utama="<?php echo $u; ?>">
+          <span class="ng1-badge" id="badge-<?php echo $u; ?>"><?php echo $r['status']; ?></span>
+
+          <!-- satu kontrol checklist. Fallback non-JS tetap alur lama (N_foto_gate1) -->
+          <form method="post" action="common?action=N_foto_gate1" class="ng1-form">
             <input type="text" name="utama" value="<?php echo $u; ?>" hidden >
             <input type="text" name="idref" value="<?php echo htmlspecialchars($idref, ENT_QUOTES); ?>" hidden >
             <input type="text" name="nopol" value="<?php echo htmlspecialchars($nopol, ENT_QUOTES); ?>" hidden >
@@ -368,18 +383,10 @@ body {
             <input type="text" name="kode_kirim" value="<?php echo htmlspecialchars($kode_kirim, ENT_QUOTES); ?>" hidden >
             <input type="text" name="driver" value="<?php echo htmlspecialchars($driver, ENT_QUOTES); ?>" hidden >
             <input type="text" name="supplier" value="<?php echo htmlspecialchars($supplier, ENT_QUOTES); ?>" hidden >
-            <button type="submit" class="ng1-btn ng1-btn-ok" title="Tandai OK: <?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>">
-              <i class="fa fa-check"></i>
+            <button type="submit" class="ng1-chk" title="<?php echo $ok ? 'Ada temuan? klik untuk ambil foto' : 'Tandai OK'; ?>">
+              <?php if ($ok) { ?><i class="fa fa-check"></i><?php } ?>
             </button>
           </form>
-
-          <!-- PERIKSA: buka modal di halaman ini (tanpa pindah halaman) -->
-          <button type="button" class="ng1-btn ng1-btn-bad"
-                  title="Ambil foto / isi temuan: <?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>">
-            <i class="fa fa-camera"></i>
-          </button>
-
-          <span class="ng1-badge" id="badge-<?php echo $u; ?>"><?php echo $r['status']; ?></span>
         </div>
       </div>
 <?php } ?>
@@ -455,11 +462,32 @@ body {
             <textarea class="form-control" id="mTemuanText" rows="3" required></textarea>
           </div>
 
-          <div class="form-group mb-0">
-            <label for="mFile">Foto (kamera / file, maks 1 MB)</label>
-            <input type="file" class="form-control-file" name="file" id="mFile" accept="image/*" capture="capture" required>
-            <img id="mPreview" class="ng1-preview" alt="pratinjau foto">
+          <!-- 1) cara utama: kamera langsung -->
+          <div class="form-group" id="mCamWrap">
+            <label>Foto (kamera)</label>
+            <div class="ng1-cam">
+              <video id="mVideo" playsinline autoplay muted></video>
+              <div class="ng1-cam-actions">
+                <button type="button" class="btn btn-dark btn-sm" id="btnAmbil">
+                  <i class="fa fa-camera"></i> Ambil Foto
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="btnUlangi">
+                  Ambil Ulang
+                </button>
+                <span class="ng1-cam-status" id="mCamStatus"></span>
+              </div>
+            </div>
           </div>
+
+          <!-- 2) cadangan: kalau kamera tidak bisa dipakai, upload file -->
+          <div class="form-group" id="mUploadWrap" hidden>
+            <label for="mFile">Upload foto (kamera HP / pilih file)</label>
+            <input type="file" class="form-control-file" name="file" id="mFile" accept="image/*" capture="capture">
+            <div class="ng1-cam-status" id="mUploadNote"></div>
+          </div>
+
+          <img id="mPreview" class="ng1-preview" alt="pratinjau foto">
+          <div class="ng1-preview-note" id="mFotoNote"></div>
         </div>
         <div class="ng1-modal-foot">
           <button type="button" class="btn btn-secondary" id="btnBatal">Batal</button>
@@ -473,11 +501,18 @@ body {
 
 <script type="text/javascript">
 /* ============================================================================
-# Simpan hasil per item tanpa pindah halaman (AJAX ke common?action=gate1_ajax)
+# Interaksi halaman (semua di halaman ini, tanpa pindah halaman)
+#   checklist item : klik saat tercentang -> minta foto/temuan (mau uncheck)
+#                    klik saat kosong     -> tandai OK
+#   foto           : kamera langsung (getUserMedia). Kalau tidak bisa
+#                    (bukan https / izin ditolak / tidak ada kamera) -> upload file.
 ============================================================================ */
 var N_GATE1_IDREF = <?php echo json_encode($idref); ?>;
 
 $(document).ready(function () {
+
+  var fotoBlob = null;   /* hasil jepretan kamera */
+  var camStream = null;
 
   function refreshHasil() {
     var merah = $('.ng1-item.ng1-bad').length > 0;
@@ -489,27 +524,69 @@ $(document).ready(function () {
 
   function setRow(utama, status) {
     var $row = $('#row-' + utama);
-    $row.toggleClass('ng1-ok', status === 'OK').toggleClass('ng1-bad', status !== 'OK');
+    var ok = (status === 'OK');
+    $row.toggleClass('ng1-ok', ok).toggleClass('ng1-bad', !ok).attr('data-status', status);
     $('#badge-' + utama).text(status);
+    $row.find('.ng1-chk').html(ok ? '<i class="fa fa-check"></i>' : '')
+      .attr('title', ok ? 'Ada temuan? klik untuk ambil foto' : 'Tandai OK');
     refreshHasil();
   }
 
-  /* --- tombol OK --- */
-  $('.ng1-okform').on('submit', function (e) {
-    e.preventDefault();
-    var utama = $(this).data('utama');
-    $.ajax({
-      url: 'common?action=gate1_ajax',
-      type: 'POST',
-      data: { op: 'ok', idref: N_GATE1_IDREF, utama: utama },
-      dataType: 'json'
-    }).done(function (res) {
-      if (res && res.ok) { setRow(utama, 'OK'); }
-      else { alert((res && res.msg) ? res.msg : 'Gagal menyimpan.'); }
-    }).fail(function () { alert('Gagal kirim ke server.'); });
-  });
+  /* ---------- kamera ---------- */
+  function pakaiUpload(sebab) {
+    $('#mCamWrap').hide();
+    $('#mUploadWrap').removeAttr('hidden');
+    $('#mUploadNote').text(sebab || '');
+  }
 
-  /* --- overlay temuan (tidak pakai modal Bootstrap) --- */
+  function mulaiKamera() {
+    fotoBlob = null;
+    $('#mPreview').hide().attr('src', '');
+    $('#mFotoNote').text('');
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      pakaiUpload('Browser tidak mendukung kamera langsung - silakan upload foto.');
+      return;
+    }
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false })
+      .then(function (stream) {
+        camStream = stream;
+        document.getElementById('mVideo').srcObject = stream;
+        $('#mCamWrap').show();
+        $('#mUploadWrap').attr('hidden', 'hidden');
+        $('#mCamStatus').text('Kamera aktif. Arahkan ke temuan lalu klik Ambil Foto.');
+      })
+      .catch(function (err) {
+        pakaiUpload('Kamera tidak bisa dipakai (' + ((err && err.name) ? err.name : 'error') + ') - silakan upload foto.');
+      });
+  }
+
+  function stopKamera() {
+    if (camStream) {
+      camStream.getTracks().forEach(function (t) { t.stop(); });
+      camStream = null;
+    }
+    var v = document.getElementById('mVideo');
+    if (v) { v.srcObject = null; }
+  }
+
+  function ambilFoto() {
+    var v = document.getElementById('mVideo');
+    if (!camStream || !v || !v.videoWidth) { $('#mCamStatus').text('Kamera belum siap.'); return; }
+    var skala = Math.min(1, 1280 / v.videoWidth);
+    var c = document.getElementById('mCanvas');
+    c.width = Math.round(v.videoWidth * skala);
+    c.height = Math.round(v.videoHeight * skala);
+    c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+    c.toBlob(function (blob) {
+      if (!blob) { $('#mCamStatus').text('Gagal mengambil gambar.'); return; }
+      fotoBlob = blob;
+      $('#mPreview').attr('src', URL.createObjectURL(blob)).show();
+      $('#mFotoNote').text('Foto siap dikirim (' + Math.round(blob.size / 1024) + ' KB).');
+      $('#mCamStatus').text('Foto diambil - bisa Ambil Ulang kalau kurang jelas.');
+    }, 'image/jpeg', 0.85);
+  }
+
+  /* ---------- overlay temuan ---------- */
   function bukaTemuan($row) {
     $('#mUtama').val($row.data('utama'));
     $('#mCcp').val($row.data('ceklist'));
@@ -517,64 +594,100 @@ $(document).ready(function () {
     $('#mTemuanText').val('');
     $('#mTem').val('');
     $('#mFile').val('');
-    $('#mPreview').hide().attr('src', '');
     $('#ng1Overlay').prop('hidden', false);
-    setTimeout(function () { $('#mTemuanText').focus(); }, 60);
+    mulaiKamera();
+    setTimeout(function () { $('#mTemuanText').focus(); }, 80);
   }
-  function tutupTemuan() { $('#ng1Overlay').prop('hidden', true); }
 
-  /* klik di mana saja pada baris item = ambil foto / isi temuan
-     (kecuali tombol OK yang punya aksi sendiri) */
-  $(document).on('click', '.ng1-item', function (e) {
-    if ($(e.target).closest('.ng1-okform').length) { return; }
-    bukaTemuan($(this));
+  function tutupTemuan() {
+    stopKamera();
+    $('#ng1Overlay').prop('hidden', true);
+  }
+
+  /* ---------- checklist ---------- */
+  $(document).on('submit', '.ng1-form', function (ev) {
+    ev.preventDefault();
+    var $row = $(this).closest('.ng1-item');
+    var utama = $row.data('utama');
+
+    if ($row.attr('data-status') === 'OK') {
+      bukaTemuan($row);                       /* mau uncheck -> minta foto + temuan */
+      return;
+    }
+    $.ajax({
+      url: 'common?action=gate1_ajax', type: 'POST',
+      data: { op: 'ok', idref: N_GATE1_IDREF, utama: utama }, dataType: 'json'
+    }).done(function (res) {
+      if (res && res.ok) { setRow(utama, 'OK'); }
+      else { alert((res && res.msg) ? res.msg : 'Gagal menyimpan.'); }
+    }).fail(function () { alert('Gagal kirim ke server.'); });
   });
+
+  $(document).on('click', '.ng1-item', function (ev) {
+    if ($(ev.target).closest('form').length) { return; }
+    $(this).find('.ng1-form').trigger('submit');
+  });
+
   $('#btnTutupModal, #btnBatal').on('click', tutupTemuan);
-  $(document).on('keydown', function (e) { if (e.key === 'Escape') { tutupTemuan(); } });
+  $(document).on('keydown', function (ev) { if (ev.key === 'Escape') { tutupTemuan(); } });
+  $('#btnAmbil').on('click', ambilFoto);
+  $('#btnUlangi').on('click', function () {
+    fotoBlob = null;
+    $('#mPreview').hide().attr('src', '');
+    $('#mFotoNote').text('');
+    $('#mFile').val('');
+  });
 
   $('#mFile').on('change', function () {
     var f = this.files && this.files[0];
-    if (f) { $('#mPreview').attr('src', URL.createObjectURL(f)).show(); }
-    else { $('#mPreview').hide().attr('src', ''); }
+    if (f) {
+      fotoBlob = null;
+      $('#mPreview').attr('src', URL.createObjectURL(f)).show();
+      $('#mFotoNote').text('File dipilih: ' + f.name + ' (' + Math.round(f.size / 1024) + ' KB).');
+    } else {
+      $('#mPreview').hide().attr('src', '');
+      $('#mFotoNote').text('');
+    }
   });
 
-  /* --- kirim temuan + foto tanpa reload --- */
-  $('#formTemuan').on('submit', function (e) {
-    e.preventDefault();
+  /* ---------- kirim temuan + foto ---------- */
+  $('#formTemuan').on('submit', function (ev) {
+    ev.preventDefault();
     var tem = $.trim($('#mTemuanText').val());
-    if (tem === '') { return; }
+    if (tem === '') { $('#mTemuanText').focus(); return; }
     $('#mTem').val(tem);
 
     var utama = $('#mUtama').val();
     var fd = new FormData(this);
     fd.append('op', 'fail');
 
+    if (fotoBlob) {
+      try { fd.delete('file'); } catch (e) { /* browser lama */ }
+      fd.append('file', fotoBlob, 'capture.jpg');
+    } else if (!($('#mFile')[0].files && $('#mFile')[0].files[0])) {
+      alert('Ambil foto dari kamera dulu, atau pilih file untuk diupload.');
+      return;
+    }
+
     $('#mSimpan').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
     $.ajax({
-      url: 'common?action=gate1_ajax',
-      type: 'POST',
-      data: fd,
-      processData: false,
-      contentType: false,
-      dataType: 'json'
+      url: 'common?action=gate1_ajax', type: 'POST', data: fd,
+      processData: false, contentType: false, dataType: 'json'
     }).done(function (res) {
-      if (res && res.ok) {
-        setRow(utama, 'PERIKSA');
-        tutupTemuan();
-      } else {
-        alert((res && res.msg) ? res.msg : 'Gagal menyimpan temuan.');
-      }
-    }).fail(function () {
-      alert('Gagal kirim ke server.');
-    }).always(function () {
-      $('#mSimpan').prop('disabled', false).html('<i class="fa fa-camera"></i> Simpan Temuan');
-    });
+      if (res && res.ok) { setRow(utama, 'PERIKSA'); tutupTemuan(); }
+      else { alert((res && res.msg) ? res.msg : 'Gagal menyimpan temuan.'); }
+    }).fail(function () { alert('Gagal kirim ke server.'); })
+      .always(function () { $('#mSimpan').prop('disabled', false).html('<i class="fa fa-paper-plane"></i> Simpan Temuan'); });
   });
 
-  /* --- simpan akhir --- */
+  /* ---------- simpan akhir ---------- */
   $('#formSimpan').on('submit', function () {
     $('#btnSimpan').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
   });
 
+  /* canvas tersembunyi untuk jepretan kamera */
+  if (!document.getElementById('mCanvas')) {
+    $('<canvas id="mCanvas" style="display:none"></canvas>').appendTo('body');
+  }
 });
 </script>

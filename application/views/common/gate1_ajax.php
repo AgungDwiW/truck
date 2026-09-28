@@ -50,17 +50,15 @@ if ($op === 'fail') {
         exit;
     }
 
-    $ekstensi_diperbolehkan = array('png', 'jpg', 'jpeg');
-    $nama     = date('ymdhis') . "_" . $user . ".png";
-    $x        = explode('.', $nama);
-    $ekstensi = strtolower(end($x));
-    $ukuran   = isset($_FILES['file']['size']) ? (int) $_FILES['file']['size'] : 0;
-    $file_tmp = isset($_FILES['file']['tmp_name']) ? $_FILES['file']['tmp_name'] : '';
-
-    if (!in_array($ekstensi, $ekstensi_diperbolehkan, true)) {
-        $balas['msg'] = 'Ekstensi file tidak diizinkan.';
-        echo json_encode($balas); exit;
-    }
+    /* Nama file: pakai ekstensi dari file yang dikirim (webcam -> .jpg),
+       fallback .png. Nama user disaring supaya aman jadi nama file. */
+    $nama_asli = isset($_FILES['file']['name']) ? (string) $_FILES['file']['name'] : '';
+    $ekstensi  = strtolower(pathinfo($nama_asli, PATHINFO_EXTENSION));
+    if (!in_array($ekstensi, array('png', 'jpg', 'jpeg'), true)) { $ekstensi = 'png'; }
+    $user_aman = preg_replace('/[^A-Za-z0-9_]/', '', (string) $user);
+    $nama      = date('ymdhis') . '_' . ($user_aman !== '' ? $user_aman : 'anon') . '.' . $ekstensi;
+    $ukuran    = isset($_FILES['file']['size']) ? (int) $_FILES['file']['size'] : 0;
+    $file_tmp  = isset($_FILES['file']['tmp_name']) ? $_FILES['file']['tmp_name'] : '';
     if ($ukuran <= 0 || $ukuran >= 1200000 || $file_tmp === '' || !is_uploaded_file($file_tmp)) {
         $balas['msg'] = 'Tidak ada foto yang di-upload (maks 1 MB).';
         echo json_encode($balas); exit;
