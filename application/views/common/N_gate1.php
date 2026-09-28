@@ -278,6 +278,60 @@ body {
   display: none;
 }
 
+/* --- overlay temuan: dibuat sendiri, TIDAK bergantung JS/CSS Bootstrap ---
+   (JS bootstrap di app ini masih v3 sedangkan CSS-nya v4, modal .modal
+   jadi tidak pernah kelihatan walau display-nya sudah block.) */
+.ng1-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 2000;
+  background: rgba(15, 23, 42, .55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.ng1-overlay[hidden] { display: none; }
+.ng1-modal {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+}
+.ng1-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 18px;
+  background: linear-gradient(90deg, #0f6ea8, #14a2b8);
+  color: #fff;
+  font-weight: 700;
+}
+.ng1-modal-body { padding: 18px; overflow-y: auto; }
+.ng1-modal-body label { font-weight: 600; color: #343a40; margin-bottom: 6px; }
+.ng1-modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 18px;
+  border-top: 1px solid #eef1f6;
+}
+.ng1-x {
+  background: none;
+  border: 0;
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
 </style>
 
 <!-- ==========================================================================
@@ -294,7 +348,10 @@ body {
     <div class="ng1-body">
 <?php foreach ($rows as $r) { ?>
       <?php if (!$r['tampil']) { continue; } $u = $r['no']; ?>
-      <div class="ng1-item <?php echo ($r['status'] === 'OK') ? 'ng1-ok' : 'ng1-bad'; ?>" id="row-<?php echo $u; ?>">
+      <div class="ng1-item <?php echo ($r['status'] === 'OK') ? 'ng1-ok' : 'ng1-bad'; ?>" id="row-<?php echo $u; ?>"
+           data-utama="<?php echo $u; ?>"
+           data-ceklist="<?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>"
+           title="Klik untuk ambil foto / isi temuan">
         <div class="ng1-left">
           <span class="ng1-num"><?php echo $u; ?></span>
           <span class="ng1-name"><?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?></span>
@@ -318,10 +375,7 @@ body {
 
           <!-- PERIKSA: buka modal di halaman ini (tanpa pindah halaman) -->
           <button type="button" class="ng1-btn ng1-btn-bad"
-                  data-toggle="modal" data-target="#modalTemuan"
-                  data-utama="<?php echo $u; ?>"
-                  data-ceklist="<?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>"
-                  title="Ada temuan / foto: <?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>">
+                  title="Ambil foto / isi temuan: <?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>">
             <i class="fa fa-camera"></i>
           </button>
 
@@ -375,20 +429,17 @@ body {
 
 </div>
 
-<!-- modal temuan: dipakai semua item, isinya diisi dari tombol yg diklik -->
-<div class="modal fade" id="modalTemuan" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Temuan: <span id="mCeklist"></span></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+<!-- overlay temuan: dipakai semua item, isinya diisi dari baris yg diklik -->
+<div class="ng1-overlay" id="ng1Overlay" hidden>
+  <div class="ng1-modal">
+    <div class="ng1-modal-head">
+      <span>Temuan: <b id="mCeklist"></b></span>
+      <button type="button" class="ng1-x" id="btnTutupModal" title="Tutup">&times;</button>
+    </div>
 
       <!-- action tetap ke halaman lama sebagai fallback kalau JS mati -->
       <form id="formTemuan" method="post" action="common?action=N_upload_fail" enctype="multipart/form-data">
-        <div class="modal-body">
+        <div class="ng1-modal-body">
           <input type="text" name="utama" id="mUtama" hidden>
           <input type="text" name="ccp" id="mCcp" hidden>
           <input type="text" name="tem" id="mTem" hidden>
@@ -410,14 +461,13 @@ body {
             <img id="mPreview" class="ng1-preview" alt="pratinjau foto">
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+        <div class="ng1-modal-foot">
+          <button type="button" class="btn btn-secondary" id="btnBatal">Batal</button>
           <button type="submit" class="btn btn-danger" id="mSimpan">
             <i class="fa fa-camera"></i> Simpan Temuan
           </button>
         </div>
       </form>
-    </div>
   </div>
 </div>
 
@@ -459,17 +509,28 @@ $(document).ready(function () {
     }).fail(function () { alert('Gagal kirim ke server.'); });
   });
 
-  /* --- modal temuan --- */
-  $('#modalTemuan').on('show.bs.modal', function (ev) {
-    var b = $(ev.relatedTarget);
-    $('#mUtama').val(b.data('utama'));
-    $('#mCcp').val(b.data('ceklist'));
-    $('#mCeklist').text(b.data('ceklist'));
+  /* --- overlay temuan (tidak pakai modal Bootstrap) --- */
+  function bukaTemuan($row) {
+    $('#mUtama').val($row.data('utama'));
+    $('#mCcp').val($row.data('ceklist'));
+    $('#mCeklist').text($row.data('ceklist'));
     $('#mTemuanText').val('');
     $('#mTem').val('');
     $('#mFile').val('');
     $('#mPreview').hide().attr('src', '');
+    $('#ng1Overlay').prop('hidden', false);
+    setTimeout(function () { $('#mTemuanText').focus(); }, 60);
+  }
+  function tutupTemuan() { $('#ng1Overlay').prop('hidden', true); }
+
+  /* klik di mana saja pada baris item = ambil foto / isi temuan
+     (kecuali tombol OK yang punya aksi sendiri) */
+  $(document).on('click', '.ng1-item', function (e) {
+    if ($(e.target).closest('.ng1-okform').length) { return; }
+    bukaTemuan($(this));
   });
+  $('#btnTutupModal, #btnBatal').on('click', tutupTemuan);
+  $(document).on('keydown', function (e) { if (e.key === 'Escape') { tutupTemuan(); } });
 
   $('#mFile').on('change', function () {
     var f = this.files && this.files[0];
@@ -499,7 +560,7 @@ $(document).ready(function () {
     }).done(function (res) {
       if (res && res.ok) {
         setRow(utama, 'PERIKSA');
-        $('#modalTemuan').modal('hide');
+        tutupTemuan();
       } else {
         alert((res && res.msg) ? res.msg : 'Gagal menyimpan temuan.');
       }
