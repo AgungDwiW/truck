@@ -35,7 +35,7 @@ $sql_username = mysqli_query($con,"  SELECT * from tbm_user where nama='$usernam
 
   	<div class="kotak_sq">
 
-  	<form method="post" action="main?action=<?php echo $link;  ?>">
+  	<form method="post" action="fg?action=<?php echo $link;  ?>">
  			 
  		
     <h2><strong><label style="color: yellow; text-align: center;" class="center-block">INPUT NOPOL</label></strong></h2> 

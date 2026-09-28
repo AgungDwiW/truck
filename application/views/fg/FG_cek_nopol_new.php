@@ -122,7 +122,7 @@ $link = ($plant_id == '90A8') ? 'FG_cek_truck' : 'FG_cek_truck_rev';
     <div class="panel-heading"><strong>Cek Informasi Truck</strong></div>
     <div class="panel-body">
 
-    <form id="formTruck" method="post" action="main?action=<?php echo $link; ?>">
+    <form id="formTruck" method="post" action="fg?action=<?php echo $link; ?>">
         <div class="form-group">
           <a href="fg?action=input_nopol" class="btn btn-info btn-sm" style="margin-bottom: 10px;">
             + Tambah Nopol Baru

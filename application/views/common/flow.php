@@ -32,6 +32,7 @@ elseif (isset($_GET['muat']))   $muat = $_GET['muat'];
 if ($muat !== 'FG' && $muat !== 'Material') $muat = 'FG';
 
 $link_gate1 = ($muat === 'FG') ? 'FG_cek_nopol' : 'cek_nopol';
+$grup_gate1 = ($muat === 'FG') ? 'fg' : 'material';
 ?>
 <link rel="stylesheet" href="static/css/kotak.css">
 
@@ -153,7 +154,7 @@ label{ font-size: 11pt; color: white; }
   <!-- ============ LANGKAH 3: pilih_gate — GATE 1 / GATE 2 ============ -->
   <section class="flow-step" id="flow-step-pilih_gate">
     <div class="kotak_sq">
-      <form method="post" id="flowGate1" action="main?action=<?php echo $link_gate1; ?>">
+      <form method="post" id="flowGate1" action="<?php echo $grup_gate1; ?>?action=<?php echo $link_gate1; ?>">
         <input type="text" name="muat" id="flowGate1Muat"
                value="<?php echo htmlspecialchars($muat, ENT_QUOTES); ?>" hidden>
         <button type="submit" class="tombol_gate1">GATE 1</button>
@@ -210,7 +211,7 @@ label{ font-size: 11pt; color: white; }
     if (m1) { m1.value = state.muat; }
     if (m2) { m2.value = state.muat; }
     if (form1) {
-      form1.setAttribute('action', 'main?action=' + (state.muat === 'FG' ? 'FG_cek_nopol' : 'cek_nopol'));
+      form1.setAttribute('action', state.muat === 'FG' ? 'fg?action=FG_cek_nopol' : 'material?action=cek_nopol');
     }
   }
 
