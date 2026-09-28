@@ -1,30 +1,33 @@
 # application/config — koneksi database
 
-Semua koneksi database ada di sini. **Satu file untuk satu koneksi.** Tidak ada lagi
-definisi koneksi yang tersebar di root atau di dalam view/controller.
+Semua koneksi ada di sini. **Satu file untuk satu koneksi**, dan setiap koneksi memakai
+helper `db_open()` (connect timeout **5s**) supaya server yang mati/tidak terjangkau
+gagal cepat — bukan menggantung 60s lalu jadi 504 Gateway Timeout.
 
-| File | Variabel | Target | Dipakai oleh |
-|------|----------|--------|--------------|
-| `db_dbtruck.php` | `$con` | 10.203.121.109 / uap_smartlogistic / **dbtruck** | config.php (app-wide) |
-| `db_smartlogistic.php` | `$con2`, `$conSL` | 10.203.121.109 / uap_smartlogistic / **smartlogistic** | config.php, concloud.php |
-| `db_aquan_central.php` | `$con_140` | 10.203.121.140 / user_safety / **aquan_central** | config.php |
-| `db_evisitor.php` | `$con_3` | 10.203.121.73 / webuser / **evisitor** | config.php |
-| `db_cloud_asn.php` | `$concloud`, `$conASN` | 103.153.61.243 / usersmartlog / **dbasnho** | concloud.php, connectionASN.php |
-| `db_smartlogistic_local.php` | `$conSL`, `$conASNPDO` | localhost / root / **smartlogistic** (override lokal/dev) | connectionSL.php, connectionASN.php |
-| `db_product_release.php` | `$con73` | 10.203.121.73 / uapp_productcode / **db_product_release** | views/fg (form KIR) |
-| `db_dbtruck_local.php` | `$con` | 127.0.0.1 / afandiach / **dbtruck** (lokal/dev) | report.php, lihat_foto.php |
-| `db_dbtruck_gate73.php` | `$con73` | 10.203.121.73 / webuser / **dbtruck** | ttat_bwg_api.php, ttat_gate2_bwg_api.php |
+> Status saat ini: **semua koneksi diarahkan ke lokal** `127.0.0.1 / root / root`.
+> Nilai produksi disimpan sebagai komentar di masing-masing file.
 
-## Loader / kompatibilitas
+| File | Variabel | Database | Dipakai oleh |
+|------|----------|----------|--------------|
+| `db_dbtruck.php` | `$con` | dbtruck | config.php (app-wide) |
+| `db_smartlogistic.php` | `$con2`, `$conSL` | smartlogistic | config.php, index.php |
+| `db_aquan_central.php` | `$con_140` | aquan_central | config.php |
+| `db_evisitor.php` | `$con_3` | evisitor | config.php |
+| `db_cloud_asn.php` | `$concloud`, `$conASN` | dbasnho | index.php, Table.php, connectionASN.php |
+| `db_product_release.php` | `$con73` | db_product_release | views/fg (form KIR) |
+| `db_dbtruck_local.php` | `$con` | dbtruck | report.php, lihat_foto.php |
+| `db_dbtruck_gate73.php` | `$con73` | dbtruck | ttat_bwg_api.php, ttat_gate2_bwg_api.php |
+| `db_connect.php` | `db_open()` | — | helper untuk semua file di atas |
 
-- `/config.php` — konstanta app + memuat koneksi utama (`$con`, `$con2`, `$con_140`, `$con_3`).
-- `/concloud.php` — memuat `$concloud`/`$conASN` dan `$con2`/`$conSL`.
-- `connectionASN.php`, `connectionSL.php` — loader lama (dipakai `application/assets/TableASN.php`),
-  isinya hanya `require` ke file di atas supaya pemanggil lama tetap jalan.
+## Loader kompatibilitas
+
+- `connectionASN.php` → `$conASN` (cloud/asn) + `$conASNPDO` (PDO) — dipakai assets/TableASN.php
+- `connectionSL.php` → `$conSL`
 
 ## Catatan
 
 - `routes.php` bukan koneksi: itu peta action → grup view.
-- File lama `config_0.php` (tidak terpakai) dipindah ke `/_archive/`.
-- `application/assets/TableASN.php` (`seedSupplier()`) masih membuat `new mysqli()` dari
-  variabel global; perlu dirapikan terpisah kalau mau 100% eksplisit.
+- Cara ganti target: edit nilai di `db_open(...)` pada file terkait (baris produksi
+  tersedia sebagai komentar di atasnya).
+- `application/assets/TableASN.php` (`seedSupplier()`) masih `new mysqli()` dari variabel
+  global — perlu dirapikan terpisah kalau mau 100% eksplisit.

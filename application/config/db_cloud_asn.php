@@ -1,16 +1,12 @@
 <?php
 /*
 # e_Truck Inspection — CONNECTION
-# Name : dbasnho / ASN cloud (103.153.61.243)
-# Var  : $concloud, $conASN
-# Note : $concloud dan $conASN menunjuk server/db yang sama (nama variabel lama).
+# Name : dbasnho / ASN  |  Var : $concloud, $conASN
 */
-$db_host = '103.153.61.243';
-$db_user = 'usersmartlog';
-$db_pswd = 'nEdu5a';
-$db_name = 'dbasnho';
+require_once(dirname(__FILE__) . '/db_connect.php');
 
-$concloud = @mysqli_connect($db_host, $db_user, $db_pswd, $db_name) or
-    die('<body style="font-family: arial;"><div style="padding: 20px;border:dotted 1px gray;color: #f44336;"><b>ERROR !</b><small> Server Connection Lost ...</small></div></body>' . mysqli_error(mysqli_connect($db_host, $db_user, $db_pswd, $db_name)));
-
-$conASN = $concloud;
+# --- PRODUCTION (aktifkan kembali kalau perlu) ---
+// $db_host = '103.153.61.243'; $db_user = 'usersmartlog'; $db_pswd = 'nEdu5a';
+# --- LOKAL / DEV ---
+$concloud = db_open('127.0.0.1', 'root', 'root', 'dbasnho', 'ASN');
+$conASN   = $concloud;

@@ -1,12 +1,11 @@
 <?php
 /*
 # e_Truck Inspection — CONNECTION
-# Name : dbtruck @ server 73 (webuser) — dipakai API BWG gate
-# Var  : $con73
+# Name : dbtruck @ server 73 (API BWG gate)  |  Var : $con73
 */
-$s  = '10.203.121.73';
-$u  = 'webuser';
-$p  = 'RTYF34567CVBN$%GYJ*Fghjk';
-$db = 'dbtruck';
+require_once(dirname(__FILE__) . '/db_connect.php');
 
-$con73 = mysqli_connect($s, $u, $p, $db) or die("Could not connect #73 Server");
+# --- PRODUCTION (aktifkan kembali kalau perlu) ---
+// $s = '10.203.121.73'; $u = 'webuser'; $p = 'RTYF34567CVBN$%GYJ*Fghjk';
+# --- LOKAL / DEV ---
+$con73 = db_open('127.0.0.1', 'root', 'root', 'dbtruck', 'gate73');

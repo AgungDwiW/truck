@@ -1,6 +1,7 @@
 <?php
 
-include_once "concloud.php";
+include_once "application/config/db_cloud_asn.php";
+include_once "application/config/db_smartlogistic.php";
 include_once "application/assets/utility_function_withoutJS.php";
 include_once "application/assets/Cache.php";
 

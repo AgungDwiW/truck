@@ -16,8 +16,8 @@ foreach ($_GET as $key => $value) $_GET[$key] = preg_replace('/[^a-zA-Z0-9_ -]/s
 
 # Load config
 require_once "config.php";
-require_once "concloud.php";
-
+require_once(realpath(dirname(__FILE__)) . '/application/config/db_cloud_asn.php');      # $concloud, $conASN
+require_once(realpath(dirname(__FILE__)) . '/application/config/db_smartlogistic.php');  # $con2, $conSL
 // Set our defaults
     $controller = 'main';
     $action = 'index';
