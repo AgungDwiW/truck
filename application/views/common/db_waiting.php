@@ -73,6 +73,9 @@ $jml = count($rows);
 
 <style type="text/css">
 /* ---- db_waiting (dw-*) ---- */
+/* Buang latar biru tua bawaan layout (static/css/table.css: body{background:#2c4776}).
+   Sengaja hanya di halaman ini; file CSS bersama tidak diubah. */
+body { background-color: #ffffff !important; }
 .dw-wrap {
   /* lebar penuh: pembungkus view ini ada di dalam .container-fluid Bootstrap
      (padding 15px kiri/kanan), jadi ditarik negatif supaya tabel menyentuh
