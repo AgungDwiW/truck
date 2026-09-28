@@ -242,7 +242,8 @@ body {
 }
 .ng1-chk:hover { transform: translateY(-1px); border-color: #0f6ea8; }
 .ng1-ok  .ng1-chk { background: #28a745; border-color: #28a745; }
-.ng1-bad .ng1-chk { background: #fff; border-color: #dc3545; }
+.ng1-bad .ng1-chk { background: #fff; border-color: #dc3545; color: #dc3545; }
+.ng1-bad .ng1-chk:hover { background: #fdeaec; }
 .ng1-bad .ng1-chk:hover { background: #fdeaec; }
 
 .ng1-badge {
@@ -396,7 +397,7 @@ body {
             <input type="text" name="driver" value="<?php echo htmlspecialchars($driver, ENT_QUOTES); ?>" hidden >
             <input type="text" name="supplier" value="<?php echo htmlspecialchars($supplier, ENT_QUOTES); ?>" hidden >
             <button type="submit" class="ng1-chk" title="<?php echo $ok ? 'Ada temuan? klik untuk ambil foto' : 'Tandai OK'; ?>">
-              <?php if ($ok) { ?><i class="fa fa-check"></i><?php } ?>
+              <?php if ($ok) { ?><i class="fa fa-check"></i><?php } else { ?><i class="fa fa-times"></i><?php } ?>
             </button>
           </form>
         </div>
@@ -539,7 +540,7 @@ $(document).ready(function () {
     var ok = (status === 'OK');
     $row.toggleClass('ng1-ok', ok).toggleClass('ng1-bad', !ok).attr('data-status', status);
     $('#badge-' + utama).text(status);
-    $row.find('.ng1-chk').html(ok ? '<i class="fa fa-check"></i>' : '')
+    $row.find('.ng1-chk').html(ok ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>')
       .attr('title', ok ? 'Ada temuan? klik untuk ambil foto' : 'Tandai OK');
     refreshHasil();
   }

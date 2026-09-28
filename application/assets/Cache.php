@@ -23,10 +23,18 @@ class Cache{
 		return json_decode($file, true);
 	}
 	function writeJSON($filename, $array){
-		$file 		= fopen($filename, "w");
-		$json 		= json_encode($array);
-		fwrite($file, $json);
+		/* Kalau folder cache tidak bisa ditulis, cukup lewati - jangan fatal.
+		   Dulu fwrite(false) memicu TypeError -> halaman jadi blank (HTTP 500). */
+		$file = @fopen($filename, "w");
+		if ($file === false) {
+			return false;
+		}
+		$json = json_encode($array);
+		if ($json !== false) {
+			fwrite($file, $json);
+		}
 		fclose($file);
+		return true;
 	}
 
 	function check($name){	
