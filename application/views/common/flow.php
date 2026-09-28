@@ -53,7 +53,7 @@ label{ font-size: 11pt; color: white; }
 .kotak_sq{
   width: 250px;
   background: blue;
-  margin: 100px auto;
+  margin: 0 auto;
   padding: 50px 20px;
   box-shadow: 0px 0px 100px 4px #d6d6d6;
 }
@@ -91,8 +91,17 @@ label{ font-size: 11pt; color: white; }
 .alert{ background: #e44e4e; color: white; padding: 10px; text-align: center; border:1px solid #b32929; }
 
 /* --- transisi antar langkah (satu halaman, tanpa reload) --- */
-.flow-stage{ position: relative; }
+.flow-stage{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* isi di tengah area yang kelihatan: tinggi navbar dikurangi oleh JS supaya
+     panggung pas sampai bawah viewport (tanpa memicu scroll). */
+  min-height: calc(100vh - 59px);
+}
 .flow-step{
+  width: 100%;
   display: none;
   opacity: 0;
   transform: translateX(36px);
@@ -205,6 +214,19 @@ label{ font-size: 11pt; color: white; }
     }
   }
 
+  /* Navbar fixed (navbar-fixed-top): geser panggung setinggi navbar supaya isi
+     benar-benar di tengah area yang kelihatan, bukan di tengah viewport. */
+  function centerStage() {
+    var nav = document.querySelector('.navbar');
+    var h = nav ? Math.round(nav.getBoundingClientRect().height) : 0;
+    if (!h) { h = 59; }
+    /* navbar ini ada di normal flow (bukan fixed/overlay), jadi TIDAK perlu margin
+       tambahan - kalau nanti diubah jadi fixed-top, margin-nya dipasang otomatis. */
+    var fixed = nav ? (getComputedStyle(nav).position === 'fixed') : false;
+    stage.style.marginTop = fixed ? h + 'px' : '0px';
+    stage.style.minHeight = 'calc(100vh - ' + h + 'px)';
+  }
+
   function showStep(name, push) {
     if (STEPS.indexOf(name) === -1) { name = 'index'; }
 
@@ -276,6 +298,9 @@ label{ font-size: 11pt; color: white; }
     first.classList.add('is-active');
     first.style.display = '';
   }
+  centerStage();
+  window.addEventListener('resize', centerStage);
+
   applyMuat();
 
   if (window.history && history.replaceState) {

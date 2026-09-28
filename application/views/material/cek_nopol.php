@@ -25,6 +25,14 @@ $muat = @$_POST['muat'];
 
 
 <style type="text/css">
+/* Bootstrap v4 sudah tidak punya .center-block (kelas Bootstrap 3). Tanpa ini
+   input & tombol nempel ke kiri. Shim kecil supaya isi form ke tengah. */
+.center-block{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .tombol_ic{
   color: white;
   font-size: 20pt;
