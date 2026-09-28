@@ -47,6 +47,7 @@ return array(
     'reg_user'             => 'common',
     'edit_user'            => 'common',
     'status_tambahan'      => 'common',
+    'gate1_ajax'           => 'common',
     'cek_gate1'            => 'common',
     'gate1'                => 'common',
     'foto_gate1'           => 'common',

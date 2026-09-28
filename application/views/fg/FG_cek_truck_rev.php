@@ -1,9 +1,11 @@
 <div class="body-wrap-with-navbar">
 
 <?php
-$muat        = $_POST['muat'] ?? '';
-$nopol       = str_replace(' ', '', $_POST['nopol'] ?? '');
-$id_shipment = $_POST['id_shipment'] ?? '';
+/* nilai bisa datang dari POST (alur normal) atau GET (buka URL langsung):
+   fg?action=FG_cek_truck_rev&nopol=B1234XY&id_shipment=SHIP1&muat=FG */
+$muat        = $_POST['muat']        ?? $_GET['muat']        ?? '';
+$nopol       = str_replace(' ', '', $_POST['nopol'] ?? $_GET['nopol'] ?? '');
+$id_shipment = $_POST['id_shipment'] ?? $_GET['id_shipment'] ?? '';
 $username    = $_SESSION[APP_NAME]["username"];
 
 $date = date("Y-m-d");

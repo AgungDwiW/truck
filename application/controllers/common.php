@@ -36,6 +36,11 @@ $common_template = array(
 );
 
 # Endpoint terminal: keluarkan JSON, tidak memakai template master
+if ($action === 'gate1_ajax') {
+    include APP_DIR . 'views/common/gate1_ajax.php';
+    exit;
+}
+
 if ($action === 'status_tambahan') {
     include APP_DIR . 'views/common/status_tambahan.php';
     exit;

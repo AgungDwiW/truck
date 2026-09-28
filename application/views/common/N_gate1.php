@@ -3,11 +3,16 @@
 <?php
 /* ============================================================================
 # N_gate1 — Checklist Gate 1
-# Struktur file (biar gampang dirawat):
+# Struktur file:
 #   1. INPUT  : semua $_POST dibaca di sini, di-cast mengikuti TIPE KOLOM db
 #   2. QUERY  : SEMUA akses database (abaikan bagian ini kalau cuma mau lihat UI)
 #   3. DATA   : nyusun data siap-render
-#   4. VIEW   : HTML/CSS saja, tidak ada query lagi
+#   4. VIEW   : HTML/CSS + JS (tidak ada query lagi)
+#
+# Simpan hasil per item TIDAK pindah halaman lagi: tombol OK dan tombol
+# kamera (temuan + foto) mengirim AJAX ke common?action=gate1_ajax lalu
+# mengubah baris di halaman ini. Tombol aslinya tetap form biasa, jadi kalau
+# JS mati alurnya masih jalan seperti dulu (POST ke N_foto_gate1).
 # ============================================================================ */
 
 /* ----------------------------------------------------------------------------
@@ -144,7 +149,6 @@ foreach ($db_item as $item) {
     $rows[] = array(
         'no'     => $idx,
         'nama'   => (string) $item['ceklist_utama'],        /* varchar(50) */
-        'cek'    => ($cek_utama === 1) ? 'cekgreen.png' : 'red.png',
         'status' => ($cek_utama === 1) ? 'OK' : 'PERIKSA',
         'tampil' => ($idx > 0),                             /* no=0 disembunyikan */
     );
@@ -220,8 +224,8 @@ body {
 .ng1-right { display: flex; align-items: center; gap: 10px; }
 
 .ng1-btn {
-  width: 54px;
-  height: 54px;
+  width: 50px;
+  height: 50px;
   border: 2px solid #cfd6e4;
   border-radius: 50%;
   background: #fff;
@@ -229,12 +233,16 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  color: #6b7280;
+  font-size: 18px;
   box-shadow: 0 1px 4px rgba(20, 30, 60, .08);
-  transition: transform .12s ease, border-color .12s ease;
+  transition: transform .12s ease, border-color .12s ease, color .12s ease;
 }
-.ng1-btn:hover { transform: translateY(-1px); border-color: #0f6ea8; }
-.ng1-ok  .ng1-btn { border-color: #28a745; }
-.ng1-bad .ng1-btn { border-color: #dc3545; }
+.ng1-btn:hover { transform: translateY(-1px); }
+.ng1-btn-ok:hover  { border-color: #28a745; color: #28a745; }
+.ng1-btn-bad:hover { border-color: #dc3545; color: #dc3545; }
+.ng1-ok  .ng1-btn-ok  { border-color: #28a745; color: #28a745; background: #eaf8ee; }
+.ng1-bad .ng1-btn-bad { border-color: #dc3545; color: #dc3545; background: #fdeaec; }
 
 .ng1-badge {
   font-size: 11px;
@@ -261,6 +269,14 @@ body {
   padding: 12px 40px;
   font-weight: 700;
 }
+.ng1-preview {
+  margin-top: 10px;
+  max-width: 100%;
+  max-height: 220px;
+  border-radius: 10px;
+  border: 1px solid #e2e6ee;
+  display: none;
+}
 
 </style>
 
@@ -272,20 +288,22 @@ body {
   <div class="ng1-card">
     <div class="ng1-head">
       <span><i class="fa fa-truck"></i>&nbsp; Kelengkapan Utama</span>
-      <span class="ng1-hint">klik tombol untuk memeriksa / foto item</span>
+      <span class="ng1-hint">centang OK, atau klik kamera kalau ada temuan</span>
     </div>
 
     <div class="ng1-body">
 <?php foreach ($rows as $r) { ?>
-      <?php if (!$r['tampil']) { continue; } ?>
-      <form method="post" action="common?action=N_foto_gate1" >
-        <div class="ng1-item <?php echo ($r['status'] === 'OK') ? 'ng1-ok' : 'ng1-bad'; ?>">
-          <div class="ng1-left">
-            <span class="ng1-num"><?php echo $r['no']; ?></span>
-            <span class="ng1-name"><?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?></span>
-          </div>
-          <div class="ng1-right">
-            <input type="text" name="utama" value="<?php echo $r['no']; ?>" hidden >
+      <?php if (!$r['tampil']) { continue; } $u = $r['no']; ?>
+      <div class="ng1-item <?php echo ($r['status'] === 'OK') ? 'ng1-ok' : 'ng1-bad'; ?>" id="row-<?php echo $u; ?>">
+        <div class="ng1-left">
+          <span class="ng1-num"><?php echo $u; ?></span>
+          <span class="ng1-name"><?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?></span>
+        </div>
+        <div class="ng1-right">
+
+          <!-- OK: form asli (fallback non-JS) -> common?action=N_foto_gate1 -->
+          <form method="post" action="common?action=N_foto_gate1" class="ng1-okform" data-utama="<?php echo $u; ?>">
+            <input type="text" name="utama" value="<?php echo $u; ?>" hidden >
             <input type="text" name="idref" value="<?php echo htmlspecialchars($idref, ENT_QUOTES); ?>" hidden >
             <input type="text" name="nopol" value="<?php echo htmlspecialchars($nopol, ENT_QUOTES); ?>" hidden >
             <input type="text" name="lokasi" value="<?php echo htmlspecialchars($lokasi, ENT_QUOTES); ?>" hidden >
@@ -293,14 +311,23 @@ body {
             <input type="text" name="kode_kirim" value="<?php echo htmlspecialchars($kode_kirim, ENT_QUOTES); ?>" hidden >
             <input type="text" name="driver" value="<?php echo htmlspecialchars($driver, ENT_QUOTES); ?>" hidden >
             <input type="text" name="supplier" value="<?php echo htmlspecialchars($supplier, ENT_QUOTES); ?>" hidden >
-
-            <span class="ng1-badge"><?php echo $r['status']; ?></span>
-            <button type="submit" class="ng1-btn" title="Periksa: <?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>">
-              <img src="static/css/img/<?php echo $r['cek']; ?>" width="34" height="34" alt="">
+            <button type="submit" class="ng1-btn ng1-btn-ok" title="Tandai OK: <?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>">
+              <i class="fa fa-check"></i>
             </button>
-          </div>
+          </form>
+
+          <!-- PERIKSA: buka modal di halaman ini (tanpa pindah halaman) -->
+          <button type="button" class="ng1-btn ng1-btn-bad"
+                  data-toggle="modal" data-target="#modalTemuan"
+                  data-utama="<?php echo $u; ?>"
+                  data-ceklist="<?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>"
+                  title="Ada temuan / foto: <?php echo htmlspecialchars($r['nama'], ENT_QUOTES); ?>">
+            <i class="fa fa-camera"></i>
+          </button>
+
+          <span class="ng1-badge" id="badge-<?php echo $u; ?>"><?php echo $r['status']; ?></span>
         </div>
-      </form>
+      </div>
 <?php } ?>
     </div>
   </div>
@@ -348,11 +375,145 @@ body {
 
 </div>
 
+<!-- modal temuan: dipakai semua item, isinya diisi dari tombol yg diklik -->
+<div class="modal fade" id="modalTemuan" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Temuan: <span id="mCeklist"></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- action tetap ke halaman lama sebagai fallback kalau JS mati -->
+      <form id="formTemuan" method="post" action="common?action=N_upload_fail" enctype="multipart/form-data">
+        <div class="modal-body">
+          <input type="text" name="utama" id="mUtama" hidden>
+          <input type="text" name="ccp" id="mCcp" hidden>
+          <input type="text" name="tem" id="mTem" hidden>
+          <input type="text" name="idref" value="<?php echo htmlspecialchars($idref, ENT_QUOTES); ?>" hidden>
+          <input type="text" name="nopol" value="<?php echo htmlspecialchars($nopol, ENT_QUOTES); ?>" hidden>
+          <input type="text" name="lokasi" value="<?php echo htmlspecialchars($lokasi, ENT_QUOTES); ?>" hidden>
+          <input type="text" name="kode_kirim" value="<?php echo htmlspecialchars($kode_kirim, ENT_QUOTES); ?>" hidden>
+          <input type="text" name="driver" value="<?php echo htmlspecialchars($driver, ENT_QUOTES); ?>" hidden>
+          <input type="text" name="supplier" value="<?php echo htmlspecialchars($supplier, ENT_QUOTES); ?>" hidden>
+
+          <div class="form-group">
+            <label for="mTemuanText">Komentar / Temuan</label>
+            <textarea class="form-control" id="mTemuanText" rows="3" required></textarea>
+          </div>
+
+          <div class="form-group mb-0">
+            <label for="mFile">Foto (kamera / file, maks 1 MB)</label>
+            <input type="file" class="form-control-file" name="file" id="mFile" accept="image/*" capture="capture" required>
+            <img id="mPreview" class="ng1-preview" alt="pratinjau foto">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-danger" id="mSimpan">
+            <i class="fa fa-camera"></i> Simpan Temuan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript">
-/* tombol simpan kasih indikator proses (seperti branch main-coman) */
+/* ============================================================================
+# Simpan hasil per item tanpa pindah halaman (AJAX ke common?action=gate1_ajax)
+============================================================================ */
+var N_GATE1_IDREF = <?php echo json_encode($idref); ?>;
+
 $(document).ready(function () {
+
+  function refreshHasil() {
+    var merah = $('.ng1-item.ng1-bad').length > 0;
+    $('#hasil')
+      .val(merah ? 'Di Tolak di Pos 1' : 'Lanjut Pemeriksaan Gate 2')
+      .toggleClass('ng1-merah', merah)
+      .toggleClass('ng1-hijau', !merah);
+  }
+
+  function setRow(utama, status) {
+    var $row = $('#row-' + utama);
+    $row.toggleClass('ng1-ok', status === 'OK').toggleClass('ng1-bad', status !== 'OK');
+    $('#badge-' + utama).text(status);
+    refreshHasil();
+  }
+
+  /* --- tombol OK --- */
+  $('.ng1-okform').on('submit', function (e) {
+    e.preventDefault();
+    var utama = $(this).data('utama');
+    $.ajax({
+      url: 'common?action=gate1_ajax',
+      type: 'POST',
+      data: { op: 'ok', idref: N_GATE1_IDREF, utama: utama },
+      dataType: 'json'
+    }).done(function (res) {
+      if (res && res.ok) { setRow(utama, 'OK'); }
+      else { alert((res && res.msg) ? res.msg : 'Gagal menyimpan.'); }
+    }).fail(function () { alert('Gagal kirim ke server.'); });
+  });
+
+  /* --- modal temuan --- */
+  $('#modalTemuan').on('show.bs.modal', function (ev) {
+    var b = $(ev.relatedTarget);
+    $('#mUtama').val(b.data('utama'));
+    $('#mCcp').val(b.data('ceklist'));
+    $('#mCeklist').text(b.data('ceklist'));
+    $('#mTemuanText').val('');
+    $('#mTem').val('');
+    $('#mFile').val('');
+    $('#mPreview').hide().attr('src', '');
+  });
+
+  $('#mFile').on('change', function () {
+    var f = this.files && this.files[0];
+    if (f) { $('#mPreview').attr('src', URL.createObjectURL(f)).show(); }
+    else { $('#mPreview').hide().attr('src', ''); }
+  });
+
+  /* --- kirim temuan + foto tanpa reload --- */
+  $('#formTemuan').on('submit', function (e) {
+    e.preventDefault();
+    var tem = $.trim($('#mTemuanText').val());
+    if (tem === '') { return; }
+    $('#mTem').val(tem);
+
+    var utama = $('#mUtama').val();
+    var fd = new FormData(this);
+    fd.append('op', 'fail');
+
+    $('#mSimpan').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
+    $.ajax({
+      url: 'common?action=gate1_ajax',
+      type: 'POST',
+      data: fd,
+      processData: false,
+      contentType: false,
+      dataType: 'json'
+    }).done(function (res) {
+      if (res && res.ok) {
+        setRow(utama, 'PERIKSA');
+        $('#modalTemuan').modal('hide');
+      } else {
+        alert((res && res.msg) ? res.msg : 'Gagal menyimpan temuan.');
+      }
+    }).fail(function () {
+      alert('Gagal kirim ke server.');
+    }).always(function () {
+      $('#mSimpan').prop('disabled', false).html('<i class="fa fa-camera"></i> Simpan Temuan');
+    });
+  });
+
+  /* --- simpan akhir --- */
   $('#formSimpan').on('submit', function () {
     $('#btnSimpan').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
   });
+
 });
 </script>
