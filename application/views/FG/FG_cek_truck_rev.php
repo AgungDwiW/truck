@@ -11,6 +11,7 @@ include "application/config/connectionSL.php";
 include "application/models/wms/DeliveryNotes.php";
 include "application/models/wms/Orders.php";
 $shipment = $_GET['id_shipment'];
+Debuger::show();
 $dataShipment = Orders::getOrder($shipment, Orders::$url);
 if(!Orders::checkValidDate($_GET['id_shipment'])){
     $plant = User::$plantid;
@@ -86,9 +87,9 @@ if($dataShipment and count($dataShipment)>0){
         $data           = [$_GET['id_shipment']];
         $DN             = ApiCall("POST", $url,json_encode($data));
         $DN             = json_decode($DN,1);
-        // Debuger::dump([$url,$data, $DN],1);
+        Debuger::dump([$url,$data, $DN]);
         // exit();
-        if (isset($DN['title'])){
+        if (isset($DN['title']) && !in_string($DN['detail'], "duplicate")){
             $DN['title'] = str_replace("'", '', $DN['title']);
             if (isset($DN['detail']))
                 $DN['detail'] = str_replace("'", '', $DN['detail']);
