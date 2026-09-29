@@ -262,17 +262,19 @@ body { background-color: #ffffff !important; }
                 </span>
               </td>
               <td>
-                <?php if ($data['ada_visit'] > 0) { ?>
-                  <a class="dw-btn dw-btn-go"
-                     href="common?action=cek_gate2&amp;kode=<?php echo urlencode((string) $data['no']); ?>">
-                    <i class="fa fa-arrow-right"></i> Lanjut Gate 2
-                  </a>
-                <?php } else { ?>
-                  <a class="dw-btn dw-btn-ev" target="_blank"
-                     href="<?php echo htmlspecialchars($evisitor_url, ENT_QUOTES); ?>">
-                    <i class="fa fa-external-link"></i> Input eVisitor
-                  </a>
-                <?php } ?>
+                <form method="post" action="common?action=cek_gate2" class="dw-form">
+                  <?php if ($data['ada_visit'] > 0) { ?>
+                    <button type="submit" class="dw-btn dw-btn-go" name="kode"
+                            value="<?php echo htmlspecialchars((string) $data['no'], ENT_QUOTES); ?>">
+                      <i class="fa fa-arrow-right"></i> Lanjut Gate 2
+                    </button>
+                  <?php } else { ?>
+                    <a class="dw-btn dw-btn-ev" target="_blank"
+                       href="<?php echo htmlspecialchars($evisitor_url, ENT_QUOTES); ?>">
+                      <i class="fa fa-external-link"></i> Input eVisitor
+                    </a>
+                  <?php } ?>
+                </form>
               </td>
             </tr>
           <?php } ?>
@@ -284,4 +286,12 @@ body { background-color: #ffffff !important; }
   </div>
 </div>
 
+<script type="text/javascript">
+/* tombol Lanjut Gate 2: kasih umpan balik biar tidak terasa "diam" */
+$(document).on('submit', '.dw-form', function () {
+  $(this).find('button[type=submit]')
+    .prop('disabled', true)
+    .html('<i class="fa fa-spinner fa-spin"></i> Membuka...');
+});
+</script>
 </div>

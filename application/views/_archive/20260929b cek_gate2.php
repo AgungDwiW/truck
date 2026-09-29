@@ -10,12 +10,8 @@ body {
 
 include "application/assets/function.php";
 
-/* kode boleh datang dari GET (link dari db_waiting) atau POST (tautan lama).
-   Nilai dipakai di query, jadi disaring dulu. */
-$kode = (isset($_POST['kode']) && $_POST['kode'] !== '')
-      ? (string) $_POST['kode']
-      : (string) (isset($_GET['kode']) ? $_GET['kode'] : '');
-$kode = preg_replace('/[^0-9A-Za-z]/', '', $kode);
+$kode = $_POST['kode'];
+
 $query_mysql = mysqli_query($con,"SELECT * FROM tb_ceklist WHERE no='$kode'")or die(mysql_error());
 $datamuat = mysqli_fetch_array($query_mysql);
 
